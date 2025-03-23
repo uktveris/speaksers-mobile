@@ -1,5 +1,4 @@
 import { ThemedText } from "@/components/ThemedText";
-import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 import { StyleSheet } from "react-native";
@@ -9,14 +8,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import useAuth from "@/hooks/useAuth";
 
 function Explore() {
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const router = useRouter();
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await signOut();
     router.replace("(auth)/login");
-    signOut();
   };
 
   const deleteUser = async () => {
@@ -24,6 +24,7 @@ function Explore() {
     const backend_url = Constants.expoConfig?.extra?.BACKEND_URL as string;
     const sb_auth_token_name = Constants.expoConfig?.extra
       ?.SB_AUTH_TOKEN_NAME as string;
+    console.log("sb auth name: " + sb_auth_token_name);
     console.log("backend url: " + backend_url);
 
     try {
@@ -73,8 +74,8 @@ function Explore() {
         <View>
           <Pressable
             style={styles.button}
-            // onPress={() => handleDeleteAccount()}
-            onPress={() => deleteUser()}
+            onPress={() => handleDeleteAccount()}
+            // onPress={() => deleteUser()}
           >
             <ThemedText style={styles.text}>Delete account</ThemedText>
           </Pressable>
