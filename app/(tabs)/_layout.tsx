@@ -10,6 +10,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import Login from "../(auth)/login";
 import { useSupabase } from "@/hooks/useSupabase";
 import useAuth from "@/hooks/useAuth";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   // const colorScheme = useColorScheme();
@@ -37,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Learn",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
           ),
@@ -53,11 +54,21 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="info"
+        name="globalChat"
         options={{
-          title: "Info",
+          title: "Chat",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="info.circle" color={color} />
+            <Ionicons name="chatbubble" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="account"
+        options={{
+          title: "Account",
+          tabBarIcon: ({ color }) => (
+            // <IconSymbol size={28} name="info.circle" color={color} />
+            <MaterialCommunityIcons name="account" size={28} color={color} />
           ),
         }}
       />

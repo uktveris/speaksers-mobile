@@ -6,10 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as Linking from "expo-linking";
 import { useSupabase } from "@/hooks/useSupabase";
+import GameBox from "@/components/GameBox";
 
+const colorScheme = Appearance.getColorScheme();
+const styles = setStyles(colorScheme);
 function App() {
-  const colorScheme = Appearance.getColorScheme();
-  const styles = setStyles(colorScheme);
   const supabase = useSupabase();
   const router = useRouter();
 
@@ -42,13 +43,27 @@ function App() {
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View style={styles.container}>
-        <ThemedText style={styles.text}>Some text</ThemedText>
-        <Link style={styles.text} href="/explore">
-          explore
-        </Link>
+        {/* <ThemedText style={styles.text}>Some text</ThemedText> */}
+        {/* <GameBox backgroundColor="#ff9933" name="Dialog" link="" /> */}
+        <Row>
+          <Col>
+            <GameBox backgroundColor="#ff9933" name="Dialog" link="" />
+          </Col>
+          <Col>
+            <GameBox backgroundColor="#ff99a8" name="Game" link="" />
+          </Col>
+        </Row>
       </View>
     </SafeAreaView>
   );
+}
+
+function Row({ children }: { children: any }) {
+  return <View style={styles.row}>{children}</View>;
+}
+
+function Col({ children }: { children: any }) {
+  return <View style={styles.column}>{children}</View>;
 }
 
 function setStyles(theme: ColorSchemeName) {
@@ -59,11 +74,13 @@ function setStyles(theme: ColorSchemeName) {
         theme === "light" ? Colors.light.background : Colors.dark.background,
     },
     container: {
-      flex: 1,
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      top: 30,
+      flex: 2,
+      marginHorizontal: "auto",
+      width: "100%",
+      // flexDirection: "row",
+      // justifyContent: "center",
+      // alignItems: "center",
+      // top: 30,
       color: "red",
     },
     text: {
@@ -73,6 +90,16 @@ function setStyles(theme: ColorSchemeName) {
       backgroundColor: "white",
       padding: 20,
       margin: 10,
+    },
+    row: {
+      flexDirection: "row",
+    },
+    column: {
+      margin: 10,
+      flex: 2,
+      borderColor: "white",
+      borderRadius: 20,
+      overflow: "hidden",
     },
   });
 }
