@@ -5,6 +5,8 @@ import { ColorSchemeName } from "react-native";
 import { StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { Pressable } from "react-native";
+import { useRouter } from "expo-router";
 
 interface GameBoxProps {
   name: string;
@@ -13,13 +15,16 @@ interface GameBoxProps {
 }
 
 function GameBox({ name, backgroundColor, link }: GameBoxProps) {
+  const router = useRouter();
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme, backgroundColor);
   return (
-    <View style={styles.container}>
-      {/* <ThemedText style={styles.text}>{name}</ThemedText> */}
-      <Text style={styles.text}>{name}</Text>
-    </View>
+    <Pressable onPress={() => router.push(link)}>
+      <View style={styles.container}>
+        {/* <ThemedText style={styles.text}>{name}</ThemedText> */}
+        <Text style={styles.text}>{name}</Text>
+      </View>
+    </Pressable>
   );
 }
 

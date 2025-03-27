@@ -28,7 +28,7 @@ function Explore() {
     console.log("backend url: " + backend_url);
 
     try {
-      const response = await axios.delete(backend_url + "users/delete", {
+      const response = await axios.delete(backend_url + "api/users/delete", {
         data: { userId: id },
         headers: { "Content-type": "application/json" },
       });

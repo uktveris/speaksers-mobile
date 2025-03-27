@@ -1,6 +1,6 @@
 import GoogleAuthButton from "@/components/oauth/GoogleAuthButton";
 import { ThemedText } from "@/components/ThemedText";
-import { useSupabase } from "@/hooks/useSupabase";
+import { getSupabaseClient } from "@/hooks/supabaseClient";
 import { Button, Input } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -13,7 +13,7 @@ import { View } from "react-native";
 import { Alert } from "react-native";
 
 export default function Register() {
-  const supabase = useSupabase();
+  const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

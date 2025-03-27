@@ -1,7 +1,7 @@
 import GoogleAuthButton from "@/components/oauth/GoogleAuthButton";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
-import { useSupabase } from "@/hooks/useSupabase";
+import { getSupabaseClient } from "@/hooks/supabaseClient";
 import { Input } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -18,7 +18,7 @@ import { Alert, View } from "react-native";
 const colorScheme = Appearance.getColorScheme();
 
 export default function Login() {
-  const supabase = useSupabase();
+  const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,59 +44,65 @@ export default function Login() {
     router.replace("/(tabs)/");
   };
 
+  const content = (
+    <View style={styles.container}>
+      <ThemedText style={styles.title}>Log in</ThemedText>
+      <View>
+        <ThemedText>Email</ThemedText>
+        <TextInput
+          style={styles.inputBox}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+          placeholder="Your email address"
+          keyboardType="email-address"
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+          importantForAccessibility="yes"
+        />
+      </View>
+      <View>
+        <ThemedText>Password</ThemedText>
+        <TextInput
+          style={styles.inputBox}
+          onChangeText={(text) => setPassword(text)}
+          value={password}
+          placeholder="Your password"
+          secureTextEntry={true}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+          importantForAccessibility="yes"
+        />
+      </View>
+      <View>
+        <Pressable
+          style={styles.button}
+          disabled={loading}
+          onPress={() => signInWithEmail()}
+        >
+          <ThemedText style={styles.text}>Sign in</ThemedText>
+        </Pressable>
+      </View>
+      {/* <GoogleAuthButton /> */}
+      <View>
+        <Pressable
+          style={styles.button}
+          disabled={loading}
+          onPress={() => router.replace("/register")}
+        >
+          <ThemedText style={styles.text}>No account? Sign up!</ThemedText>
+        </Pressable>
+      </View>
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView
       style={styles.keyboardView}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <ThemedText style={styles.title}>Log in</ThemedText>
-          <View>
-            <ThemedText>Email</ThemedText>
-            <TextInput
-              style={styles.inputBox}
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-              placeholder="Your email address"
-              keyboardType="email-address"
-              returnKeyType="done"
-              onSubmitEditing={Keyboard.dismiss}
-            />
-          </View>
-          <View>
-            <ThemedText>Password</ThemedText>
-            <TextInput
-              style={styles.inputBox}
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-              placeholder="Your password"
-              secureTextEntry={true}
-              returnKeyType="done"
-              onSubmitEditing={Keyboard.dismiss}
-            />
-          </View>
-          <View>
-            <Pressable
-              style={styles.button}
-              disabled={loading}
-              onPress={() => signInWithEmail()}
-            >
-              <ThemedText style={styles.text}>Sign in</ThemedText>
-            </Pressable>
-          </View>
-          {/* <GoogleAuthButton /> */}
-          <View>
-            <Pressable
-              style={styles.button}
-              disabled={loading}
-              onPress={() => router.replace("/register")}
-            >
-              <ThemedText style={styles.text}>No account? Sign up!</ThemedText>
-            </Pressable>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
+      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+      {content}
+      {/* </TouchableWithoutFeedback> */}
     </KeyboardAvoidingView>
   );
 }

@@ -1,4 +1,4 @@
-import { useSupabase } from "@/hooks/useSupabase";
+import { getSupabaseClient } from "@/hooks/supabaseClient";
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -10,7 +10,7 @@ import Constants from "expo-constants";
 const colorScheme = Appearance.getColorScheme();
 
 export default function () {
-  const supabase = useSupabase();
+  const supabase = getSupabaseClient();
 
   GoogleSignin.configure({
     scopes: ["https://www.googleapis.com/auth/drive.readonly"],

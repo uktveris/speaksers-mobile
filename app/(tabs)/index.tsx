@@ -5,13 +5,13 @@ import { View, StyleSheet, ColorSchemeName, Appearance } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as Linking from "expo-linking";
-import { useSupabase } from "@/hooks/useSupabase";
+import { getSupabaseClient } from "@/hooks/supabaseClient";
 import GameBox from "@/components/GameBox";
 
 const colorScheme = Appearance.getColorScheme();
 const styles = setStyles(colorScheme);
 function App() {
-  const supabase = useSupabase();
+  const supabase = getSupabaseClient();
   const router = useRouter();
 
   const createSessionFromUrl = async (url: string) => {
@@ -47,7 +47,11 @@ function App() {
         {/* <GameBox backgroundColor="#ff9933" name="Dialog" link="" /> */}
         <Row>
           <Col>
-            <GameBox backgroundColor="#ff9933" name="Dialog" link="" />
+            <GameBox
+              backgroundColor="#ff9933"
+              name="Dialog"
+              link="../(game)/dialog"
+            />
           </Col>
           <Col>
             <GameBox backgroundColor="#ff99a8" name="Game" link="" />
