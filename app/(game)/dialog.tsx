@@ -7,6 +7,7 @@ import { ColorSchemeName } from "react-native";
 import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { Pressable } from "react-native";
+import { useRouter } from "expo-router";
 
 function Dialog() {
   const theme = Appearance.getColorScheme();
@@ -14,6 +15,7 @@ function Dialog() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [matched, setMatched] = useState(false);
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const onConnect = () => {
@@ -30,19 +32,32 @@ function Dialog() {
       console.log("socket received peer id! - " + message);
     };
 
+    const onCallCancelled = () => {
+      console.log("exited the call queue");
+      setMatched(false);
+      router.replace("/(tabs)/");
+    };
+
     socket.emit("join_call");
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("match_found", (peerId: string) => onMatched(peerId));
-  });
+    socket.on("call_cancelled", onCallCancelled);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Connected status: {isConnected}</Text>
-      <Text style={styles.text}>Matched status: {matched}</Text>
-      <Text style={styles.text}>Match peer id: {message}</Text>
-      <Pressable onPress={() => socket.disconnect()}>
-        <Text style={styles.text}>disconnect</Text>
+      <Text style={styles.text}>
+        Connected status: {isConnected ? "it is!" : "it is not connected.."}
+      </Text>
+      <Text style={styles.text}>
+        Matched status: {matched ? "it is matched!" : "not matched yet.."}
+      </Text>
+      <Text style={styles.text}>
+        Match peer id: {message ? message : "no id received.."}
+      </Text>
+      <Pressable onPress={() => socket.emit("cancel_call")}>
+        <Text style={styles.text}>Cancel call</Text>
       </Pressable>
     </View>
   );

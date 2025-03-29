@@ -1,6 +1,5 @@
-import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { View, StyleSheet, ColorSchemeName, Appearance } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
@@ -43,8 +42,6 @@ function App() {
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View style={styles.container}>
-        {/* <ThemedText style={styles.text}>Some text</ThemedText> */}
-        {/* <GameBox backgroundColor="#ff9933" name="Dialog" link="" /> */}
         <Row>
           <Col>
             <GameBox
@@ -81,10 +78,6 @@ function setStyles(theme: ColorSchemeName) {
       flex: 2,
       marginHorizontal: "auto",
       width: "100%",
-      // flexDirection: "row",
-      // justifyContent: "center",
-      // alignItems: "center",
-      // top: 30,
       color: "red",
     },
     text: {

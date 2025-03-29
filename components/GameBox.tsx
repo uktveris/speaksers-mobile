@@ -19,7 +19,7 @@ function GameBox({ name, backgroundColor, link }: GameBoxProps) {
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme, backgroundColor);
   return (
-    <Pressable onPress={() => router.push(link)}>
+    <Pressable onPress={() => router.replace(link)}>
       <View style={styles.container}>
         {/* <ThemedText style={styles.text}>{name}</ThemedText> */}
         <Text style={styles.text}>{name}</Text>

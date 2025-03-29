@@ -9,6 +9,7 @@ import Constants from "expo-constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuth from "@/hooks/useAuth";
+import { getBackendUrl } from "@/config/urlConfig";
 
 function Explore() {
   const { user, loading, signOut } = useAuth();
@@ -21,11 +22,9 @@ function Explore() {
 
   const deleteUser = async () => {
     const { id } = user;
-    const backend_url = Constants.expoConfig?.extra?.BACKEND_URL as string;
+    const backend_url = getBackendUrl();
     const sb_auth_token_name = Constants.expoConfig?.extra
       ?.SB_AUTH_TOKEN_NAME as string;
-    console.log("sb auth name: " + sb_auth_token_name);
-    console.log("backend url: " + backend_url);
 
     try {
       const response = await axios.delete(backend_url + "api/users/delete", {
