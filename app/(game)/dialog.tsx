@@ -26,10 +26,22 @@ function Dialog() {
       setIsConnected(false);
       console.log("socket disconnected!");
     };
-    const onMatched = (message: string) => {
+    const onMatched = (peerId: string) => {
       setMatched(true);
-      setMessage(message);
-      console.log("socket received peer id! - " + message);
+      setMessage(peerId);
+      console.log("socket received peer id! - " + peerId);
+      router.replace(
+        "/dialogCall?remoteSocketId=" + peerId + "&initCall=false",
+      );
+    };
+
+    const onInitCall = (peerId: string) => {
+      setMatched(true);
+      setMessage(peerId);
+      console.log("socket received peer id! - " + peerId);
+      router.navigate(
+        "/dialogCall?remoteSocketId=" + peerId + "&initCall=true",
+      );
     };
 
     const onCallCancelled = () => {
@@ -42,6 +54,7 @@ function Dialog() {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("match_found", (peerId: string) => onMatched(peerId));
+    socket.on("init_call", (peerId: string) => onInitCall(peerId));
     socket.on("call_cancelled", onCallCancelled);
   }, []);
 

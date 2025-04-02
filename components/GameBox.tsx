@@ -7,6 +7,9 @@ import { Text } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { Pressable } from "react-native";
 import { useRouter } from "expo-router";
+import { manageMicrophonePermissions } from "@/config/permissionUtils";
+import { Alert } from "react-native";
+import { Linking } from "react-native";
 
 interface GameBoxProps {
   name: string;
@@ -18,10 +21,34 @@ function GameBox({ name, backgroundColor, link }: GameBoxProps) {
   const router = useRouter();
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme, backgroundColor);
+
+  const handleNavigateWithPermissions = async () => {
+    if (await manageMicrophonePermissions()) {
+      router.navigate(link);
+    } else {
+      Alert.alert(
+        "Microphone access",
+        "microphone permissios were not granted. You can open settings to grant them manually.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("permissions alert cancelled"),
+            style: "cancel",
+          },
+          {
+            text: "Open settings",
+            onPress: () => Linking.openSettings(),
+            style: "default",
+          },
+        ],
+      );
+      return;
+    }
+  };
+
   return (
-    <Pressable onPress={() => router.replace(link)}>
+    <Pressable onPress={handleNavigateWithPermissions}>
       <View style={styles.container}>
-        {/* <ThemedText style={styles.text}>{name}</ThemedText> */}
         <Text style={styles.text}>{name}</Text>
       </View>
     </Pressable>

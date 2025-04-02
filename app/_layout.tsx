@@ -70,6 +70,11 @@ export default function RootLayout() {
             name="(auth)/register"
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="(game)/dialog" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(game)/dialogCall"
+            options={{ headerShown: false }}
+          />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
