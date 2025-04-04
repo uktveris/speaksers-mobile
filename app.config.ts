@@ -9,6 +9,7 @@ export default {
       BACKEND_URL: process.env.BACKEND_URL,
       BACKEND_URL_LOCAL: process.env.BACKEND_URL_LOCAL,
       SB_AUTH_TOKEN_NAME: process.env.SB_AUTH_TOKEN_NAME,
+      STUN_SERVERS_URL: process.env.STUN_SERVERS_URL,
     },
     scheme: "speaksers",
   },
