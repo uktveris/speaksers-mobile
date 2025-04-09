@@ -45,36 +45,36 @@ function DialogCall() {
   }, [remoteStream]);
 
   useEffect(() => {
-    peerConnRef.current = new RTCPeerConnection({ iceServers: iceServers });
+    // peerConnRef.current = new RTCPeerConnection({ iceServers: iceServers });
+    const peerConnection = new RTCPeerConnection({ iceServers: iceServers });
+    peerConnRef.current = peerConnection;
     socket.on("offer", async (data) =>
-      onOffer(data.offer, peerConnRef.current!, remoteSocketId as string),
+      onOffer(data.offer, peerConnection, remoteSocketId as string),
     );
-    socket.on("answer", async (data) =>
-      onAnswer(data.answer, peerConnRef.current!),
-    );
+    socket.on("answer", async (data) => onAnswer(data.answer, peerConnection));
     socket.on("ice-candidate", (data) =>
-      onIceCandidate(data.candidate, peerConnRef.current!),
+      onIceCandidate(data.candidate, peerConnection),
     );
     socket.on("end-call", () => onEndCall());
 
-    peerConnRef.current.ontrack = (event) => {
+    peerConnection.ontrack = (event) => {
       const stream = event.streams[0] as unknown as MediaStream;
       setRemoteStream(stream);
       setRemoteStream(event.streams[0]);
       console.log("set remote stream: " + event.streams[0]);
     };
 
-    peerConnRef.current.addEventListener("connectionstatechange", (event) => {
-      if (peerConnRef.current.connectionState === "connected") {
+    peerConnection.addEventListener("connectionstatechange", (event) => {
+      if (peerConnection.connectionState === "connected") {
         console.log("connection established!!");
       }
     });
 
     if (initCall === "true") {
-      initPeerCall(remoteSocketId as string, peerConnRef.current);
+      initPeerCall(remoteSocketId as string, peerConnection);
     }
 
-    peerConnRef.current.addEventListener("icecandidate", (event) => {
+    peerConnection.addEventListener("icecandidate", (event) => {
       if (event.candidate) {
         console.log("Found ICE Candidate:", event.candidate);
         socket.emit("ice-candidate", {
@@ -90,6 +90,11 @@ function DialogCall() {
       socket.off("ice-candidate");
       socket.off("end-call");
       peerConnRef.current?.close();
+      peerConnRef.current = null;
+      if (remoteStream) {
+        remoteStream.getTracks().forEach((track) => track.stop());
+        setRemoteStream(null);
+      }
     };
   }, []);
 
