@@ -1,3 +1,9 @@
+import {
+  initPeerCall,
+  onOffer,
+  onAnswer,
+  onIceCandidate,
+} from "@/server/peerConnection";
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 // import { RTCView, MediaStream } from "react-native-webrtc";
@@ -40,9 +46,15 @@ function DialogCall() {
 
   useEffect(() => {
     peerConnRef.current = new RTCPeerConnection({ iceServers: iceServers });
-    socket.on("offer", async (data) => onOffer(data));
-    socket.on("answer", async (data) => onAnswer(data));
-    socket.on("ice-candidate", (data) => onIceCandidate(data));
+    socket.on("offer", async (data) =>
+      onOffer(data.offer, peerConnRef.current!, remoteSocketId as string),
+    );
+    socket.on("answer", async (data) =>
+      onAnswer(data.answer, peerConnRef.current!),
+    );
+    socket.on("ice-candidate", (data) =>
+      onIceCandidate(data.candidate, peerConnRef.current!),
+    );
     socket.on("end-call", () => onEndCall());
 
     peerConnRef.current.ontrack = (event) => {
@@ -52,58 +64,6 @@ function DialogCall() {
       console.log("set remote stream: " + event.streams[0]);
     };
 
-    const initPeerCall = async (remoteSocketId: string) => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false,
-      });
-      // TODO: on production change to mobile speakers
-      stream.getTracks().forEach((track) => {
-        peerConnRef.current.addTrack(track, stream);
-      });
-      const offer = await peerConnRef.current.createOffer();
-      await peerConnRef.current.setLocalDescription(offer);
-      socket.emit("offer", { recipient: remoteSocketId, offer: offer });
-    };
-
-    const onOffer = async (data) => {
-      console.log("offer received, proceeding");
-      console.log("connection created, proceeding");
-      console.log("offer: ");
-      console.log(data.offer);
-      peerConnRef.current.setRemoteDescription(
-        new RTCSessionDescription(data.offer),
-      );
-      const answer = await peerConnRef.current.createAnswer();
-      await peerConnRef.current.setLocalDescription(answer);
-      console.log("answer ceated, proceeding");
-      socket.emit("answer", { recipient: remoteSocketId, answer: answer });
-    };
-
-    const onAnswer = async (data) => {
-      console.log("trying to add answer to desc: answer");
-      console.log(data.answer);
-      await peerConnRef.current.setRemoteDescription(
-        new RTCSessionDescription(data.answer),
-      );
-    };
-
-    const onIceCandidate = async (data) => {
-      if (data.candidate) {
-        try {
-          console.log("incoming new ice candidate");
-          // await peerConn.addIceCandidate(data.candidate);
-          await peerConnRef.current.addIceCandidate(
-            new RTCIceCandidate(data.candidate),
-          );
-        } catch (error) {
-          console.log(
-            "error while adding ice candidate: " + (error as Error).message,
-          );
-        }
-      }
-    };
-
     peerConnRef.current.addEventListener("connectionstatechange", (event) => {
       if (peerConnRef.current.connectionState === "connected") {
         console.log("connection established!!");
@@ -111,7 +71,7 @@ function DialogCall() {
     });
 
     if (initCall === "true") {
-      initPeerCall(remoteSocketId as string);
+      initPeerCall(remoteSocketId as string, peerConnRef.current);
     }
 
     peerConnRef.current.addEventListener("icecandidate", (event) => {
@@ -178,9 +138,6 @@ function DialogCall() {
   ) : (
     <View>
       <Text>this is dialog call screen</Text>
-      <Pressable onPress={handleEndCall}>
-        <Text>end call</Text>
-      </Pressable>
       <Pressable onPress={handleGoBack}>
         <Text>call ended, go back</Text>
       </Pressable>
