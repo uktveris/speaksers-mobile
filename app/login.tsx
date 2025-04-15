@@ -2,7 +2,6 @@ import GoogleAuthButton from "@/components/oauth/GoogleAuthButton";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useSession } from "@/context/AuthContext";
-import { getSupabaseClient } from "@/hooks/supabaseClient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Appearance } from "react-native";
@@ -17,7 +16,6 @@ import { Alert, View } from "react-native";
 const colorScheme = Appearance.getColorScheme();
 
 export default function Login() {
-  // const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,23 +33,6 @@ export default function Login() {
       console.log("login failed: " + (error as Error).message);
       return;
     }
-    // setLoading(true);
-    // const { error } = await supabase.auth.signInWithPassword({
-    //   email: email,
-    //   password: password,
-    // });
-
-    // if (error) {
-    //   Alert.alert(error.message);
-    //   setLoading(false);
-    //   return;
-    // }
-    // setLoading(false);
-    // console.log("user logged in!");
-    // const user = await supabase.auth.getUser();
-    // console.log("user: ");
-    // console.log({ user });
-    // router.replace("/(protected)/(tabs)/");
   };
 
   const content = (

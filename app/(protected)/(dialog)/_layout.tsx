@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
 
-function DialogLayout() {
+export default function DialogLayout() {
   return <Stack />;
 }

@@ -30,31 +30,6 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  // const hasSession = async () => {
-  //   const { data } = await supabase.auth.getSession();
-  //   return data.session ? true : false;
-  // };
-
-  useEffect(() => {
-    // const getSession = async () => {
-    //   const { data } = await supabase.auth.getSession();
-    //   // setUser(data?.session?.user || null);
-    //   if (data.session) {
-    //     router.replace("(tabs)/index");
-    //   }
-    // };
-    // getSession();
-    // const { data: listener } = supabase.auth.onAuthStateChange(
-    //   (_event, session) => {
-    //     if (session) {
-    //       router.replace("(tabs)/");
-    //     } else {
-    //       router.replace("(auth)/login");
-    //     }
-    //   },
-    // );
-    // return () => listener?.subscription.unsubscribe();
-  }, []);
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -68,10 +43,6 @@ export default function RootLayout() {
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
           {loaded ? <Slot /> : null}
-          {/* <Slot /> */}
-          {/* <Stack>
-          <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-        </Stack> */}
           <StatusBar style="auto" />
         </ThemeProvider>
       </SafeAreaProvider>

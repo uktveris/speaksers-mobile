@@ -1,5 +1,6 @@
 import { getSupabaseClient } from "@/hooks/supabaseClient";
 import type { Session } from "@supabase/supabase-js";
+import { useRouter } from "expo-router";
 import {
   createContext,
   PropsWithChildren,
@@ -28,6 +29,7 @@ function SessionProvider({ children }: PropsWithChildren) {
   const supabase = getSupabaseClient();
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -48,6 +50,16 @@ function SessionProvider({ children }: PropsWithChildren) {
       listener.subscription.unsubscribe();
     };
   }, []);
+
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     if (!session) {
+  //       router.replace("/login");
+  //     } else if (session) {
+  //       router.replace("/(protected)/(tabs)");
+  //     }
+  //   }
+  // }, [session, isLoading]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
