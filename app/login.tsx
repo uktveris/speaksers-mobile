@@ -1,8 +1,8 @@
 import GoogleAuthButton from "@/components/oauth/GoogleAuthButton";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
+import { useSession } from "@/context/AuthContext";
 import { getSupabaseClient } from "@/hooks/supabaseClient";
-import { Input } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Appearance } from "react-native";
@@ -10,7 +10,6 @@ import { TextInput } from "react-native";
 import { KeyboardAvoidingView, Text } from "react-native";
 import { Platform } from "react-native";
 import { Keyboard } from "react-native";
-import { TouchableWithoutFeedback } from "react-native";
 import { Pressable } from "react-native";
 import { StyleSheet } from "react-native";
 import { Alert, View } from "react-native";
@@ -18,30 +17,41 @@ import { Alert, View } from "react-native";
 const colorScheme = Appearance.getColorScheme();
 
 export default function Login() {
-  const supabase = getSupabaseClient();
+  // const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { signIn, isLoading } = useSession();
 
   const signInWithEmail = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) {
-      Alert.alert(error.message);
+    try {
+      await signIn(email, password);
+      router.replace("/(protected)/(tabs)");
       setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("login failed: " + (error as Error).message);
       return;
     }
-    setLoading(false);
-    console.log("user logged in!");
-    const user = await supabase.auth.getUser();
-    console.log("user: ");
-    console.log({ user });
-    router.replace("/(tabs)/");
+    // setLoading(true);
+    // const { error } = await supabase.auth.signInWithPassword({
+    //   email: email,
+    //   password: password,
+    // });
+
+    // if (error) {
+    //   Alert.alert(error.message);
+    //   setLoading(false);
+    //   return;
+    // }
+    // setLoading(false);
+    // console.log("user logged in!");
+    // const user = await supabase.auth.getUser();
+    // console.log("user: ");
+    // console.log({ user });
+    // router.replace("/(protected)/(tabs)/");
   };
 
   const content = (
@@ -100,9 +110,7 @@ export default function Login() {
       style={styles.keyboardView}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
       {content}
-      {/* </TouchableWithoutFeedback> */}
     </KeyboardAvoidingView>
   );
 }

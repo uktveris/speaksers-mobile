@@ -8,16 +8,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import useAuth from "@/hooks/useAuth";
 import { getBackendUrl } from "@/config/urlConfig";
+import { useSession } from "@/context/AuthContext";
 
 function Explore() {
-  const { user, loading, signOut } = useAuth();
   const router = useRouter();
+  const { signOut } = useSession();
 
   const handleSignOut = async () => {
-    await signOut();
-    router.replace("(auth)/login");
+    signOut();
+    router.replace("/login");
   };
 
   const deleteUser = async () => {
@@ -36,7 +36,7 @@ function Explore() {
       signOut();
       await AsyncStorage.removeItem(sb_auth_token_name);
       localStorage.removeItem(sb_auth_token_name);
-      router.replace("(auth)/login");
+      router.replace("/login");
     } catch (err) {
       console.log("error occurred: " + (err as Error).message);
     }

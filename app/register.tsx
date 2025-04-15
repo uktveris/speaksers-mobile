@@ -43,7 +43,7 @@ export default function Register() {
       return;
     }
     setLoading(false);
-    router.replace("/(tabs)/");
+    router.replace("/(protected)/(tabs)");
   };
 
   return (

@@ -7,18 +7,16 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import Login from "../(auth)/login";
+import Login from "../../login";
 import { getSupabaseClient } from "@/hooks/supabaseClient";
-import useAuth from "@/hooks/useAuth";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   // const colorScheme = useColorScheme();
   const colorScheme = Appearance.getColorScheme();
   const supabase = getSupabaseClient();
-  const { user, loading } = useAuth();
 
-  return user ? (
+  return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
@@ -73,7 +71,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-  ) : (
-    <Login />
   );
 }

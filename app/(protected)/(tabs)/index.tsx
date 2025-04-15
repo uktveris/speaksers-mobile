@@ -47,7 +47,7 @@ function App() {
             <GameBox
               backgroundColor="#ff9933"
               name="Dialog"
-              link="../(game)/dialog"
+              link="../(dialog)/dialog"
             />
           </Col>
           <Col>
