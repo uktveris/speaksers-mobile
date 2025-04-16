@@ -51,16 +51,6 @@ function SessionProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     if (!session) {
-  //       router.replace("/login");
-  //     } else if (session) {
-  //       router.replace("/(protected)/(tabs)");
-  //     }
-  //   }
-  // }, [session, isLoading]);
-
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email: email,

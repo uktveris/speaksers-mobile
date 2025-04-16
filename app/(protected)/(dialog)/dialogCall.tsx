@@ -18,6 +18,7 @@ function DialogCall() {
   console.log("remote socketId from params: " + remoteSocketId);
   console.log("initcall from params: " + initCall);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const remoteStreamRef = useRef<MediaStream | null>(null);
   const [activeCall, setActiveCall] = useState(true);
   // web testing
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -60,7 +61,8 @@ function DialogCall() {
     peerConnection.ontrack = (event) => {
       const stream = event.streams[0] as unknown as MediaStream;
       setRemoteStream(stream);
-      setRemoteStream(event.streams[0]);
+      // setRemoteStream(event.streams[0]);
+      remoteStreamRef.current = stream;
       console.log("set remote stream: " + event.streams[0]);
     };
 
@@ -93,6 +95,11 @@ function DialogCall() {
       peerConnRef.current = null;
       if (remoteStream) {
         remoteStream.getTracks().forEach((track) => track.stop());
+        setRemoteStream(null);
+      }
+      if (remoteStreamRef.current) {
+        remoteStreamRef.current.getTracks().forEach((t) => t.stop());
+        remoteStreamRef.current = null;
         setRemoteStream(null);
       }
     };
