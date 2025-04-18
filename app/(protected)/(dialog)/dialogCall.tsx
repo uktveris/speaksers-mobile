@@ -38,8 +38,16 @@ function DialogCall() {
     }
   }, [remoteStream]);
 
+  useEffect(() => {
+    console.log("MOUNTED: DIALOGCALL");
+    return () => {
+      console.log("UNMOUNTED: DIALOGCALL");
+    };
+  }, []);
+
   const handleGoBack = () => {
-    router.navigate("/");
+    // router.navigate("/");
+    router.replace("/");
   };
 
   const webAudio = (

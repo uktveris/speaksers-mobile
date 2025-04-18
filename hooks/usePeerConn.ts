@@ -25,7 +25,8 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
     remoteStream?.getTracks().forEach((t) => t.stop());
     setRemoteStream(null);
     setActiveCall(false);
-    // callIdRef.current = uuidv4();  // Generate new call ID for next potential call
+    // TODO: generate uuid for each call??
+    // callIdRef.current = uuidv4();
   };
 
   useEffect(() => {
@@ -142,18 +143,13 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
 
     const cleanUp = () => {
       setActiveCall(false);
-      // offerHandled.current = false;
-      // answerHandled.current = false;
+      offerHandled.current = false;
+      answerHandled.current = false;
       peerConnRef.current?.close();
       peerConnRef.current = null;
       remoteStream?.getTracks().forEach((t) => t.stop());
       setRemoteStream(null);
     };
-
-    socket.off("offer");
-    socket.off("answer");
-    socket.off("ice-candidate");
-    socket.off("end-call");
 
     socket.on("offer", (data) => onOffer(data.offer));
     socket.on("answer", (data) => onAnswer(data.answer));
