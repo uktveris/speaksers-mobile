@@ -46,7 +46,6 @@ function DialogCall() {
   }, []);
 
   const handleGoBack = () => {
-    // router.navigate("/");
     router.replace("/");
   };
 

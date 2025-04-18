@@ -1,6 +1,7 @@
 import GoogleAuthButton from "@/components/oauth/GoogleAuthButton";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
+import { GlobalStyles } from "@/constants/StyleConstants";
 import { useSession } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -37,9 +38,11 @@ export default function Login() {
 
   const content = (
     <View style={styles.container}>
-      <ThemedText style={styles.title}>Log in</ThemedText>
+      <Text style={GlobalStyles.titleText}>Log in</Text>
+      <View style={GlobalStyles.verticalSpacerLarge}></View>
       <View>
-        <ThemedText>Email</ThemedText>
+        <Text style={GlobalStyles.smallText}>Email</Text>
+        <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
           onChangeText={(text) => setEmail(text)}
@@ -51,38 +54,38 @@ export default function Login() {
           importantForAccessibility="yes"
         />
       </View>
+      <View style={GlobalStyles.verticalSpacerMedium}></View>
       <View>
-        <ThemedText>Password</ThemedText>
+        <Text style={GlobalStyles.smallText}>Password</Text>
+        <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
           onChangeText={(text) => setPassword(text)}
           value={password}
-          placeholder="Your password"
+          placeholder="Password"
           secureTextEntry={true}
           returnKeyType="done"
           onSubmitEditing={Keyboard.dismiss}
           importantForAccessibility="yes"
         />
       </View>
-      <View>
-        <Pressable
-          style={styles.button}
-          disabled={loading}
-          onPress={() => signInWithEmail()}
-        >
-          <ThemedText style={styles.text}>Sign in</ThemedText>
-        </Pressable>
-      </View>
+      <View style={GlobalStyles.verticalSpacerLarge}></View>
+      <Pressable
+        style={GlobalStyles.primaryButton}
+        disabled={loading}
+        onPress={() => signInWithEmail()}
+      >
+        <Text style={GlobalStyles.mediumBoldText}>Sign in</Text>
+      </Pressable>
+      <View style={GlobalStyles.verticalSpacerMedium}></View>
       {/* <GoogleAuthButton /> */}
-      <View>
-        <Pressable
-          style={styles.button}
-          disabled={loading}
-          onPress={() => router.replace("/register")}
-        >
-          <ThemedText style={styles.text}>No account? Sign up!</ThemedText>
-        </Pressable>
-      </View>
+      <Pressable
+        style={GlobalStyles.secondaryButton}
+        disabled={loading}
+        onPress={() => router.replace("/register")}
+      >
+        <Text style={GlobalStyles.mediumBoldText}>No Account? Sign up</Text>
+      </Pressable>
     </View>
   );
 
@@ -103,6 +106,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   keyboardView: {
+    backgroundColor:
+      colorScheme === "light"
+        ? Colors.light.background
+        : Colors.dark.background,
     flex: 1,
     justifyContent: "center",
   },
@@ -112,10 +119,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   inputBox: {
-    borderWidth: 0.3,
+    borderWidth: 2,
     borderColor: "white",
     borderRadius: 30,
-    paddingVertical: 20,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     color: colorScheme === "light" ? Colors.light.text : Colors.dark.text,
   },
