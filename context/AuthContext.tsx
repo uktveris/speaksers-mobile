@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "@/hooks/supabaseClient";
+import { getSocket } from "@/server/socket";
 import type { Session } from "@supabase/supabase-js";
 import { useRouter } from "expo-router";
 import {
@@ -60,6 +61,8 @@ function SessionProvider({ children }: PropsWithChildren) {
   };
 
   const signOut = async () => {
+    const socket = getSocket();
+    if (socket.connected) socket.disconnect();
     await supabase.auth.signOut();
   };
 

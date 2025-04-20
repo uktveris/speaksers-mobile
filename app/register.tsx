@@ -135,14 +135,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     color: theme === "light" ? Colors.light.text : Colors.dark.text,
   },
-  button: {
-    marginTop: 20,
-    backgroundColor: "grey",
-    borderRadius: 20,
-    padding: 10,
-  },
-  text: {
-    fontWeight: "bold",
-    textAlign: "center",
-  },
 });

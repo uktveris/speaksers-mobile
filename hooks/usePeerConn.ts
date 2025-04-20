@@ -1,4 +1,4 @@
-import socket from "@/server/socket";
+import { getSocket } from "@/server/socket";
 import { useEffect, useRef, useState } from "react";
 
 const iceServers = [
@@ -7,6 +7,8 @@ const iceServers = [
 ];
 
 function usePeerConn(remoteSocketId: string, initCall: boolean) {
+  const socket = getSocket();
+  if (!socket.connected) socket.connect();
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [activeCall, setActiveCall] = useState(false);
   const peerConnRef = useRef<RTCPeerConnection | null>(null);

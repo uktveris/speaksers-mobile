@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import socket from "@/server/socket";
+import { getSocket } from "@/server/socket";
 import { useEffect, useRef, useState } from "react";
 import { Text } from "react-native";
 import { Appearance } from "react-native";
@@ -19,6 +19,8 @@ const boxSize = 100;
 const padding = 10;
 
 function Dialog() {
+  const socket = getSocket();
+  if (!socket.connected) socket.connect();
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme);
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -82,12 +84,14 @@ function Dialog() {
             toValue: maxTranslation,
             duration: 1500,
             easing: Easing.inOut(Easing.exp),
+            // TODO: change to true after done web testing
             useNativeDriver: false,
           }),
           Animated.timing(anim, {
             toValue: 0,
             duration: 1500,
             easing: Easing.inOut(Easing.exp),
+            // TODO: change to true after done web testing
             useNativeDriver: false,
           }),
         ]),

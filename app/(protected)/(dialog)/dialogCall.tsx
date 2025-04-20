@@ -3,12 +3,14 @@ import { View } from "react-native";
 // import { RTCView, MediaStream } from "react-native-webrtc";
 import { Pressable } from "react-native";
 import { Text } from "react-native";
-import socket from "@/server/socket";
+import { getSocket } from "@/server/socket";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Platform } from "react-native";
 import { usePeerConn } from "@/hooks/usePeerConn";
 
 function DialogCall() {
+  const socket = getSocket();
+  if (!socket.connected) socket.connect();
   const { remoteSocketId, initCall } = useLocalSearchParams();
   useEffect(() => {
     console.log("remote socketId from params: " + remoteSocketId);
