@@ -6,7 +6,7 @@ import { Pressable } from "react-native";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Constants from "expo-constants";
-import axios from "axios";
+import axiosConfig from "@/config/axiosConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getBackendUrl } from "@/config/urlConfig";
 import { useSession } from "@/context/AuthContext";
@@ -27,10 +27,13 @@ function Explore() {
       ?.SB_AUTH_TOKEN_NAME as string;
 
     try {
-      const response = await axios.delete(backend_url + "api/users/delete", {
-        data: { userId: id },
-        headers: { "Content-type": "application/json" },
-      });
+      const response = await axiosConfig.delete(
+        backend_url + "api/users/delete",
+        {
+          data: { userId: id },
+          headers: { "Content-type": "application/json" },
+        },
+      );
       console.log("response status code: " + response.status);
       console.log(" delete user: " + response.data);
       signOut();
