@@ -12,6 +12,7 @@ import { Keyboard } from "react-native";
 import { Pressable } from "react-native";
 import { StyleSheet } from "react-native";
 import { Alert, View } from "react-native";
+import SignUpErrorMessage from "@/components/SignUpErrorMessage";
 
 const colorScheme = Appearance.getColorScheme();
 
@@ -20,6 +21,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorsExist, setErrorExist] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, isLoading } = useSession();
@@ -33,6 +35,8 @@ export default function Login() {
     } catch (error) {
       setLoading(false);
       console.log("login failed: " + (error as Error).message);
+      setErrorExist(true);
+      setErrorMsg((error as Error).message);
       return;
     }
   };
@@ -92,6 +96,7 @@ export default function Login() {
           }
         />
       </View>
+      {errorsExist && <SignUpErrorMessage message={errorMsg} />}
       <View style={GlobalStyles.verticalSpacerLarge}></View>
       <Pressable
         style={[

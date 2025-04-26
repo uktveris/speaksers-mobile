@@ -24,6 +24,11 @@ const GlobalStyles = StyleSheet.create({
     color: theme === "light" ? Colors.light.text : Colors.dark.text,
     fontSize: FontSizes.small,
   },
+  smallTextBold: {
+    color: theme === "light" ? Colors.light.text : Colors.dark.text,
+    fontSize: FontSizes.small,
+    fontWeight: "bold",
+  },
   mediumBoldText: {
     color: theme === "light" ? Colors.light.text : Colors.dark.text,
     fontSize: FontSizes.medium,

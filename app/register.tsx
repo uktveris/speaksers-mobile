@@ -14,6 +14,7 @@ import { TextInput } from "react-native-paper";
 import { Keyboard } from "react-native";
 import { Text } from "react-native";
 import { GlobalStyles } from "@/constants/StyleConstants";
+import SignUpErrorMessage from "@/components/SignUpErrorMessage";
 
 const theme = Appearance.getColorScheme();
 
@@ -21,11 +22,20 @@ export default function Register() {
   const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repPassword, setRepPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showRepPassword, setShowRepPassword] = useState(false);
+  const [errorsExist, setErrorExist] = useState(false);
   const router = useRouter();
 
   const signUpWithEmail = async () => {
+    if (password !== repPassword) {
+      setErrorExist(true);
+      return;
+    } else {
+      setErrorExist(false);
+    }
     setLoading(true);
     const {
       data: { session },
@@ -103,6 +113,34 @@ export default function Register() {
           }
         />
       </View>
+      <View style={GlobalStyles.verticalSpacerMedium}></View>
+      <View>
+        <Text style={GlobalStyles.smallText}>Repeat password</Text>
+        <View style={GlobalStyles.verticalSpacerSmall}></View>
+        <TextInput
+          style={styles.inputBox}
+          theme={{ roundness: 30 }}
+          mode="flat"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          onChangeText={(text) => setRepPassword(text)}
+          value={repPassword}
+          placeholder="Password"
+          secureTextEntry={!showRepPassword}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+          importantForAccessibility="yes"
+          textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
+          placeholderTextColor="grey"
+          right={
+            <TextInput.Icon
+              icon={showRepPassword ? "eye-off" : "eye"}
+              onPress={() => setShowRepPassword((prev) => !prev)}
+            />
+          }
+        />
+      </View>
+      {errorsExist && <SignUpErrorMessage message="Passwords do not match!" />}
       <View style={GlobalStyles.verticalSpacerLarge}></View>
       <Pressable
         style={[
