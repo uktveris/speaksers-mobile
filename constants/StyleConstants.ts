@@ -58,6 +58,9 @@ const GlobalStyles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
   },
+  disabledButton: {
+    opacity: 0.5,
+  },
 });
 
 export { FontSizes, GlobalStyles };

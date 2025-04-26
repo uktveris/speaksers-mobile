@@ -10,7 +10,7 @@ import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import { Alert } from "react-native";
 import { Colors } from "@/constants/Colors";
-import { TextInput } from "react-native";
+import { TextInput } from "react-native-paper";
 import { Keyboard } from "react-native";
 import { Text } from "react-native";
 import { GlobalStyles } from "@/constants/StyleConstants";
@@ -22,6 +22,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const signUpWithEmail = async () => {
@@ -60,6 +61,10 @@ export default function Register() {
         <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
+          theme={{ roundness: 30 }}
+          mode="flat"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="Your email address"
@@ -67,6 +72,8 @@ export default function Register() {
           returnKeyType="done"
           onSubmitEditing={Keyboard.dismiss}
           importantForAccessibility="yes"
+          textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
+          placeholderTextColor="grey"
         />
       </View>
       <View style={GlobalStyles.verticalSpacerMedium}></View>
@@ -75,18 +82,33 @@ export default function Register() {
         <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
+          theme={{ roundness: 30 }}
+          mode="flat"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
           onChangeText={(text) => setPassword(text)}
           value={password}
           placeholder="Password"
-          secureTextEntry={true}
+          secureTextEntry={!showPassword}
           returnKeyType="done"
           onSubmitEditing={Keyboard.dismiss}
           importantForAccessibility="yes"
+          textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
+          placeholderTextColor="grey"
+          right={
+            <TextInput.Icon
+              icon={showPassword ? "eye-off" : "eye"}
+              onPress={() => setShowPassword((prev) => !prev)}
+            />
+          }
         />
       </View>
       <View style={GlobalStyles.verticalSpacerLarge}></View>
       <Pressable
-        style={GlobalStyles.primaryButton}
+        style={[
+          GlobalStyles.primaryButton,
+          loading && GlobalStyles.disabledButton,
+        ]}
         disabled={loading}
         onPress={() => signUpWithEmail()}
       >
@@ -95,7 +117,10 @@ export default function Register() {
       <View style={GlobalStyles.verticalSpacerMedium}></View>
       {/* <GoogleAuthButton /> */}
       <Pressable
-        style={GlobalStyles.secondaryButton}
+        style={[
+          GlobalStyles.secondaryButton,
+          loading && GlobalStyles.disabledButton,
+        ]}
         disabled={loading}
         onPress={() => router.replace("/login")}
       >
@@ -128,11 +153,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   inputBox: {
+    backgroundColor: "transparent",
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
     color: theme === "light" ? Colors.light.text : Colors.dark.text,
   },
 });

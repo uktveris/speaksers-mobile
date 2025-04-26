@@ -6,9 +6,6 @@ import Constants from "expo-constants";
 const url = Constants.expoConfig?.extra?.SUPABASE_AUTH_URL as string;
 const key = Constants.expoConfig?.extra?.SUPABASE_AUTH_API_KEY as string;
 
-console.log("supabase url from constants: " + url);
-console.log("supabase key from constants: " + key);
-
 const supabase = createClient(url, key, {
   auth: {
     storage: AsyncStorage,
