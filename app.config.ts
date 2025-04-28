@@ -7,7 +7,8 @@ export default {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/react-logo@2x.png",
-    scheme: "myapp",
+    scheme: "speaksers",
+    deepLinking: true,
     userInterfaceStyle: "automatic",
     splash: {
       image: "./assets/images/react-logo@3x.png",

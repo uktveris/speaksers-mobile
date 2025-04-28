@@ -37,29 +37,44 @@ export default function Register() {
       setErrorExist(false);
     }
     setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        emailRedirectTo: "speaksers://auth/callback",
-      },
-    });
 
-    if (error) {
-      Alert.alert(error.message);
+    console.log("trying to create new user");
+
+    try {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          // emailRedirectTo: "speaksers://auth-callback",
+          // web testing
+          emailRedirectTo: "http://localhost:8081/auth-callback",
+        },
+      });
+
+      console.log("called sb auth server");
+      console.log("session: " + session);
+      console.log("error: " + error);
+
+      if (error) {
+        Alert.alert(error.message);
+        setLoading(false);
+        return;
+      }
+      if (!session) {
+        Alert.alert("Check your email for verification please!");
+        setLoading(false);
+        return;
+      }
+      setLoading(false);
+      router.replace("/(protected)/(tabs)");
+    } catch (err) {
+      console.log("error occurred: " + (err as Error).message);
       setLoading(false);
       return;
     }
-    if (!session) {
-      Alert.alert("Check your email for verification please!");
-      setLoading(false);
-      return;
-    }
-    setLoading(false);
-    router.replace("/(protected)/(tabs)");
   };
 
   const content = (
