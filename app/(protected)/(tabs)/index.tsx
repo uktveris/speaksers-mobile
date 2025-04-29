@@ -6,6 +6,7 @@ import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as Linking from "expo-linking";
 import { getSupabaseClient } from "@/hooks/supabaseClient";
 import GameBox from "@/components/GameBox";
+import { GlobalStyles } from "@/constants/StyleConstants";
 
 const colorScheme = Appearance.getColorScheme();
 const styles = setStyles(colorScheme);
@@ -40,7 +41,7 @@ function App() {
   }
 
   return (
-    <SafeAreaView style={styles.outerContainer}>
+    <SafeAreaView style={GlobalStyles.container}>
       <View style={styles.container}>
         <Row>
           <Col>
@@ -69,11 +70,6 @@ function Col({ children }: { children: any }) {
 
 function setStyles(theme: ColorSchemeName) {
   return StyleSheet.create({
-    outerContainer: {
-      flex: 1,
-      backgroundColor:
-        theme === "light" ? Colors.light.background : Colors.dark.background,
-    },
     container: {
       flex: 2,
       marginHorizontal: "auto",

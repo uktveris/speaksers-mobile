@@ -61,9 +61,5 @@ export default function AuthCallback() {
     };
   }, []);
 
-  return (
-    <View style={GlobalStyles.container}>
-      <Text>auth callback here</Text>
-    </View>
-  );
+  return <View style={GlobalStyles.container}></View>;
 }

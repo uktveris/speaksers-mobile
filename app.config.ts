@@ -50,6 +50,7 @@ export default {
           backgroundColor: "#ffffff",
         },
       ],
+      "expo-localization",
       "@config-plugins/react-native-webrtc",
     ],
     experiments: {
@@ -67,6 +68,7 @@ export default {
       BACKEND_URL: process.env.BACKEND_URL,
       BACKEND_URL_LOCAL: process.env.BACKEND_URL_LOCAL,
       SB_AUTH_TOKEN_NAME: process.env.SB_AUTH_TOKEN_NAME,
+      DEFAULT_AVATAR_URL: process.env.DEFAULT_AVATAR_URL,
     },
     owner: "mariusuktveris",
   },
