@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getBackendUrl } from "@/config/urlConfig";
 import { useSession } from "@/context/AuthContext";
 import { User } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/hooks/supabaseClient";
 
 function Explore() {
   const router = useRouter();
@@ -65,20 +66,6 @@ function Explore() {
     );
   };
 
-  const testBackend = async () => {
-    const url = getBackendUrl();
-    try {
-      const response = await axiosConfig.get(url + "/api/users/user");
-      console.log("response received");
-      console.log(response.data);
-    } catch (err) {
-      console.log(
-        "Error when accessing protected users/user endpoint: " +
-          (err as Error).message,
-      );
-    }
-  };
-
   return (
     <SafeAreaView>
       <View>
@@ -89,9 +76,6 @@ function Explore() {
         {/* <Pressable style={styles.button} onPress={() => handleDeleteAccount()}> */}
         <Pressable style={styles.button} onPress={() => deleteUser()}>
           <ThemedText style={styles.text}>Delete account</ThemedText>
-        </Pressable>
-        <Pressable style={styles.button} onPress={() => testBackend()}>
-          <ThemedText style={styles.text}>test backend</ThemedText>
         </Pressable>
       </View>
     </SafeAreaView>
