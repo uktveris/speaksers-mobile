@@ -9,18 +9,17 @@ import { useUserCourses } from "@/hooks/useUserCourses";
 export default function AppLayout() {
   const { session, isLoading } = useSession();
   const router = useRouter();
-  const { courses } = useUserCourses();
-  const [mounted, setMounted] = useState(false);
+  const { courses, loading } = useUserCourses();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted && !isLoading && session && courses.length == 0) {
+    console.log("session: ");
+    console.log({ session });
+    console.log("loading: " + isLoading);
+    console.log("courses length: " + courses.length);
+    if (!isLoading && !loading && session && courses.length == 0) {
       router.replace("/(protected)/language-course-selection");
     }
-  }, [mounted, isLoading, session, courses.length, router]);
+  }, [isLoading, loading, session, courses.length, router]);
 
   if (isLoading) {
     return null;

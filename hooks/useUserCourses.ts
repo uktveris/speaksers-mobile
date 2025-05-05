@@ -23,18 +23,23 @@ function useUserCourses() {
   }, [session?.user.id]);
 
   const addUserCourse = useCallback(
-    async (
-      courseId: string,
-      level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2",
-    ) => {
-      const { error } = await supabase
+    async (courseId: string, level: string) => {
+      const { data, error } = await supabase
         .from("enrollments")
-        .insert({ user_id: session?.user.id, language_course_id: courseId });
+        .upsert(
+          {
+            user_id: session?.user.id,
+            language_course_id: courseId,
+            level: level,
+          },
+          { onConflict: "user_id, language_course_id" },
+        )
+        .select();
       if (error) {
-        console.log("error while inserting user course: " + error.message);
-        return { success: false };
+        console.log("error while adding course: " + error.message);
+        return { result: error };
       }
-      return { success: true };
+      return { result: null };
     },
     [session?.user.id],
   );

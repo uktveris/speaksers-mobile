@@ -12,10 +12,13 @@ import { getBackendUrl } from "@/config/urlConfig";
 import { useSession } from "@/context/AuthContext";
 import { User } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/hooks/supabaseClient";
+import BottomModal from "@/components/BottomModal";
+import { useState } from "react";
 
 function Explore() {
   const router = useRouter();
   const { signOut, session } = useSession();
+  const [visible, setVisible] = useState(false);
 
   const handleSignOut = async () => {
     signOut();
@@ -77,7 +80,11 @@ function Explore() {
         <Pressable style={styles.button} onPress={() => deleteUser()}>
           <ThemedText style={styles.text}>Delete account</ThemedText>
         </Pressable>
+        <Pressable style={styles.button} onPress={() => setVisible(true)}>
+          <ThemedText style={styles.text}>show modal</ThemedText>
+        </Pressable>
       </View>
+      <BottomModal visible={visible} onClose={() => setVisible(false)} />
     </SafeAreaView>
   );
 }

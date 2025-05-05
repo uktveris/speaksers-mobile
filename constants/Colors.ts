@@ -17,6 +17,7 @@ export const Colors = {
     tabIconSelected: tintColorLight,
     primary: primaryColor,
     border: "#11181C",
+    textField: "rgba(156, 156, 156, 0.2)",
   },
   dark: {
     text: "#ECEDEE",
@@ -27,5 +28,6 @@ export const Colors = {
     tabIconSelected: tintColorDark,
     primary: primaryColor,
     border: "#ECEDEE",
+    textField: "rgba(156, 156, 156, 0.2)",
   },
 };
