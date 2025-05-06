@@ -6,12 +6,12 @@ export default {
     slug: "speaksers-app",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/react-logo@2x.png",
+    icon: "./assets/images/icon.png",
     scheme: "speaksers",
     deepLinking: true,
     userInterfaceStyle: "automatic",
     splash: {
-      image: "./assets/images/react-logo@3x.png",
+      image: "./assets/images/icon.png",
       imageWidth: 300,
       resizeMode: "cover",
       backgroundColor: "#FF0000",
@@ -27,7 +27,7 @@ export default {
       },
     },
     android: {
-      package: "com.speaksers.speaksers-app",
+      package: "com.speaksers.speaksersapp",
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
@@ -64,7 +64,7 @@ export default {
         origin: false,
       },
       eas: {
-        projectId: "e0729a28-a1b5-4a64-956b-e9058e95c178",
+        projectId: "2b1aea07-cf67-4902-8f35-ac16d83e6099",
       },
       SUPABASE_AUTH_URL: process.env.SUPABASE_AUTH_URL,
       SUPABASE_AUTH_API_KEY: process.env.SUPABASE_AUTH_API_KEY,

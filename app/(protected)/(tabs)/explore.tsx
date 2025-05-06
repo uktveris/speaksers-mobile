@@ -76,8 +76,7 @@ function Explore() {
         <Pressable style={styles.button} onPress={() => handleSignOut()}>
           <ThemedText style={styles.text}>Log out</ThemedText>
         </Pressable>
-        {/* <Pressable style={styles.button} onPress={() => handleDeleteAccount()}> */}
-        <Pressable style={styles.button} onPress={() => deleteUser()}>
+        <Pressable style={styles.button} onPress={() => handleDeleteAccount()}>
           <ThemedText style={styles.text}>Delete account</ThemedText>
         </Pressable>
         <Pressable style={styles.button} onPress={() => setVisible(true)}>

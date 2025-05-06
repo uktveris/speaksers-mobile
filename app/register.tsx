@@ -15,6 +15,7 @@ import { Keyboard } from "react-native";
 import { Text } from "react-native";
 import { GlobalStyles } from "@/constants/StyleConstants";
 import SignUpErrorMessage from "@/components/SignUpErrorMessage";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const theme = Appearance.getColorScheme();
 
@@ -40,6 +41,13 @@ export default function Register() {
 
     console.log("trying to create new user");
 
+    const redirectUrl =
+      Platform.OS === "web"
+        ? "http://localhost:8081/auth-callback"
+        : "speaksers://auth-calback";
+
+    console.log("redirect url: " + redirectUrl);
+
     try {
       const {
         data: { session },
@@ -48,9 +56,7 @@ export default function Register() {
         email: email,
         password: password,
         options: {
-          // emailRedirectTo: "speaksers://auth-callback",
-          // web testing
-          emailRedirectTo: "http://localhost:8081/auth-callback",
+          emailRedirectTo: redirectUrl,
         },
       });
 
@@ -185,12 +191,12 @@ export default function Register() {
   );
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAwareScrollView
       style={styles.keyboardView}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      // behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       {content}
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 

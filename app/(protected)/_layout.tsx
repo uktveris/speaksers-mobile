@@ -12,10 +12,6 @@ export default function AppLayout() {
   const { courses, loading } = useUserCourses();
 
   useEffect(() => {
-    console.log("session: ");
-    console.log({ session });
-    console.log("loading: " + isLoading);
-    console.log("courses length: " + courses.length);
     if (!isLoading && !loading && session && courses.length == 0) {
       router.replace("/(protected)/language-course-selection");
     }

@@ -13,6 +13,7 @@ import { Pressable } from "react-native";
 import { StyleSheet } from "react-native";
 import { Alert, View } from "react-native";
 import SignUpErrorMessage from "@/components/SignUpErrorMessage";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const colorScheme = Appearance.getColorScheme();
 
@@ -124,12 +125,13 @@ export default function Login() {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardView}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <KeyboardAwareScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={styles.keyboardView}
+      // behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       {content}
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 

@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -39,12 +40,14 @@ export default function RootLayout() {
   return (
     <SessionProvider>
       <SafeAreaProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          {loaded ? <Slot /> : null}
-          <StatusBar style="auto" />
-        </ThemeProvider>
+        <KeyboardProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            {loaded ? <Slot /> : null}
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </KeyboardProvider>
       </SafeAreaProvider>
     </SessionProvider>
   );
