@@ -3,7 +3,6 @@ import { getSocket } from "@/server/socket";
 import { Redirect, Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import * as Linking from "expo-linking";
-import { getSupabaseClient } from "@/hooks/supabaseClient";
 import { useUserCourses } from "@/hooks/useUserCourses";
 
 export default function AppLayout() {

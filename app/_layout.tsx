@@ -7,14 +7,17 @@ import { useFonts } from "expo-font";
 import { Redirect, Slot, Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "react-native-reanimated";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { getSupabaseClient } from "@/hooks/supabaseClient";
 import { SessionProvider } from "@/context/AuthContext";
+import { deactivateKeepAwake } from "expo-keep-awake";
+import { AppState } from "react-native";
+import { AppStateStatus } from "react-native";
+import { LocaleProvider } from "@/context/LocaleContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -25,11 +28,14 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const supabase = getSupabaseClient();
-  const router = useRouter();
+  const appState = useRef(AppState.currentState);
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  useEffect(() => {
+    deactivateKeepAwake();
+  }, []);
 
   useEffect(() => {
     if (loaded) {
@@ -41,12 +47,14 @@ export default function RootLayout() {
     <SessionProvider>
       <SafeAreaProvider>
         <KeyboardProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            {loaded ? <Slot /> : null}
-            <StatusBar style="auto" />
-          </ThemeProvider>
+          <LocaleProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              {loaded ? <Slot /> : null}
+              <StatusBar style="auto" />
+            </ThemeProvider>
+          </LocaleProvider>
         </KeyboardProvider>
       </SafeAreaProvider>
     </SessionProvider>

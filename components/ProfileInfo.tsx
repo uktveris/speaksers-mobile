@@ -46,7 +46,7 @@ function ProfileInfo() {
   return (
     <View style={styles.outerContainer}>
       <View style={styles.infoContainer}>
-        <View>
+        <View style={styles.userImage}>
           <Image source={{ uri: avatarUrl }} style={styles.image} />
         </View>
         <View style={styles.userInfo}>
@@ -64,18 +64,19 @@ const styles = StyleSheet.create({
     borderColor: "orange",
     borderWidth: 2,
     width: "100%",
+    padding: 10,
   },
   userInfo: {
-    borderColor: "green",
-    borderWidth: 2,
+    width: "50%",
+    justifyContent: "center",
+  },
+  userImage: {
+    width: "50%",
+    alignItems: "center",
   },
   infoContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    borderColor: "red",
-    borderWidth: 2,
-    paddingVertical: 20,
-    // paddingHorizontal: 20,
+    justifyContent: "space-around",
     width: "100%",
   },
   image: {

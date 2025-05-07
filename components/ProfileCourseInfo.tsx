@@ -1,10 +1,11 @@
+import { StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { View } from "react-native";
 
 interface ProfileCourseInfoProps {
   language: string;
   level: string;
-  startedLearning: Date;
+  startedLearning: string;
 }
 
 function ProfileCourseInfo({
@@ -12,15 +13,24 @@ function ProfileCourseInfo({
   level,
   startedLearning,
 }: ProfileCourseInfoProps) {
+  const enrolledAtDate = new Date(startedLearning);
+
   return (
-    <View>
+    <View style={styles.container}>
       <View>
         <Text>{language}</Text>
         <Text>{level}</Text>
       </View>
-      <Text>{startedLearning.toLocaleString()}</Text>
+      <Text>{enrolledAtDate.toLocaleString()}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    borderColor: "yellow",
+    borderWidth: 2,
+  },
+});
 
 export default ProfileCourseInfo;

@@ -1,25 +1,44 @@
 import "dotenv/config";
+import { version } from "./package.json";
+import { ConfigContext, ExpoConfig } from "expo/config";
 
-export default {
-  expo: {
-    name: "speaksers-mobile",
-    slug: "speaksers-app",
-    version: "1.0.0",
+// eas setup
+const EAS_PROJECT_SLUG = "speaksers-app";
+const EAS_PROJECT_ID = "2b1aea07-cf67-4902-8f35-ac16d83e6099";
+const EAS_OWNER = "mariusuktveris";
+
+const APP_NAME = "Speaksers";
+const BUNDLE_IDENTIFIER = "com.speaksersedu.speaksers";
+const PACKAGE_NAME = "com.speaksersedu.speaksers";
+const ICON = "./assets/images/icon.png";
+const SCHEME = "speaksers";
+
+export default ({ config }: ConfigContext): ExpoConfig => {
+  console.log("BUILDING APP FOR ENVIRONMENT:", process.env.APP_ENV);
+  const { name, bundleIdentifier, packageName, icon, scheme } =
+    getDynamicAppConfig(
+      (process.env.APP_ENV as "development" | "preview" | "production") ||
+        "development",
+    );
+  return {
+    ...config,
+    name: name,
+    slug: EAS_PROJECT_SLUG,
+    version: version,
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
-    scheme: "speaksers",
-    deepLinking: true,
+    icon: icon,
+    scheme: scheme,
+    newArchEnabled: true,
     userInterfaceStyle: "automatic",
     splash: {
-      image: "./assets/images/icon.png",
+      image: icon,
       imageWidth: 300,
       resizeMode: "cover",
       backgroundColor: "#FF0000",
     },
-    newArchEnabled: true,
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.speaksers.speaksers-app",
+      bundleIdentifier: bundleIdentifier,
       infoPlist: {
         UIBackgroundModes: ["audio"],
         NSMicrophoneUsageDescription:
@@ -27,9 +46,9 @@ export default {
       },
     },
     android: {
-      package: "com.speaksers.speaksersapp",
+      package: packageName,
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
+        foregroundImage: "./assets/images/icon.png",
         backgroundColor: "#ffffff",
       },
       permissions: [
@@ -47,7 +66,7 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/react-logo@3x.png",
+          image: "./assets/images/icon.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: "#ffffff",
@@ -64,7 +83,7 @@ export default {
         origin: false,
       },
       eas: {
-        projectId: "2b1aea07-cf67-4902-8f35-ac16d83e6099",
+        projectId: EAS_PROJECT_ID,
       },
       SUPABASE_AUTH_URL: process.env.SUPABASE_AUTH_URL,
       SUPABASE_AUTH_API_KEY: process.env.SUPABASE_AUTH_API_KEY,
@@ -73,6 +92,37 @@ export default {
       SB_AUTH_TOKEN_NAME: process.env.SB_AUTH_TOKEN_NAME,
       DEFAULT_AVATAR_URL: process.env.DEFAULT_AVATAR_URL,
     },
-    owner: "mariusuktveris",
-  },
+    owner: EAS_OWNER,
+  };
+};
+
+export const getDynamicAppConfig = (
+  environment: "development" | "preview" | "production",
+) => {
+  if (environment === "production") {
+    return {
+      name: APP_NAME,
+      bundleIdentifier: BUNDLE_IDENTIFIER,
+      packageName: PACKAGE_NAME,
+      icon: ICON,
+      scheme: SCHEME,
+    };
+  } else if (environment === "preview") {
+    return {
+      name: `${APP_NAME} Preview`,
+      bundleIdentifier: `${BUNDLE_IDENTIFIER}.preview`,
+      packageName: `${PACKAGE_NAME}.preview`,
+      icon: "./assets/images/icons/iOS-Prev.png",
+      adaptiveIcon: "./assets/images/icons/Android-Prev.png",
+      scheme: `${SCHEME}-prev`,
+    };
+  }
+  return {
+    name: `${APP_NAME} Development`,
+    bundleIdentifier: `${BUNDLE_IDENTIFIER}.dev`,
+    packageName: `${PACKAGE_NAME}.dev`,
+    icon: "./assets/images/icons/iOS-Dev.png",
+    adaptiveIcon: "./assets/images/icons/Android-Dev.png",
+    scheme: `${SCHEME}-dev`,
+  };
 };
