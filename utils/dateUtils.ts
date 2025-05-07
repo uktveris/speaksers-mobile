@@ -1,9 +1,15 @@
-import { getLocalizationAsync } from "expo-localization";
-import { NativeModules, Platform } from "react-native";
-import * as Localization from "expo-localization";
-
-function getDateWithLocale(date: Date) {
-  const userLocale = Localization.getLocales()[1];
+function getDateWithLocale(
+  date: Date,
+  localeLanguageTag: string,
+  timeZone: string,
+) {
+  const formatter = new Intl.DateTimeFormat(localeLanguageTag, {
+    timeZone: timeZone,
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  return formatter.format(date);
 }
 
 export { getDateWithLocale };

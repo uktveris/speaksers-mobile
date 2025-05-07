@@ -6,6 +6,7 @@ import { PropsWithChildren } from "react";
 
 interface LocaleContextType {
   locales: Localization.Locale[];
+  calendars: Localization.Calendar[];
   initializeLocales: () => void;
 }
 
@@ -21,11 +22,15 @@ function useLocale() {
 
 function LocaleProvider({ children }: PropsWithChildren) {
   const [locales, setLocales] = useState(Localization.getLocales());
+  const [calendars, setCalendars] = useState(Localization.getCalendars());
 
   const initializeLocales = () => {
-    const updated = Localization.getLocales();
-    setLocales(updated);
-    console.log("locale update:", updated);
+    const updatedLocales = Localization.getLocales();
+    const updatedCalendars = Localization.getCalendars();
+    setLocales(updatedLocales);
+    setCalendars(updatedCalendars);
+    console.log("locale update:", updatedLocales);
+    console.log("calendar update:", updatedCalendars);
   };
 
   useEffect(() => {
@@ -44,7 +49,7 @@ function LocaleProvider({ children }: PropsWithChildren) {
   }, []);
 
   return (
-    <LocaleContext.Provider value={{ locales, initializeLocales }}>
+    <LocaleContext.Provider value={{ locales, calendars, initializeLocales }}>
       {children}
     </LocaleContext.Provider>
   );

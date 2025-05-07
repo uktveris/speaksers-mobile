@@ -5,8 +5,6 @@ import { Dimensions } from "react-native";
 
 const theme = Appearance.getColorScheme();
 
-const dimensions = Dimensions.get("window");
-
 const FontSizes = {
   small: 14,
   medium: 20,
@@ -55,6 +53,15 @@ const GlobalStyles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
   },
+  primaryButtonSmall: {
+    minWidth: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.light.primary,
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
   secondaryButton: {
     justifyContent: "center",
     alignItems: "center",
@@ -62,6 +69,15 @@ const GlobalStyles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 20,
     padding: 10,
+  },
+  secondaryButtonSmall: {
+    minWidth: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: Colors.base.darkPrimaryTint,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   disabledButton: {
     opacity: 0.5,

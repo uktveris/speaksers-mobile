@@ -7,6 +7,7 @@ import { Image } from "react-native";
 import { StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { GlobalStyles } from "@/constants/StyleConstants";
+import { Colors } from "@/constants/Colors";
 
 function ProfileInfo() {
   const { session } = useSession();
@@ -50,38 +51,38 @@ function ProfileInfo() {
           <Image source={{ uri: avatarUrl }} style={styles.image} />
         </View>
         <View style={styles.userInfo}>
-          <Text style={GlobalStyles.mediumBoldText}>{name}</Text>
-          <Text style={GlobalStyles.mediumBoldText}>{lastName}</Text>
+          <Text style={GlobalStyles.smallTextBold}>{name}</Text>
+          <Text style={GlobalStyles.smallTextBold}>{lastName}</Text>
         </View>
       </View>
-      <View></View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   outerContainer: {
-    borderColor: "orange",
-    borderWidth: 2,
     width: "100%",
     padding: 10,
   },
   userInfo: {
-    width: "50%",
+    flex: 2,
     justifyContent: "center",
   },
   userImage: {
-    width: "50%",
+    flex: 1,
     alignItems: "center",
   },
   infoContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
+    backgroundColor: Colors.base.darkTint,
+    paddingVertical: 10,
+    borderRadius: 10,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     borderRadius: 40,
   },
 });
