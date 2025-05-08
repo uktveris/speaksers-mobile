@@ -11,12 +11,11 @@ import { Colors } from "@/constants/Colors";
 
 function ProfileInfo() {
   const { session } = useSession();
+  const [username, setUsername] = useState("");
   const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
 
   useEffect(() => {
-    const defaultUrl = Constants.expoConfig?.extra?.DEFAULT_AVATAR_URL;
     const supabase = getSupabaseClient();
     if (!session) {
       console.log("no session, returning");
@@ -36,8 +35,8 @@ function ProfileInfo() {
         .from("avatars")
         .getPublicUrl(userData.avatar_url);
 
-      setName(userData.first_name ? userData.first_name : "no name");
-      setLastName(userData.last_name ? userData.last_name : "no last name");
+      setUsername(userData.username ? userData.username : "no username");
+      setName(userData.name ? userData.name : "no name");
       setAvatarUrl(avatarData.publicUrl);
     };
 
@@ -51,8 +50,8 @@ function ProfileInfo() {
           <Image source={{ uri: avatarUrl }} style={styles.image} />
         </View>
         <View style={styles.userInfo}>
+          <Text style={GlobalStyles.smallTextBold}>{username}</Text>
           <Text style={GlobalStyles.smallTextBold}>{name}</Text>
-          <Text style={GlobalStyles.smallTextBold}>{lastName}</Text>
         </View>
       </View>
     </View>

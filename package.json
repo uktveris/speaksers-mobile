@@ -56,7 +56,9 @@
     "react-native-webrtc": "^124.0.5",
     "react-native-webview": "13.12.5",
     "socket.io-client": "^4.8.1",
-    "undefined": "expo-auth-session/build/QueryParams"
+    "undefined": "expo-auth-session/build/QueryParams",
+    "expo-media-library": "~17.0.6",
+    "expo-image-picker": "~16.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

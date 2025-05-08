@@ -8,11 +8,13 @@ const tintColorDark = "#fff";
 const primaryColor = "#ff6600";
 const darkTint = "rgba(89, 89, 89, 0.2)";
 const darkPrimaryTint = "rgba(255, 102, 0, 0.7)";
+const inputFieldBack = "rgba(12, 12, 12, 0.6)";
 
 export const Colors = {
   base: {
     darkTint: darkTint,
     darkPrimaryTint: darkPrimaryTint,
+    inputFieldBack: inputFieldBack,
   },
   light: {
     text: "#11181C",

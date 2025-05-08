@@ -13,7 +13,7 @@ import { Colors } from "@/constants/Colors";
 import { TextInput } from "react-native-paper";
 import { Keyboard } from "react-native";
 import { Text } from "react-native";
-import { GlobalStyles } from "@/constants/StyleConstants";
+import { FontSizes, GlobalStyles } from "@/constants/StyleConstants";
 import SignUpErrorMessage from "@/components/SignUpErrorMessage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -92,7 +92,7 @@ export default function Register() {
         <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
-          theme={{ roundness: 30 }}
+          theme={{ roundness: 10 }}
           mode="flat"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
@@ -107,13 +107,13 @@ export default function Register() {
           placeholderTextColor="grey"
         />
       </View>
-      <View style={GlobalStyles.verticalSpacerMedium}></View>
+      <View style={GlobalStyles.verticalSpacerSmall}></View>
       <View>
         <Text style={GlobalStyles.smallText}>Password</Text>
         <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
-          theme={{ roundness: 30 }}
+          theme={{ roundness: 10 }}
           mode="flat"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
@@ -134,13 +134,13 @@ export default function Register() {
           }
         />
       </View>
-      <View style={GlobalStyles.verticalSpacerMedium}></View>
+      <View style={GlobalStyles.verticalSpacerSmall}></View>
       <View>
         <Text style={GlobalStyles.smallText}>Repeat password</Text>
         <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
-          theme={{ roundness: 30 }}
+          theme={{ roundness: 10 }}
           mode="flat"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
@@ -192,8 +192,8 @@ export default function Register() {
 
   return (
     <KeyboardAwareScrollView
-      style={styles.keyboardView}
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      contentContainerStyle={styles.keyboardView}
     >
       {content}
     </KeyboardAwareScrollView>
@@ -205,6 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor:
       theme === "light" ? Colors.light.background : Colors.dark.background,
+    justifyContent: "center",
   },
   container: {
     flex: 1,
@@ -212,10 +213,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   inputBox: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "white",
-    borderRadius: 30,
+    fontSize: FontSizes.small,
+    backgroundColor: Colors.base.inputFieldBack,
+    borderRadius: 10,
     color: theme === "light" ? Colors.light.text : Colors.dark.text,
   },
 });

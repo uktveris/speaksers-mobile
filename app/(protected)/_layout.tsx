@@ -35,6 +35,10 @@ export default function AppLayout() {
         name="language-course-selection"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="(account)/edit-account"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

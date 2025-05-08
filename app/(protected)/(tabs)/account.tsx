@@ -11,6 +11,7 @@ import { useUserCourses } from "@/hooks/useUserCourses";
 import ProfileCourseInfo from "@/components/ProfileCourseInfo";
 import { useLocale } from "@/context/LocaleContext";
 import { Pressable } from "react-native";
+import { useRouter } from "expo-router";
 
 function Account() {
   const theme = Appearance.getColorScheme();
@@ -18,6 +19,7 @@ function Account() {
   const [userCourses, setUserCourses] = useState<any[]>([]);
   const { courses, loading } = useUserCourses();
   const { locales, calendars } = useLocale();
+  const router = useRouter();
 
   useEffect(() => {
     if (!loading && courses.length !== 0) {
@@ -25,15 +27,22 @@ function Account() {
     }
   }, [courses.length]);
 
+  const handleEditProfile = () => {
+    router.replace("/(protected)/(account)/edit-account");
+  };
+
   return (
-    <SafeAreaView style={GlobalStyles.container}>
+    <SafeAreaView style={[GlobalStyles.container, { paddingTop: 30 }]}>
       <View style={styles.container}>
         <View style={styles.topBar}>
-          <Pressable style={GlobalStyles.secondaryButtonSmall}>
-            <Text style={GlobalStyles.smallText}>Edit</Text>
+          <Pressable
+            onPress={handleEditProfile}
+            style={GlobalStyles.secondaryButtonSmall}
+          >
+            <Text style={GlobalStyles.smallTextBold}>Edit</Text>
           </Pressable>
           <Pressable style={GlobalStyles.primaryButtonSmall}>
-            <Text style={GlobalStyles.smallText}>Settings</Text>
+            <Text style={GlobalStyles.smallTextBold}>Settings</Text>
           </Pressable>
         </View>
         <ProfileInfo />
@@ -67,7 +76,7 @@ function setStyles(theme: ColorSchemeName) {
       flex: 1,
       justifyContent: "flex-start",
       alignItems: "center",
-      paddingVertical: 20,
+      // paddingVertical: 20,
     },
     languagesText: {
       alignSelf: "flex-start",
@@ -89,7 +98,7 @@ function setStyles(theme: ColorSchemeName) {
     topBar: {
       flexDirection: "row",
       justifyContent: "space-between",
-      padding: 10,
+      paddingHorizontal: 10,
       width: "100%",
     },
   });

@@ -74,6 +74,19 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
       "expo-localization",
       "@config-plugins/react-native-webrtc",
+      // [
+      //   "expo-media-library",
+      //   {
+      //     photosPermission: `Allow ${APP_NAME} to access your photos.`,
+      //     // isAccessMediaLocationEnabled: true,
+      //   },
+      // ],
+      [
+        "expo-image-picker",
+        {
+          photosPermission: `Allow ${APP_NAME} to access your photos to update profile picture.`,
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,

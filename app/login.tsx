@@ -1,13 +1,12 @@
 import GoogleAuthButton from "@/components/oauth/GoogleAuthButton";
 import { Colors } from "@/constants/Colors";
-import { GlobalStyles } from "@/constants/StyleConstants";
+import { FontSizes, GlobalStyles } from "@/constants/StyleConstants";
 import { useSession } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Appearance } from "react-native";
 import { TextInput } from "react-native-paper";
 import { KeyboardAvoidingView, Text } from "react-native";
-import { Platform } from "react-native";
 import { Keyboard } from "react-native";
 import { Pressable } from "react-native";
 import { StyleSheet } from "react-native";
@@ -51,7 +50,7 @@ export default function Login() {
         <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
-          theme={{ roundness: 30 }}
+          theme={{ roundness: 10 }}
           mode="flat"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
@@ -68,13 +67,13 @@ export default function Login() {
           placeholderTextColor="grey"
         />
       </View>
-      <View style={GlobalStyles.verticalSpacerMedium}></View>
+      <View style={GlobalStyles.verticalSpacerSmall}></View>
       <View>
         <Text style={GlobalStyles.smallText}>Password</Text>
         <View style={GlobalStyles.verticalSpacerSmall}></View>
         <TextInput
           style={styles.inputBox}
-          theme={{ roundness: 30 }}
+          theme={{ roundness: 10 }}
           mode="flat"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
@@ -128,7 +127,6 @@ export default function Login() {
     <KeyboardAwareScrollView
       style={{ flex: 1 }}
       contentContainerStyle={styles.keyboardView}
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       {content}
     </KeyboardAwareScrollView>
@@ -155,10 +153,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   inputBox: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "white",
-    borderRadius: 30,
+    fontSize: FontSizes.small,
+    backgroundColor: Colors.base.inputFieldBack,
+    borderRadius: 10,
     color: colorScheme === "light" ? Colors.light.text : Colors.dark.text,
   },
 });
