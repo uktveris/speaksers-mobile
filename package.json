@@ -25,6 +25,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "@types/dotenv": "^6.1.1",
     "@types/socket.io-client": "^1.4.36",
+    "base64-arraybuffer": "^1.0.2",
     "eas-cli": "^16.4.0",
     "expo": "^52.0.0",
     "expo-auth-session": "~6.0.3",
@@ -34,8 +35,10 @@
     "expo-dev-client": "~5.0.20",
     "expo-font": "~13.0.4",
     "expo-haptics": "~14.0.1",
+    "expo-image-picker": "~16.0.6",
     "expo-linking": "~7.0.5",
     "expo-localization": "~16.0.1",
+    "expo-media-library": "~17.0.6",
     "expo-router": "~4.0.20",
     "expo-splash-screen": "~0.29.24",
     "expo-status-bar": "~2.0.1",
@@ -56,9 +59,7 @@
     "react-native-webrtc": "^124.0.5",
     "react-native-webview": "13.12.5",
     "socket.io-client": "^4.8.1",
-    "undefined": "expo-auth-session/build/QueryParams",
-    "expo-media-library": "~17.0.6",
-    "expo-image-picker": "~16.0.6"
+    "undefined": "expo-auth-session/build/QueryParams"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
