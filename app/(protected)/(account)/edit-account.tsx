@@ -47,7 +47,11 @@ function EditAccount() {
       }
       const { data: avatarData } = supabase.storage
         .from("avatars")
-        .getPublicUrl(userData.avatar_url);
+        .getPublicUrl(
+          userData.avatar_url +
+            "?updated_at=" +
+            (userData.avatar_updated_at || Date.now()),
+        );
 
       setUsername(userData.username ? userData.username : "username");
       setName(userData.name ? userData.name : "");
@@ -62,7 +66,6 @@ function EditAccount() {
 
   const updateUserData = async () => {
     try {
-      console.log(avatarUrl);
       const extension = avatarUrl.split(".").pop()?.toLowerCase() || "jpg";
       const mimeType = "image/" + (extension === "jpg" ? "jpeg" : extension);
       const base64Data = await FileSystem.readAsStringAsync(avatarUrl, {
@@ -82,9 +85,12 @@ function EditAccount() {
         return false;
       }
 
-      const { data, error } = await supabase
-        .from("users")
-        .upsert({ id: session?.user.id, name: name, avatar_url: filePath });
+      const { data, error } = await supabase.from("users").upsert({
+        id: session?.user.id,
+        name: name,
+        avatar_url: filePath,
+        avatar_updated_at: new Date().toISOString(),
+      });
       if (error) {
         console.log("error occurred while updating user:", error.message);
         return false;

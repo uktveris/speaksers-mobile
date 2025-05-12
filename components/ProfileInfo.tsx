@@ -33,7 +33,11 @@ function ProfileInfo() {
       }
       const { data: avatarData } = supabase.storage
         .from("avatars")
-        .getPublicUrl(userData.avatar_url);
+        .getPublicUrl(
+          userData.avatar_url +
+            "?updated_at=" +
+            (userData.avatar_updated_at || Date.now()),
+        );
 
       setUsername(userData.username ? userData.username : "no username");
       setName(userData.name ? userData.name : "no name");
