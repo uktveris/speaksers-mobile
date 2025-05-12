@@ -38,6 +38,7 @@ export default function AppLayout() {
         name="(account)/edit-account"
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="settings" options={{ headerShown: false }} />
     </Stack>
   );
 }

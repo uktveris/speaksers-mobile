@@ -1,4 +1,3 @@
-import { Colors } from "@/src/constants/Colors";
 import { useRouter } from "expo-router";
 import { View, StyleSheet, ColorSchemeName, Appearance } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,6 +6,7 @@ import * as Linking from "expo-linking";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import GameBox from "@/src/components/GameBox";
 import { GlobalStyles } from "@/src/constants/StyleConstants";
+import { Text } from "react-native";
 
 const colorScheme = Appearance.getColorScheme();
 const styles = setStyles(colorScheme);
@@ -72,7 +72,6 @@ function setStyles(theme: ColorSchemeName) {
   return StyleSheet.create({
     container: {
       flex: 2,
-      marginHorizontal: "auto",
       width: "100%",
       color: "red",
     },

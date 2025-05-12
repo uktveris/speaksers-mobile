@@ -30,7 +30,6 @@ function SessionProvider({ children }: PropsWithChildren) {
   const supabase = getSupabaseClient();
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchSession = async () => {

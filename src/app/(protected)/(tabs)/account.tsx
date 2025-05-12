@@ -31,6 +31,10 @@ function Account() {
     router.replace("/(protected)/(account)/edit-account");
   };
 
+  const handleGoToSettings = () => {
+    router.push("/(protected)/settings");
+  };
+
   return (
     <SafeAreaView style={[GlobalStyles.container, { paddingTop: 30 }]}>
       <View style={styles.container}>
@@ -41,7 +45,10 @@ function Account() {
           >
             <Text style={GlobalStyles.smallTextBold}>Edit</Text>
           </Pressable>
-          <Pressable style={GlobalStyles.primaryButtonSmall}>
+          <Pressable
+            onPress={handleGoToSettings}
+            style={GlobalStyles.primaryButtonSmall}
+          >
             <Text style={GlobalStyles.smallTextBold}>Settings</Text>
           </Pressable>
         </View>
