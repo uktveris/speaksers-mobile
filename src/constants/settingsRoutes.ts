@@ -3,13 +3,13 @@ const settingsRoutes = [
     id: 1,
     title: "Preferences",
     icon: "arrow.right.alt",
-    route: "preferences",
+    route: "/(protected)/settings/preferences",
   },
   {
     id: 2,
     title: "Account",
     icon: "arrow.right.alt",
-    route: "account",
+    route: "/(protected)/settings/account",
   },
 ];
 

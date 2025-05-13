@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { getSocket } from "@/src/server/socket";
 import { useEffect, useRef, useState } from "react";
 import { Text } from "react-native";
@@ -12,7 +12,8 @@ import { Dimensions } from "react-native";
 import { Animated } from "react-native";
 import { Easing } from "react-native";
 import { SafeAreaView } from "react-native";
-import { FontSizes, GlobalStyles } from "@/src/constants/StyleConstants";
+import { GlobalStyles } from "@/src/constants/StyleConstants";
+import { BackHandler } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
 const boxSize = 100;
@@ -23,24 +24,49 @@ function Dialog() {
   if (!socket.connected) socket.connect();
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme);
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [matched, setMatched] = useState(false);
-  const [message, setMessage] = useState("");
+  // const [matched, setMatched] = useState(false);
   const router = useRouter();
   const anim = useRef(new Animated.Value(0)).current;
 
+  const handleBackAction = () => {
+    socket.emit("cancel_call");
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Going back", "Going back will cancel the search", [
+        {
+          text: "Keep searching",
+          onPress: () => null,
+          style: "cancel",
+        },
+        {
+          text: "Go back",
+          onPress: handleBackAction,
+          style: "destructive",
+        },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
   useEffect(() => {
     const onConnect = () => {
-      setIsConnected(true);
       console.log("socket connected!");
     };
     const onDisconnect = () => {
-      setIsConnected(false);
       console.log("socket disconnected!");
     };
     const onMatched = (peerId: string) => {
-      setMatched(true);
-      setMessage(peerId);
+      // setMatched(true);
       console.log("socket received peer id! - " + peerId);
       router.replace(
         "/dialogCall?remoteSocketId=" + peerId + "&initCall=false",
@@ -48,15 +74,14 @@ function Dialog() {
     };
 
     const onInitCall = (peerId: string) => {
-      setMatched(true);
-      setMessage(peerId);
+      // setMatched(true);
       console.log("socket received peer id! - " + peerId);
       router.replace("/dialogCall?remoteSocketId=" + peerId + "&initCall=true");
     };
 
     const onCallCancelled = () => {
       console.log("exited the call queue");
-      setMatched(false);
+      // setMatched(false);
       router.replace("../(tabs)");
     };
 
@@ -82,17 +107,15 @@ function Dialog() {
         Animated.sequence([
           Animated.timing(anim, {
             toValue: maxTranslation,
-            duration: 1500,
+            duration: 1000,
             easing: Easing.inOut(Easing.exp),
-            // TODO: change to true after done web testing
-            useNativeDriver: false,
+            useNativeDriver: true,
           }),
           Animated.timing(anim, {
             toValue: 0,
-            duration: 1500,
+            duration: 1000,
             easing: Easing.inOut(Easing.exp),
-            // TODO: change to true after done web testing
-            useNativeDriver: false,
+            useNativeDriver: true,
           }),
         ]),
       ).start();
@@ -108,7 +131,9 @@ function Dialog() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={[GlobalStyles.titleText]}>Searching for a peer</Text>
+      <Text style={[GlobalStyles.titleText]}>
+        Searching for a dialogue partner
+      </Text>
       <View style={GlobalStyles.verticalSpacerLarge}></View>
       <Animated.View
         style={[

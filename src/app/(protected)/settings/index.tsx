@@ -24,11 +24,10 @@ function SettingsItem({
 }) {
   const color = colorscheme === "light" ? Colors.light.text : Colors.dark.text;
   const router = useRouter();
+
+  const r = route as RelativePathString;
   return (
-    <Pressable
-      onPress={() => router.push(route as RelativePathString)}
-      style={styles.itemContainer}
-    >
+    <Pressable onPress={() => router.push(r)} style={styles.itemContainer}>
       <Text style={GlobalStyles.smallTextBold}>{title}</Text>
       <IconSymbol size={18} name="arrow.right.alt" color={color} />
     </Pressable>
