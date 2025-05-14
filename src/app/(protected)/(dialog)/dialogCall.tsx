@@ -4,9 +4,10 @@ import { View } from "react-native";
 import { Pressable } from "react-native";
 import { Text } from "react-native";
 import { getSocket } from "@/src/server/socket";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Platform } from "react-native";
 import { usePeerConn } from "@/src/hooks/usePeerConn";
+import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
 function DialogCall() {
   const socket = getSocket();
@@ -20,7 +21,6 @@ function DialogCall() {
   // web testing
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isWeb, setIsWeb] = useState(false);
-  const router = useRouter();
   const { remoteStream, activeCall, endCall } = usePeerConn(
     remoteSocketId as string,
     initCall === "true",
@@ -48,7 +48,7 @@ function DialogCall() {
   }, []);
 
   const handleGoBack = () => {
-    router.replace("/");
+    routerReplace(ROUTES.homeScreen);
   };
 
   const webAudio = (

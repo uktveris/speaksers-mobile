@@ -7,7 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { useSession } from "@/src/context/AuthContext";
 import { Pressable } from "react-native";
-import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { TextInput } from "react-native-paper";
 import { Appearance } from "react-native";
@@ -15,6 +14,7 @@ import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { ImageBackground } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
+import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
 const colorScheme = Appearance.getColorScheme();
 
@@ -27,7 +27,6 @@ function EditAccount() {
   const [originalName, setOriginalName] = useState("");
   const [originalAvatarUrl, setOriginalAvatarUrl] = useState("");
   const { session } = useSession();
-  const router = useRouter();
   const supabase = getSupabaseClient();
 
   useEffect(() => {
@@ -109,7 +108,8 @@ function EditAccount() {
       console.log("something went wrong when updating, returning..");
       return;
     }
-    router.replace("/(protected)/(tabs)/account");
+    // router.replace("/(protected)/(tabs)/account");
+    routerReplace(ROUTES.accountTab);
   };
 
   useEffect(() => {
@@ -122,7 +122,8 @@ function EditAccount() {
 
   const handleCancelGoBack = () => {
     if (!changesMade) {
-      router.replace("/(protected)/(tabs)/account");
+      // router.replace("/(protected)/(tabs)/account");
+      routerReplace(ROUTES.accountTab);
       return;
     }
     Alert.alert("Unsaved changes", "The changes will be cancelled.", [
@@ -133,7 +134,8 @@ function EditAccount() {
       },
       {
         text: "Cancel changes",
-        onPress: () => router.replace("/(protected)/(tabs)/account"),
+        // onPress: () => router.replace("/(protected)/(tabs)/account"),
+        onPress: () => routerReplace(ROUTES.accountTab),
         style: "cancel",
       },
     ]);

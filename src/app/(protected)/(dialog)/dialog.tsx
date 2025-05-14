@@ -7,13 +7,13 @@ import { ColorSchemeName } from "react-native";
 import { StyleSheet } from "react-native";
 import { Colors } from "@/src/constants/Colors";
 import { Pressable } from "react-native";
-import { useRouter } from "expo-router";
 import { Dimensions } from "react-native";
 import { Animated } from "react-native";
 import { Easing } from "react-native";
 import { SafeAreaView } from "react-native";
 import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { BackHandler } from "react-native";
+import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
 const screenWidth = Dimensions.get("window").width;
 const boxSize = 100;
@@ -25,7 +25,6 @@ function Dialog() {
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme);
   // const [matched, setMatched] = useState(false);
-  const router = useRouter();
   const anim = useRef(new Animated.Value(0)).current;
 
   const handleBackAction = () => {
@@ -68,21 +67,28 @@ function Dialog() {
     const onMatched = (peerId: string) => {
       // setMatched(true);
       console.log("socket received peer id! - " + peerId);
-      router.replace(
-        "/dialogCall?remoteSocketId=" + peerId + "&initCall=false",
+      // router.replace(
+      //   "/dialogCall?remoteSocketId=" + peerId + "&initCall=false",
+      // );
+      routerReplace(
+        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false",
       );
     };
 
     const onInitCall = (peerId: string) => {
       // setMatched(true);
       console.log("socket received peer id! - " + peerId);
-      router.replace("/dialogCall?remoteSocketId=" + peerId + "&initCall=true");
+      // router.replace("/dialogCall?remoteSocketId=" + peerId + "&initCall=true");
+      routerReplace(
+        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true",
+      );
     };
 
     const onCallCancelled = () => {
       console.log("exited the call queue");
       // setMatched(false);
-      router.replace("../(tabs)");
+      // router.replace("../(tabs)");
+      routerReplace(ROUTES.homeScreen);
     };
 
     socket.emit("join_call");

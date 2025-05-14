@@ -1,19 +1,19 @@
 import { useSession } from "@/src/context/AuthContext";
 import { getSocket } from "@/src/server/socket";
-import { Redirect, Stack, useRouter } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { useUserCourses } from "@/src/hooks/useUserCourses";
+import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
-  const router = useRouter();
   const { courses, loading } = useUserCourses();
 
   useEffect(() => {
     if (!isLoading && !loading && session && courses.length == 0) {
-      router.replace("/(protected)/language-course-selection");
+      routerReplace(ROUTES.languageCourseSelection);
     }
-  }, [isLoading, loading, session, courses.length, router]);
+  }, [isLoading, loading, session, courses.length]);
 
   if (isLoading) {
     return null;

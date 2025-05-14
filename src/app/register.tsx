@@ -1,6 +1,5 @@
 import GoogleAuthButton from "@/src/components/oauth/GoogleAuthButton";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
-import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Appearance } from "react-native";
 import { Pressable } from "react-native";
@@ -16,6 +15,8 @@ import { Text } from "react-native";
 import { FontSizes, GlobalStyles } from "@/src/constants/StyleConstants";
 import SignUpErrorMessage from "@/src/components/SignUpErrorMessage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { routerReplace, ROUTES } from "../utils/navigation";
 
 const theme = Appearance.getColorScheme();
 
@@ -28,7 +29,6 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepPassword, setShowRepPassword] = useState(false);
   const [errorsExist, setErrorExist] = useState(false);
-  const router = useRouter();
 
   const signUpWithEmail = async () => {
     if (password !== repPassword) {
@@ -75,7 +75,7 @@ export default function Register() {
         return;
       }
       setLoading(false);
-      router.replace("/(protected)/(tabs)");
+      routerReplace(ROUTES.homeScreen);
     } catch (err) {
       console.log("error occurred: " + (err as Error).message);
       setLoading(false);
@@ -83,128 +83,120 @@ export default function Register() {
     }
   };
 
-  const content = (
-    <View style={styles.container}>
-      <Text style={GlobalStyles.titleText}>Sign up</Text>
-      <View style={GlobalStyles.verticalSpacerLarge}></View>
-      <View>
-        <Text style={GlobalStyles.smallText}>Email</Text>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
-        <TextInput
-          style={styles.inputBox}
-          theme={{ roundness: 10 }}
-          mode="flat"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          placeholder="Your email address"
-          keyboardType="email-address"
-          returnKeyType="done"
-          onSubmitEditing={Keyboard.dismiss}
-          importantForAccessibility="yes"
-          textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
-          placeholderTextColor="grey"
-        />
-      </View>
-      <View style={GlobalStyles.verticalSpacerSmall}></View>
-      <View>
-        <Text style={GlobalStyles.smallText}>Password</Text>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
-        <TextInput
-          style={styles.inputBox}
-          theme={{ roundness: 10 }}
-          mode="flat"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          placeholder="Password"
-          secureTextEntry={!showPassword}
-          returnKeyType="done"
-          onSubmitEditing={Keyboard.dismiss}
-          importantForAccessibility="yes"
-          textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
-          placeholderTextColor="grey"
-          right={
-            <TextInput.Icon
-              icon={showPassword ? "eye-off" : "eye"}
-              onPress={() => setShowPassword((prev) => !prev)}
-            />
-          }
-        />
-      </View>
-      <View style={GlobalStyles.verticalSpacerSmall}></View>
-      <View>
-        <Text style={GlobalStyles.smallText}>Repeat password</Text>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
-        <TextInput
-          style={styles.inputBox}
-          theme={{ roundness: 10 }}
-          mode="flat"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          onChangeText={(text) => setRepPassword(text)}
-          value={repPassword}
-          placeholder="Password"
-          secureTextEntry={!showRepPassword}
-          returnKeyType="done"
-          onSubmitEditing={Keyboard.dismiss}
-          importantForAccessibility="yes"
-          textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
-          placeholderTextColor="grey"
-          right={
-            <TextInput.Icon
-              icon={showRepPassword ? "eye-off" : "eye"}
-              onPress={() => setShowRepPassword((prev) => !prev)}
-            />
-          }
-        />
-      </View>
-      {errorsExist && <SignUpErrorMessage message="Passwords do not match!" />}
-      <View style={GlobalStyles.verticalSpacerLarge}></View>
-      <Pressable
-        style={[
-          GlobalStyles.primaryButton,
-          loading && GlobalStyles.disabledButton,
-        ]}
-        disabled={loading}
-        onPress={() => signUpWithEmail()}
-      >
-        <Text style={GlobalStyles.mediumBoldText}>Sign up</Text>
-      </Pressable>
-      <View style={GlobalStyles.verticalSpacerMedium}></View>
-      {/* <GoogleAuthButton /> */}
-      <Pressable
-        style={[
-          GlobalStyles.secondaryButton,
-          loading && GlobalStyles.disabledButton,
-        ]}
-        disabled={loading}
-        onPress={() => router.replace("/login")}
-      >
-        <Text style={[GlobalStyles.mediumBoldText, { textAlign: "center" }]}>
-          Alredy have an account? Log in!
-        </Text>
-      </Pressable>
-    </View>
-  );
-
   return (
-    <KeyboardAwareScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={styles.keyboardView}
-    >
-      {content}
-    </KeyboardAwareScrollView>
+    <SafeAreaView style={[GlobalStyles.container, styles.outerContainer]}>
+      <View style={styles.container}>
+        <Text style={GlobalStyles.titleText}>Sign up</Text>
+        <View style={GlobalStyles.verticalSpacerLarge}></View>
+        <View>
+          <Text style={GlobalStyles.smallText}>Email</Text>
+          <View style={GlobalStyles.verticalSpacerSmall}></View>
+          <TextInput
+            style={styles.inputBox}
+            theme={{ roundness: 10 }}
+            mode="flat"
+            underlineColor="transparent"
+            activeUnderlineColor="transparent"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            placeholder="Your email address"
+            keyboardType="email-address"
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+            importantForAccessibility="yes"
+            textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
+            placeholderTextColor="grey"
+          />
+        </View>
+        <View style={GlobalStyles.verticalSpacerSmall}></View>
+        <View>
+          <Text style={GlobalStyles.smallText}>Password</Text>
+          <View style={GlobalStyles.verticalSpacerSmall}></View>
+          <TextInput
+            style={styles.inputBox}
+            theme={{ roundness: 10 }}
+            mode="flat"
+            underlineColor="transparent"
+            activeUnderlineColor="transparent"
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            placeholder="Password"
+            secureTextEntry={!showPassword}
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+            importantForAccessibility="yes"
+            textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
+            placeholderTextColor="grey"
+            right={
+              <TextInput.Icon
+                icon={showPassword ? "eye-off" : "eye"}
+                onPress={() => setShowPassword((prev) => !prev)}
+              />
+            }
+          />
+        </View>
+        <View style={GlobalStyles.verticalSpacerSmall}></View>
+        <View>
+          <Text style={GlobalStyles.smallText}>Repeat password</Text>
+          <View style={GlobalStyles.verticalSpacerSmall}></View>
+          <TextInput
+            style={styles.inputBox}
+            theme={{ roundness: 10 }}
+            mode="flat"
+            underlineColor="transparent"
+            activeUnderlineColor="transparent"
+            onChangeText={(text) => setRepPassword(text)}
+            value={repPassword}
+            placeholder="Password"
+            secureTextEntry={!showRepPassword}
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+            importantForAccessibility="yes"
+            textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
+            placeholderTextColor="grey"
+            right={
+              <TextInput.Icon
+                icon={showRepPassword ? "eye-off" : "eye"}
+                onPress={() => setShowRepPassword((prev) => !prev)}
+              />
+            }
+          />
+        </View>
+        {errorsExist && (
+          <SignUpErrorMessage message="Passwords do not match!" />
+        )}
+        <View style={GlobalStyles.verticalSpacerLarge}></View>
+        <Pressable
+          style={[
+            GlobalStyles.primaryButton,
+            loading && GlobalStyles.disabledButton,
+          ]}
+          disabled={loading}
+          onPress={() => signUpWithEmail()}
+        >
+          <Text style={GlobalStyles.mediumBoldText}>Sign up</Text>
+        </Pressable>
+        <View style={GlobalStyles.verticalSpacerMedium}></View>
+        {/* <GoogleAuthButton /> */}
+        <Pressable
+          style={[
+            GlobalStyles.secondaryButton,
+            loading && GlobalStyles.disabledButton,
+          ]}
+          disabled={loading}
+          onPress={() => routerReplace(ROUTES.login)}
+        >
+          <Text style={[GlobalStyles.mediumBoldText, { textAlign: "center" }]}>
+            Alredy have an account? Log in!
+          </Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  keyboardView: {
-    flex: 1,
-    backgroundColor:
-      theme === "light" ? Colors.light.background : Colors.dark.background,
+  outerContainer: {
     justifyContent: "center",
   },
   container: {

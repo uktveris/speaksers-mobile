@@ -3,9 +3,8 @@ import { levels } from "@/src/constants/languageLevels";
 import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { useUserCourses } from "@/src/hooks/useUserCourses";
+import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { Picker } from "@react-native-picker/picker";
-import { PostgrestError } from "@supabase/supabase-js";
-import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { Appearance } from "react-native";
@@ -16,7 +15,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 function LanguageCourseSelection() {
   const { addUserCourse } = useUserCourses();
-  const router = useRouter();
   const [courses, setCourses] = useState<{ name: string; id: string }[]>([]);
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme);
@@ -43,7 +41,7 @@ function LanguageCourseSelection() {
   const addCourse = async () => {
     const { result } = await addUserCourse(selectedCourse!, selectedLevel);
     if (result === null) {
-      router.replace("/(protected)/(tabs)");
+      routerReplace(ROUTES.homeScreen);
     } else {
       console.log({ result });
       console.log("something went wrong while adding course");

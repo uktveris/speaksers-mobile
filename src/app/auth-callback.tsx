@@ -1,14 +1,12 @@
 import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
-import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Text } from "react-native";
 import { View } from "react-native";
 import * as Linking from "expo-linking";
+import { routerReplace, ROUTES } from "../utils/navigation";
 
 export default function AuthCallback() {
-  const router = useRouter();
-
   const extractParams = (url: string) => {
     const fragment = url.split("#")[1];
     if (!fragment) {
@@ -45,10 +43,10 @@ export default function AuthCallback() {
 
       if (error) {
         console.log("error while setting session: " + error.message);
-        router.replace("/login");
+        routerReplace(ROUTES.login);
         return;
       }
-      router.replace("/(protected)/(tabs)");
+      routerReplace(ROUTES.homeScreen);
     };
 
     Linking.getInitialURL().then(handleUrl);

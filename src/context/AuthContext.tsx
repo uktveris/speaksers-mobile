@@ -1,7 +1,6 @@
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { getSocket } from "@/src/server/socket";
 import type { Session } from "@supabase/supabase-js";
-import { useRouter } from "expo-router";
 import {
   createContext,
   PropsWithChildren,
@@ -9,6 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { routerReplace, ROUTES } from "../utils/navigation";
 
 interface AuthContextType {
   session: Session | null;
@@ -57,12 +57,14 @@ function SessionProvider({ children }: PropsWithChildren) {
       password: password,
     });
     if (error) throw error;
+    routerReplace(ROUTES.homeScreen);
   };
 
   const signOut = async () => {
     const socket = getSocket();
     if (socket.connected) socket.disconnect();
     await supabase.auth.signOut();
+    routerReplace(ROUTES.login);
   };
 
   return (

@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import { View, StyleSheet, ColorSchemeName, Appearance } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
@@ -7,12 +6,12 @@ import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import GameBox from "@/src/components/GameBox";
 import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { Text } from "react-native";
+import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
 const colorScheme = Appearance.getColorScheme();
 const styles = setStyles(colorScheme);
 function App() {
   const supabase = getSupabaseClient();
-  const router = useRouter();
 
   const createSessionFromUrl = async (url: string) => {
     const { params, errorCode } = QueryParams.getQueryParams(url);
@@ -31,7 +30,7 @@ function App() {
     if (error) {
       console.log("ERROR: " + error.message);
     }
-    router.replace("/");
+    routerReplace(ROUTES.homeScreen);
     return data.session;
   };
 
@@ -48,7 +47,7 @@ function App() {
             <GameBox
               backgroundColor="#ff9933"
               name="Dialog"
-              link="../(dialog)/dialog"
+              link={ROUTES.dialog}
             />
           </Col>
           <Col>

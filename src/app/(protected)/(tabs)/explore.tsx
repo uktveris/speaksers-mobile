@@ -22,7 +22,6 @@ function Explore() {
 
   const handleSignOut = async () => {
     signOut();
-    router.replace("/login");
   };
 
   const deleteUser = async () => {
@@ -43,8 +42,6 @@ function Explore() {
       console.log(" delete user: " + response.data);
       signOut();
       await AsyncStorage.removeItem(sb_auth_token_name);
-      localStorage.removeItem(sb_auth_token_name);
-      router.replace("/login");
     } catch (err) {
       console.log("error occurred: " + (err as Error).message);
     }

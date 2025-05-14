@@ -11,7 +11,7 @@ import { useUserCourses } from "@/src/hooks/useUserCourses";
 import ProfileCourseInfo from "@/src/components/ProfileCourseInfo";
 import { useLocale } from "@/src/context/LocaleContext";
 import { Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { routerPush, routerReplace, ROUTES } from "@/src/utils/navigation";
 
 function Account() {
   const theme = Appearance.getColorScheme();
@@ -19,7 +19,6 @@ function Account() {
   const [userCourses, setUserCourses] = useState<any[]>([]);
   const { courses, loading } = useUserCourses();
   const { locales, calendars } = useLocale();
-  const router = useRouter();
 
   useEffect(() => {
     if (!loading && courses.length !== 0) {
@@ -28,11 +27,11 @@ function Account() {
   }, [courses.length]);
 
   const handleEditProfile = () => {
-    router.replace("/(protected)/(account)/edit-account");
+    routerReplace(ROUTES.editAccount);
   };
 
   const handleGoToSettings = () => {
-    router.push("/(protected)/settings");
+    routerPush(ROUTES.settings);
   };
 
   return (

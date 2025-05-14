@@ -1,15 +1,14 @@
 import { View } from "react-native";
-import { ThemedText } from "./ThemedText";
 import { Appearance } from "react-native";
 import { ColorSchemeName } from "react-native";
 import { StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { Colors } from "@/src/constants/Colors";
 import { Pressable } from "react-native";
-import { useRouter } from "expo-router";
 import { manageMicrophonePermissions } from "@/src/config/permissionUtils";
 import { Alert } from "react-native";
 import { Linking } from "react-native";
+import { routerReplace } from "../utils/navigation";
 
 interface GameBoxProps {
   name: string;
@@ -18,13 +17,13 @@ interface GameBoxProps {
 }
 
 function GameBox({ name, backgroundColor, link }: GameBoxProps) {
-  const router = useRouter();
   const theme = Appearance.getColorScheme();
   const styles = setStyles(theme, backgroundColor);
 
   const handleNavigateWithPermissions = async () => {
     if (await manageMicrophonePermissions()) {
-      router.navigate(link);
+      // router.navigate(link);
+      routerReplace(link);
     } else {
       Alert.alert(
         "Microphone access",

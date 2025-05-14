@@ -2,7 +2,8 @@ import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { Colors } from "@/src/constants/Colors";
 import { settingsRoutes } from "@/src/constants/settingsRoutes";
 import { GlobalStyles } from "@/src/constants/StyleConstants";
-import { RelativePathString, Router, useRouter } from "expo-router";
+import { routerPush } from "@/src/utils/navigation";
+import { RelativePathString } from "expo-router";
 import { Appearance } from "react-native";
 import { Pressable } from "react-native";
 import { StyleSheet } from "react-native";
@@ -23,13 +24,11 @@ function SettingsItem({
   route: string;
 }) {
   const color = colorscheme === "light" ? Colors.light.text : Colors.dark.text;
-  const router = useRouter();
 
-  const r = route as RelativePathString;
   return (
-    <Pressable onPress={() => router.push(r)} style={styles.itemContainer}>
+    <Pressable onPress={() => routerPush(route)} style={styles.itemContainer}>
       <Text style={GlobalStyles.smallTextBold}>{title}</Text>
-      <IconSymbol size={18} name="arrow.right.alt" color={color} />
+      <IconSymbol size={18} name={icon} color={color} />
     </Pressable>
   );
 }
