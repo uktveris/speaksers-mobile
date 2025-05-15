@@ -1,6 +1,7 @@
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { getSocket } from "@/src/server/socket";
 import type { Session } from "@supabase/supabase-js";
+import Constants from "expo-constants";
 import {
   createContext,
   PropsWithChildren,
@@ -9,12 +10,19 @@ import {
   useState,
 } from "react";
 import { routerReplace, ROUTES } from "../utils/navigation";
+import { getBackendUrl } from "../config/urlConfig";
+import axiosConfig from "../config/axiosConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { deleteUserAvatar } from "../hooks/useUser";
 
 interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => void;
   signOut: () => void;
+  userData: {};
+  getAvatar: () => string;
+  deleteAcount: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,8 +75,45 @@ function SessionProvider({ children }: PropsWithChildren) {
     routerReplace(ROUTES.login);
   };
 
+  const deleteAcount = async () => {
+    const url = getBackendUrl();
+    const sbAuthTokenName = Constants.expoConfig?.extra!.SB_AUTH_TOKEN_NAME;
+    const userId = session?.user.id;
+    if (!userId) {
+      console.log("no user id found, returning..");
+      return;
+    }
+    if (!sbAuthTokenName) {
+      console.log("no sb token name found, returning..");
+      return;
+    }
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("avatar_url")
+        .eq("id", userId)
+        .single();
+      if (error) {
+        console.log("erorr retrieving avatar url:", error.message);
+        return;
+      }
+      await deleteUserAvatar(data.avatar_url);
+      const response = await axiosConfig.delete(url + "/api/users/delete", {
+        data: userId,
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("deleting user:", response);
+      await AsyncStorage.removeItem(sbAuthTokenName);
+      signOut();
+    } catch (err) {
+      console.log("error while deleting user:", (err as Error).message);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ session, isLoading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ session, isLoading, signIn, signOut, deleteAcount }}
+    >
       {children}
     </AuthContext.Provider>
   );
