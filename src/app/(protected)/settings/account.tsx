@@ -1,6 +1,6 @@
 import { Colors } from "@/src/constants/Colors";
 import { GlobalStyles } from "@/src/constants/StyleConstants";
-import { Appearance } from "react-native";
+import { Alert, Appearance } from "react-native";
 import { Text, Pressable, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
@@ -29,10 +29,29 @@ function AccountOption({
 }
 
 function AccountSettings() {
-  const { signOut, session } = useSession();
+  const { signOut, session, deleteAcount } = useSession();
 
   const handleSignOut = async () => {
     signOut();
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete account",
+      "Are you sure you want to delete your account? all the data will be lost upon deletion.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("deletion cancelled"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => deleteAcount(),
+          style: "destructive",
+        },
+      ],
+    );
   };
 
   const options = [
@@ -46,7 +65,7 @@ function AccountSettings() {
       id: 2,
       title: "Delete account",
       icon: "arrow.right.alt",
-      onPress: () => console.log("choice: delete account"),
+      onPress: handleDelete,
     },
   ];
 

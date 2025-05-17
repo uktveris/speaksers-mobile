@@ -13,7 +13,6 @@ import { routerReplace, ROUTES } from "../utils/navigation";
 import { getBackendUrl } from "../config/urlConfig";
 import axiosConfig from "../config/axiosConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { deleteUserAvatar } from "../hooks/useUser";
 
 interface AuthContextType {
   session: Session | null;
@@ -32,6 +31,18 @@ function useSession() {
   if (!context)
     throw new Error("useSession must be used within a SessionProvider");
   return context;
+}
+
+async function deleteUserAvatar(path: string) {
+  console.log("received avatar path to delete:", path);
+  const supabase = getSupabaseClient();
+  const { error } = await supabase.storage.from("avatars").remove([path]);
+  if (error) {
+    console.log("error deleting user avatar:", error.message);
+    return false;
+  }
+  console.log("successfully deleted user avatar");
+  return true;
 }
 
 function SessionProvider({ children }: PropsWithChildren) {
@@ -77,13 +88,13 @@ function SessionProvider({ children }: PropsWithChildren) {
 
   const deleteAcount = async () => {
     const url = getBackendUrl();
-    const sbAuthTokenName = Constants.expoConfig?.extra!.SB_AUTH_TOKEN_NAME;
+    const sbTokenName = Constants.expoConfig?.extra?.SB_TOKEN_NAME as string;
     const userId = session?.user.id;
     if (!userId) {
       console.log("no user id found, returning..");
       return;
     }
-    if (!sbAuthTokenName) {
+    if (!sbTokenName) {
       console.log("no sb token name found, returning..");
       return;
     }
@@ -97,13 +108,16 @@ function SessionProvider({ children }: PropsWithChildren) {
         console.log("erorr retrieving avatar url:", error.message);
         return;
       }
-      await deleteUserAvatar(data.avatar_url);
+      const success = await deleteUserAvatar(data.avatar_url);
+      if (!success) {
+        return;
+      }
       const response = await axiosConfig.delete(url + "/api/users/delete", {
-        data: userId,
+        data: { userId: userId },
         headers: { "Content-Type": "application/json" },
       });
-      console.log("deleting user:", response);
-      await AsyncStorage.removeItem(sbAuthTokenName);
+      console.log("deleting user:", response.data);
+      await AsyncStorage.removeItem(sbTokenName);
       signOut();
     } catch (err) {
       console.log("error while deleting user:", (err as Error).message);

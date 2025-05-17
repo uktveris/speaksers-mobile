@@ -2,14 +2,6 @@ import { useEffect, useState } from "react";
 import { getSupabaseClient } from "./supabaseClient";
 import { useSession } from "../context/AuthContext";
 
-async function deleteUserAvatar(path: string) {
-  const supabase = getSupabaseClient();
-  const { error } = await supabase.storage.from("avatars").remove([path]);
-  if (error) {
-    console.log("error deleting user avatar:", error.message);
-  }
-}
-
 function useUser() {
   const [userData, setUserData] = useState<{} | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -51,4 +43,4 @@ function useUser() {
   return { userData, avatarUrl, loading };
 }
 
-export { useUser, deleteUserAvatar };
+export { useUser };

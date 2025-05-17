@@ -102,7 +102,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       SUPABASE_AUTH_API_KEY: process.env.SUPABASE_AUTH_API_KEY,
       BACKEND_URL: process.env.BACKEND_URL,
       BACKEND_URL_LOCAL: process.env.BACKEND_URL_LOCAL,
-      SB_AUTH_TOKEN_NAME: process.env.SB_AUTH_TOKEN_NAME,
+      SB_TOKEN_NAME: process.env.SB_TOKEN_NAME,
       DEFAULT_AVATAR_URL: process.env.DEFAULT_AVATAR_URL,
     },
     owner: EAS_OWNER,
