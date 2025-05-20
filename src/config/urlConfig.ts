@@ -3,7 +3,7 @@ import Constants from "expo-constants";
 
 const getBackendUrl = () => {
   if (Platform.OS === "web") {
-    return Constants.expoConfig?.extra?.BACKEND_URL_LOCAL!;
+    return "http://localhost:8081";
   } else {
     return Constants.expoConfig?.extra?.BACKEND_URL!;
   }

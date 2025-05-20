@@ -3,8 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 
-const url = Constants.expoConfig?.extra?.SUPABASE_AUTH_URL as string;
-const key = Constants.expoConfig?.extra?.SUPABASE_AUTH_API_KEY as string;
+const url = Constants.expoConfig?.extra?.SUPABASE_URL as string;
+const key = Constants.expoConfig?.extra?.SUPABASE_ANON_KEY as string;
 
 const supabase = createClient(url, key, {
   auth: {

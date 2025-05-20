@@ -56,11 +56,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         "android.permission.INTERNET",
       ],
     },
-    // web: {
-    //   bundler: "metro",
-    //   output: "static",
-    //   favicon: "./assets/images/favicon.png",
-    // },
     plugins: [
       "expo-router",
       [
@@ -74,13 +69,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
       "expo-localization",
       "@config-plugins/react-native-webrtc",
-      // [
-      //   "expo-media-library",
-      //   {
-      //     photosPermission: `Allow ${APP_NAME} to access your photos.`,
-      //     // isAccessMediaLocationEnabled: true,
-      //   },
-      // ],
       [
         "expo-image-picker",
         {
@@ -98,12 +86,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       eas: {
         projectId: EAS_PROJECT_ID,
       },
-      SUPABASE_AUTH_URL: process.env.SUPABASE_AUTH_URL,
-      SUPABASE_AUTH_API_KEY: process.env.SUPABASE_AUTH_API_KEY,
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
       BACKEND_URL: process.env.BACKEND_URL,
-      BACKEND_URL_LOCAL: process.env.BACKEND_URL_LOCAL,
       SB_TOKEN_NAME: process.env.SB_TOKEN_NAME,
-      DEFAULT_AVATAR_URL: process.env.DEFAULT_AVATAR_URL,
+    },
+    updates: {
+      url: "https://u.expo.dev/2b1aea07-cf67-4902-8f35-ac16d83e6099",
+    },
+    runtimeVersion: {
+      policy: "appVersion",
     },
     owner: EAS_OWNER,
   };
