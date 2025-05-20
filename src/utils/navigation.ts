@@ -13,7 +13,7 @@ const ROUTES = {
   homeScreen: "/(protected)/(tabs)/" as const,
   settingsAccount: "/(protected)/settings/account" as const,
   settings: "/(protected)/settings/" as const,
-  settingsPreferences: "/protected)/settings/preferences" as const,
+  settingsPreferences: "/(protected)/settings/preferences" as const,
 };
 
 let router: Router | null = null;

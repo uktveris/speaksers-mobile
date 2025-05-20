@@ -51,7 +51,7 @@ function App() {
             />
           </Col>
           <Col>
-            <GameBox backgroundColor="#ff99a8" name="Game" link="" />
+            <GameBox backgroundColor="#C70039" name="Game" link="" />
           </Col>
         </Row>
       </View>

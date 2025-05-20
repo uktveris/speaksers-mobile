@@ -32,7 +32,18 @@ function AccountSettings() {
   const { signOut, session, deleteAcount } = useSession();
 
   const handleSignOut = async () => {
-    signOut();
+    Alert.alert("Log out", "Are you sure you want to log out?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("logging out cancelled"),
+        style: "cancel",
+      },
+      {
+        text: "Log out",
+        onPress: () => signOut(),
+        style: "default",
+      },
+    ]);
   };
 
   const handleDelete = () => {
