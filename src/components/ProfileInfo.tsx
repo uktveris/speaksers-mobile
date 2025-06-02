@@ -1,5 +1,4 @@
 import { useSession } from "@/src/context/AuthContext";
-import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Image } from "react-native";
@@ -7,44 +6,24 @@ import { StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { Colors } from "@/src/constants/Colors";
+import { useUser } from "../hooks/useUser";
 
 function ProfileInfo() {
   const { session } = useSession();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+  const { userData, avatarUrl: originalAvatarUrl, loading } = useUser();
 
   useEffect(() => {
-    const supabase = getSupabaseClient();
-    if (!session) {
+    if (!session || !userData) {
       console.log("no session, returning");
       return;
     }
-    const fetchUser = async () => {
-      const { data: userData, error } = await supabase
-        .from("users")
-        .select()
-        .eq("id", session.user.id)
-        .single();
-      if (error) {
-        console.log("error: " + (error as Error).message);
-        return;
-      }
-      const { data: avatarData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(
-          userData.avatar_url +
-            "?updated_at=" +
-            (userData.avatar_updated_at || Date.now()),
-        );
-
-      setUsername(userData.username ? userData.username : "no username");
-      setName(userData.name ? userData.name : "no name");
-      setAvatarUrl(avatarData.publicUrl);
-    };
-
-    fetchUser();
-  }, [session?.user]);
+    setUsername(userData.username ? userData.username : "no username");
+    setName(userData.name ? userData.name : "no name");
+    setAvatarUrl(originalAvatarUrl!);
+  }, [session?.user, loading]);
 
   return (
     <View style={styles.outerContainer}>

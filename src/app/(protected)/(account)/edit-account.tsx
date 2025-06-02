@@ -4,7 +4,6 @@ import { FontSizes, GlobalStyles } from "@/src/constants/StyleConstants";
 import { StyleSheet } from "react-native";
 import { Colors } from "@/src/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { useSession } from "@/src/context/AuthContext";
 import { Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -12,9 +11,8 @@ import { TextInput } from "react-native-paper";
 import { Appearance } from "react-native";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { ImageBackground } from "react-native";
-import * as FileSystem from "expo-file-system";
-import { decode } from "base64-arraybuffer";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
+import { useUser } from "@/src/hooks/useUser";
 
 const colorScheme = Appearance.getColorScheme();
 
@@ -22,107 +20,54 @@ function EditAccount() {
   const [changesMade, setChangesMade] = useState(false);
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [loaded, setLoaded] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [previewAvatarUrl, setPreviewAvatarUrl] = useState<string | null>(null);
   const [originalName, setOriginalName] = useState("");
-  const [originalAvatarUrl, setOriginalAvatarUrl] = useState("");
+  const [originalUsername, setOriginalUsername] = useState("");
+  const [loaded, setLoaded] = useState(false);
   const { session } = useSession();
-  const supabase = getSupabaseClient();
+  const {
+    userData,
+    avatarUrl: originalAvatarUrl,
+    loading,
+    updateUserData,
+    refetch,
+  } = useUser();
 
   useEffect(() => {
-    if (!session) {
-      console.log("no session, returning");
+    if (!session || !userData) {
+      console.log("no session or loading user data, returning..");
       return;
     }
-    const fetchUser = async () => {
-      const { data: userData, error } = await supabase
-        .from("users")
-        .select()
-        .eq("id", session.user.id)
-        .single();
-      if (error) {
-        console.log("error: " + (error as Error).message);
-        return;
-      }
-      const { data: avatarData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(
-          userData.avatar_url +
-            "?updated_at=" +
-            (userData.avatar_updated_at || Date.now()),
-        );
 
-      setUsername(userData.username ? userData.username : "username");
-      setName(userData.name ? userData.name : "");
-      setOriginalName(userData.name ? userData.name : "");
-      setAvatarUrl(avatarData.publicUrl);
-      setOriginalAvatarUrl(avatarData.publicUrl);
-      setLoaded(true);
-    };
-
-    fetchUser();
-  }, [session?.user]);
-
-  const updateUserData = async () => {
-    try {
-      const extension = avatarUrl.split(".").pop()?.toLowerCase() || "jpg";
-      const mimeType = "image/" + (extension === "jpg" ? "jpeg" : extension);
-      const base64Data = await FileSystem.readAsStringAsync(avatarUrl, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      const arrayBuffer = decode(base64Data);
-
-      const filePath = "avatars/" + session?.user.id + "/avatar." + extension;
-      console.log("arrayBuffer:", arrayBuffer);
-
-      const { error: fileUploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, arrayBuffer, { upsert: true, contentType: mimeType });
-
-      if (fileUploadError) {
-        console.log("file upload error:", fileUploadError.message);
-        return false;
-      }
-
-      const { data, error } = await supabase.from("users").upsert({
-        id: session?.user.id,
-        name: name,
-        avatar_url: filePath,
-        avatar_updated_at: new Date().toISOString(),
-      });
-      if (error) {
-        console.log("error occurred while updating user:", error.message);
-        return false;
-      }
-      console.log("success, updated data:", data);
-      return true;
-    } catch (err) {
-      console.log("error:", (err as Error).message);
-      return false;
-    }
-  };
+    setOriginalName(userData.name);
+    setOriginalUsername(userData.username);
+    setUsername(userData.username);
+    setName(userData.name);
+    setPreviewAvatarUrl(originalAvatarUrl);
+    setLoaded(true);
+  }, [session?.user, userData, originalAvatarUrl]);
 
   const updateUserAndGoBack = async () => {
-    const result = await updateUserData();
+    const result = await updateUserData(avatarUrl, name);
+    await refetch();
     if (!result) {
       console.log("something went wrong when updating, returning..");
       return;
     }
-    // router.replace("/(protected)/(tabs)/account");
     routerReplace(ROUTES.accountTab);
   };
 
   useEffect(() => {
-    if (!loaded) {
+    if (!loaded || !userData || loading) {
       return;
     }
     const changed = name !== originalName || avatarUrl !== originalAvatarUrl;
     setChangesMade(changed);
-  }, [loaded, name, avatarUrl, originalName, originalAvatarUrl]);
+  }, [loaded, loading, name, avatarUrl, originalName, originalAvatarUrl]);
 
   const handleCancelGoBack = () => {
     if (!changesMade) {
-      // router.replace("/(protected)/(tabs)/account");
       routerReplace(ROUTES.accountTab);
       return;
     }
@@ -134,7 +79,6 @@ function EditAccount() {
       },
       {
         text: "Cancel changes",
-        // onPress: () => router.replace("/(protected)/(tabs)/account"),
         onPress: () => routerReplace(ROUTES.accountTab),
         style: "cancel",
       },
@@ -151,6 +95,7 @@ function EditAccount() {
 
     if (!result.canceled) {
       setAvatarUrl(result.assets[0].uri);
+      setPreviewAvatarUrl(result.assets[0].uri);
     }
   };
 
@@ -173,7 +118,10 @@ function EditAccount() {
         </View>
         <View style={styles.outerContainer}>
           <View style={styles.infoContainer}>
-            <ImageBackground source={{ uri: avatarUrl }} style={styles.image}>
+            <ImageBackground
+              source={{ uri: previewAvatarUrl }}
+              style={styles.image}
+            >
               <Pressable onPress={pickImage} style={styles.userImage}>
                 <View style={styles.editPictureText}>
                   <Text style={GlobalStyles.smallTextBold}>Edit</Text>
