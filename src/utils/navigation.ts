@@ -7,7 +7,7 @@ const ROUTES = {
   languageCourseSelection: "/(protected)/language-course-selection" as const,
   editAccount: "/(protected)/(account)/edit-account" as const,
   dialog: "/(protected)/(dialog)/dialog" as const,
-  dialogCall: "/(protected)/(dialog)dialogCall" as const,
+  dialogCall: "/(protected)/(dialog)/dialogCall" as const,
   accountTab: "/(protected)/(tabs)/account" as const,
   globalChatTab: "/(protected)/(tabs)/globalChat" as const,
   homeScreen: "/(protected)/(tabs)/" as const,

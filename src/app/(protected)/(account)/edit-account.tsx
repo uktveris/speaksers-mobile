@@ -62,9 +62,17 @@ function EditAccount() {
     if (!loaded || !userData || loading) {
       return;
     }
-    const changed = name !== originalName || avatarUrl !== originalAvatarUrl;
+    const changed =
+      name !== originalName || previewAvatarUrl !== originalAvatarUrl;
     setChangesMade(changed);
-  }, [loaded, loading, name, avatarUrl, originalName, originalAvatarUrl]);
+  }, [
+    loaded,
+    loading,
+    name,
+    previewAvatarUrl,
+    originalName,
+    originalAvatarUrl,
+  ]);
 
   const handleCancelGoBack = () => {
     if (!changesMade) {

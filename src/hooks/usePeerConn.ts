@@ -1,10 +1,26 @@
 import { getSocket } from "@/src/server/socket";
 import { useEffect, useRef, useState } from "react";
+import InCallManager from "react-native-incall-manager";
+import {
+  mediaDevices,
+  MediaStream,
+  RTCPeerConnection,
+  RTCSessionDescription,
+  RTCIceCandidate,
+} from "react-native-webrtc";
 
 const iceServers = [
   { urls: "stun:stun.l.google.com:19302" },
   { urls: "STUN:freestun.net:3478" },
 ];
+
+const sessionConstraints = {
+  mandatory: {
+    OfferToReceiveAudio: true,
+    OfferToReceiveVideo: false,
+    VoiceActivityDetection: true,
+  },
+};
 
 function usePeerConn(remoteSocketId: string, initCall: boolean) {
   const socket = getSocket();
@@ -39,46 +55,71 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
 
     const createPeerConn = () => {
       const conn = new RTCPeerConnection({ iceServers: iceServers });
-      conn.onicecandidate = (event) => {
+
+      conn.addEventListener("icecandidate", (event) => {
         if (event.candidate) {
           socket.emit("ice-candidate", {
             recipient: remoteSocketId,
             candidate: event.candidate,
           });
         }
-      };
+      });
+      // conn.onicecandidate = (event) => {
+      //   if (event.candidate) {
+      //     socket.emit("ice-candidate", {
+      //       recipient: remoteSocketId,
+      //       candidate: event.candidate,
+      //     });
+      //   }
+      // };
 
-      conn.ontrack = (event) => {
+      conn.addEventListener("track", (event) => {
         const stream = event.streams[0] as unknown as MediaStream;
         setRemoteStream(stream);
         console.log("set remote stream: " + event.streams[0]);
-      };
+      });
+      // conn.ontrack = (event) => {
+      //   const stream = event.streams[0] as unknown as MediaStream;
+      //   setRemoteStream(stream);
+      //   console.log("set remote stream: " + event.streams[0]);
+      // };
 
-      conn.onsignalingstatechange = () => {
+      conn.addEventListener("signalingstatechange", () => {
         console.log("signalign state change, current: " + conn.signalingState);
-      };
+      });
+      // conn.onsignalingstatechange = () => {
+      //   console.log("signalign state change, current: " + conn.signalingState);
+      // };
 
-      conn.onconnectionstatechange = () => {
+      conn.addEventListener("connectionstatechange", (event) => {
         if (conn.connectionState === "connected") {
           console.log("connected successfully!");
         }
-      };
+      });
+      // conn.onconnectionstatechange = () => {
+      //   if (conn.connectionState === "connected") {
+      //     console.log("connected successfully!");
+      //   }
+      // };
       peerConnRef.current = conn;
       return conn;
     };
 
     const beginCall = async () => {
+      InCallManager.start({ media: "audio" });
+      InCallManager.setForceSpeakerphoneOn(true);
+
       const conn = createPeerConn();
       // TODO: change to use phone media devices (microphone)
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const localStream = await mediaDevices.getUserMedia({
         audio: true,
         video: false,
       });
       // TODO: on production change to mobile speakers
-      stream.getTracks().forEach((track) => {
-        conn.addTrack(track, stream);
+      localStream.getTracks().forEach((track) => {
+        conn.addTrack(track, localStream);
       });
-      const offer = await conn.createOffer();
+      const offer = await conn.createOffer(sessionConstraints);
       await conn.setLocalDescription(new RTCSessionDescription(offer));
       console.log("local description (offer) set: " + offer);
       socket.emit("offer", { recipient: remoteSocketId, offer: offer });
@@ -95,19 +136,22 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       await conn.setRemoteDescription(new RTCSessionDescription(offer));
       console.log("remote desc (offer) set");
       // TODO: change to use phone media devices (microphone)
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const localStream = await mediaDevices.getUserMedia({
         audio: true,
         video: false,
       });
       // TODO: on production change to mobile speakers
-      stream.getTracks().forEach((track) => {
-        conn.addTrack(track, stream);
+      localStream.getTracks().forEach((track) => {
+        conn.addTrack(track, localStream);
       });
       const answer = await conn.createAnswer();
       await conn.setLocalDescription(answer);
       console.log("local desc (answer) set");
       socket.emit("answer", { recipient: remoteSocketId, answer: answer });
       setActiveCall(true);
+
+      InCallManager.start({ media: "audio" });
+      InCallManager.setForceSpeakerphoneOn(true);
     };
 
     const onAnswer = async (answer: RTCSessionDescription) => {
@@ -151,6 +195,7 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       peerConnRef.current = null;
       remoteStream?.getTracks().forEach((t) => t.stop());
       setRemoteStream(null);
+      InCallManager.stop();
     };
 
     socket.on("offer", (data) => onOffer(data.offer));
@@ -176,6 +221,7 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
     socket.emit("end-call", { recipient: remoteSocketId });
     resetCallState();
     setActiveCall(false);
+    InCallManager.stop();
   };
 
   return { remoteStream, activeCall, endCall };

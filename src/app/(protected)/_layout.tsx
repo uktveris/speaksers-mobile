@@ -1,7 +1,7 @@
 import { useSession } from "@/src/context/AuthContext";
 import { getSocket } from "@/src/server/socket";
 import { Redirect, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUserCourses } from "@/src/hooks/useUserCourses";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
@@ -12,7 +12,24 @@ export default function AppLayout() {
   useEffect(() => {
     if (!isLoading && !loading && session && courses.length == 0) {
       routerReplace(ROUTES.languageCourseSelection);
+      return;
     }
+
+    const socket = getSocket();
+    if (!socket.connected) {
+      console.log("no socket found, connecting");
+      socket.connect();
+    }
+
+    const handleConnectSuccess = () => {
+      console.log("socket connected successfully");
+    };
+
+    socket.on("connect", handleConnectSuccess);
+
+    return () => {
+      socket.off("connect", handleConnectSuccess);
+    };
   }, [isLoading, loading, session, courses.length]);
 
   if (isLoading) {
@@ -22,9 +39,6 @@ export default function AppLayout() {
   if (!session) {
     return <Redirect href="../login" />;
   }
-
-  const socket = getSocket();
-  if (!socket.connected) socket.connect();
 
   return (
     <Stack>

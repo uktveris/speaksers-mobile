@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { View } from "react-native";
-// import { RTCView, MediaStream } from "react-native-webrtc";
+import { RTCView } from "react-native-webrtc";
 import { Pressable } from "react-native";
 import { Text } from "react-native";
 import { getSocket } from "@/src/server/socket";
 import { useLocalSearchParams } from "expo-router";
-import { Platform } from "react-native";
 import { usePeerConn } from "@/src/hooks/usePeerConn";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
+import { Appearance } from "react-native";
+import { GlobalStyles } from "@/src/constants/StyleConstants";
+
+const colorscheme = Appearance.getColorScheme();
 
 function DialogCall() {
   const socket = getSocket();
@@ -17,28 +20,10 @@ function DialogCall() {
     console.log("remote socketId from params: " + remoteSocketId);
     console.log("initcall from params: " + initCall);
   }, []);
-  const remoteStreamRef = useRef<MediaStream | null>(null);
-  // web testing
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isWeb, setIsWeb] = useState(false);
   const { remoteStream, activeCall, endCall } = usePeerConn(
     remoteSocketId as string,
     initCall === "true",
   );
-
-  // TODO: on production remove this effect
-  // TODO: stream needs to be played on mobile speakers
-  useEffect(() => {
-    if (Platform.OS === "web") setIsWeb(true);
-    if (audioRef.current && remoteStream) {
-      audioRef.current.srcObject = remoteStream;
-      audioRef.current
-        .play()
-        .catch((error) =>
-          console.log("error playing audio stream: " + error.message),
-        );
-    }
-  }, [remoteStream]);
 
   useEffect(() => {
     console.log("MOUNTED: DIALOGCALL");
@@ -51,37 +36,29 @@ function DialogCall() {
     routerReplace(ROUTES.homeScreen);
   };
 
-  const webAudio = (
-    <div>
-      <h2>Remote Audio</h2>
-      <audio ref={audioRef} autoPlay controls />
-    </div>
-  );
-
   return activeCall ? (
     <View>
-      {/* remoteStream ? ( */}
-      {/* <RTCView
+      {remoteStream && (
+        <RTCView
           streamURL={remoteStream.toURL()}
           style={{ width: 0, height: 0 }}
-        /> */}
-      {isWeb && webAudio}
-      <Text>this is dialog call screen</Text>
+        />
+      )}
+      <Text style={GlobalStyles.mediumBoldText}>
+        this is dialog call screen
+      </Text>
       <Pressable onPress={() => endCall()}>
-        <Text>end call</Text>
+        <Text style={GlobalStyles.smallTextBold}>end call</Text>
       </Pressable>
     </View>
   ) : (
     <View>
-      <Text>this is dialog call screen</Text>
+      <Text style={GlobalStyles.smallTextBold}>this is dialog call screen</Text>
       <Pressable onPress={handleGoBack}>
-        <Text>call ended, go back</Text>
+        <Text style={GlobalStyles.smallTextBold}>call ended, go back</Text>
       </Pressable>
     </View>
   );
-  // : (
-  //   <View></View>
-  // );
 }
 
 export default DialogCall;

@@ -1,6 +1,6 @@
 import { Alert, View } from "react-native";
 import { getSocket } from "@/src/server/socket";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Text } from "react-native";
 import { Appearance } from "react-native";
 import { ColorSchemeName } from "react-native";
@@ -67,27 +67,24 @@ function Dialog() {
     const onMatched = (peerId: string) => {
       // setMatched(true);
       console.log("socket received peer id! - " + peerId);
-      // router.replace(
-      //   "/dialogCall?remoteSocketId=" + peerId + "&initCall=false",
-      // );
-      routerReplace(
-        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false",
-      );
+      const route =
+        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false";
+      console.log("second peer: trying to navigate to route:", route);
+      routerReplace(route);
     };
 
     const onInitCall = (peerId: string) => {
       // setMatched(true);
       console.log("socket received peer id! - " + peerId);
-      // router.replace("/dialogCall?remoteSocketId=" + peerId + "&initCall=true");
-      routerReplace(
-        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true",
-      );
+      const route =
+        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true";
+      console.log("first peer: trying to navigate to route:", route);
+      routerReplace(route);
     };
 
     const onCallCancelled = () => {
       console.log("exited the call queue");
       // setMatched(false);
-      // router.replace("../(tabs)");
       routerReplace(ROUTES.homeScreen);
     };
 
