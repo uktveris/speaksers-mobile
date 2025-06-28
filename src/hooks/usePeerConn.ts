@@ -64,43 +64,22 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
           });
         }
       });
-      // conn.onicecandidate = (event) => {
-      //   if (event.candidate) {
-      //     socket.emit("ice-candidate", {
-      //       recipient: remoteSocketId,
-      //       candidate: event.candidate,
-      //     });
-      //   }
-      // };
 
       conn.addEventListener("track", (event) => {
         const stream = event.streams[0] as unknown as MediaStream;
         setRemoteStream(stream);
         console.log("set remote stream: " + event.streams[0]);
       });
-      // conn.ontrack = (event) => {
-      //   const stream = event.streams[0] as unknown as MediaStream;
-      //   setRemoteStream(stream);
-      //   console.log("set remote stream: " + event.streams[0]);
-      // };
 
       conn.addEventListener("signalingstatechange", () => {
         console.log("signalign state change, current: " + conn.signalingState);
       });
-      // conn.onsignalingstatechange = () => {
-      //   console.log("signalign state change, current: " + conn.signalingState);
-      // };
 
       conn.addEventListener("connectionstatechange", (event) => {
         if (conn.connectionState === "connected") {
           console.log("connected successfully!");
         }
       });
-      // conn.onconnectionstatechange = () => {
-      //   if (conn.connectionState === "connected") {
-      //     console.log("connected successfully!");
-      //   }
-      // };
       peerConnRef.current = conn;
       return conn;
     };

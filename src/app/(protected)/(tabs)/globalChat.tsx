@@ -1,4 +1,4 @@
-import { ThemedText } from "@/src/components/ThemedText";
+import { Text } from "react-native";
 import { Colors } from "@/src/constants/Colors";
 import { Appearance } from "react-native";
 import { StyleSheet } from "react-native";
@@ -10,7 +10,7 @@ function GlobalChat() {
   const styles = setStyles(theme);
   return (
     <View style={styles.container}>
-      <ThemedText>this is global chat</ThemedText>
+      <Text>this is global chat</Text>
     </View>
   );
 }
