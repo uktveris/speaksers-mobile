@@ -124,6 +124,8 @@ function SessionProvider({ children }: PropsWithChildren) {
     }
   };
 
+  // TODO: must change and edit to NOT use session; return just user if possible
+
   return (
     <AuthContext.Provider
       value={{ session, isLoading, signIn, signOut, deleteAcount }}
