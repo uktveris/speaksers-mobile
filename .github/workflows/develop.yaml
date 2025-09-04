@@ -30,15 +30,18 @@ jobs:
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
       - run: supabase db push
 
-      - name: Verify auth
-        run: eas whoami
-        env:
-          EXPO_TOKEN: ${{secrets.EXPO_TOKEN}}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
 
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: $EXPO_TOKEN
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run EAS preview build
         run: eas build --profile preview --platform android --non-interactive --no-wait
