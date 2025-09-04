@@ -17,6 +17,12 @@ jobs:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
+      - name: print data
+        run: |
+          echo "project id --  $SUPABASE_PROJECT_ID"
+          echo "access token --  $SUPABASE_ACCESS_TOKEN"
+          echo "db password --  $SUPABASE_DB_PASSWORD"
+
       - uses: actions/checkout@v4
 
       - uses: supabase/setup-cli@v1
