@@ -1,0 +1,1 @@
+\i seeds/languages.sql
