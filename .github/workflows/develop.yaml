@@ -17,10 +17,6 @@ jobs:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
-      - name: print data
-        run: |
-          echo "expo token length -- ${#EXPO_TOKEN}"
-
       - uses: actions/checkout@v4
 
       - uses: supabase/setup-cli@v1
