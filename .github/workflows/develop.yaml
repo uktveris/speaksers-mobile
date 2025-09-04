@@ -19,9 +19,7 @@ jobs:
     steps:
       - name: print data
         run: |
-          echo "project id length -- ${#SUPABASE_PROJECT_ID}"
-          echo "access token length -- ${#SUPABASE_ACCESS_TOKEN}"
-          echo "db password length -- ${#SUPABASE_DB_PASSWORD}"
+          echo "expo token length -- ${#EXPO_TOKEN}"
 
       - uses: actions/checkout@v4
 
@@ -36,6 +34,9 @@ jobs:
         with:
           eas-version: latest
           token: $EXPO_TOKEN
+
+      - name: Verify auth
+        run: eas whoami
 
       - name: Run EAS preview build
         run: eas build --profile preview --platform android --non-interactive --no-wait
