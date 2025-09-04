@@ -88,16 +88,11 @@ function SessionProvider({ children }: PropsWithChildren) {
 
   const deleteAcount = async () => {
     const url = getBackendUrl();
-    // const sbTokenName = Constants.expoConfig?.extra?.SB_TOKEN_NAME as string;
     const userId = session?.user.id;
     if (!userId) {
       console.log("no user id found, returning..");
       return;
     }
-    // if (!sbTokenName) {
-    //   console.log("no sb token name found, returning..");
-    //   return;
-    // }
     try {
       const { data, error } = await supabase
         .from("users")
@@ -117,7 +112,6 @@ function SessionProvider({ children }: PropsWithChildren) {
         headers: { "Content-Type": "application/json" },
       });
       console.log("deleting user:", response.data);
-      // await AsyncStorage.removeItem(sbTokenName);
       await AsyncStorage.clear();
       signOut();
     } catch (err) {
