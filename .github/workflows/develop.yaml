@@ -37,6 +37,8 @@ jobs:
 
       - name: Verify auth
         run: eas whoami
+        env:
+          EXPO_TOKEN: ${{secrets.EXPO_TOKEN}}
 
       - name: Run EAS preview build
         run: eas build --profile preview --platform android --non-interactive --no-wait
