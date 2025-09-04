@@ -119,7 +119,7 @@ function SessionProvider({ children }: PropsWithChildren) {
     }
   };
 
-  // TODO: must change and edit to NOT use session; just return user
+  // TODO: must change and edit to NOT use session; just return user object.
 
   return (
     <AuthContext.Provider
