@@ -30,15 +30,15 @@ jobs:
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
       - run: supabase db push
 
-      - uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: $EXPO_TOKEN
-
       - name: Verify auth
         run: eas whoami
         env:
           EXPO_TOKEN: ${{secrets.EXPO_TOKEN}}
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: $EXPO_TOKEN
 
       - name: Run EAS preview build
         run: eas build --profile preview --platform android --non-interactive --no-wait
