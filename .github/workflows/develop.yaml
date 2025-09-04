@@ -19,9 +19,9 @@ jobs:
     steps:
       - name: print data
         run: |
-          echo "project id length --  ${#SUPABASE_PROJECT_ID}"
-          echo "access token length --  ${#SUPABASE_ACCESS_TOKEN}"
-          echo "db password length --  ${#SUPABASE_DB_PASSWORD}"
+          echo "project id length -- ${#SUPABASE_PROJECT_ID}"
+          echo "access token length -- ${#SUPABASE_ACCESS_TOKEN}"
+          echo "db password length -- ${#SUPABASE_DB_PASSWORD}"
 
       - uses: actions/checkout@v4
 
