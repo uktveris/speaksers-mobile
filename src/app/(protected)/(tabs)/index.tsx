@@ -10,7 +10,7 @@ import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
 const colorScheme = Appearance.getColorScheme();
 const styles = setStyles(colorScheme);
-function App() {
+export default function App() {
   const supabase = getSupabaseClient();
 
   const createSessionFromUrl = async (url: string) => {
@@ -94,5 +94,3 @@ function setStyles(theme: ColorSchemeName) {
     },
   });
 }
-
-export default App;

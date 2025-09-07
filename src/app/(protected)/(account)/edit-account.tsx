@@ -16,7 +16,7 @@ import { useUser } from "@/src/hooks/useUser";
 
 const colorScheme = Appearance.getColorScheme();
 
-function EditAccount() {
+export default function EditAccount() {
   const [changesMade, setChangesMade] = useState(false);
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
@@ -217,5 +217,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-export default EditAccount;

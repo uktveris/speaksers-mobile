@@ -1,4 +1,4 @@
-import { Audio } from "expo-av";
+import { AudioModule } from "expo-audio";
 import { Platform } from "react-native";
 
 const manageMicrophonePermissions = async () => {
@@ -14,9 +14,10 @@ const manageMicrophonePermissions = async () => {
       return false;
     }
   } else {
-    const permissionResponse = await Audio.getPermissionsAsync();
+    const permissionResponse = await AudioModule.getRecordingPermissionsAsync();
     if (permissionResponse.status !== "granted") {
-      const { status: newStatus } = await Audio.requestPermissionsAsync();
+      const { status: newStatus } =
+        await AudioModule.requestRecordingPermissionsAsync();
       return newStatus === "granted";
     }
 

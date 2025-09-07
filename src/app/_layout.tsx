@@ -1,3 +1,4 @@
+import "react-native-reanimated";
 import {
   DarkTheme,
   DefaultTheme,
@@ -8,7 +9,6 @@ import { Slot, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef } from "react";
-import "react-native-reanimated";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { useColorScheme } from "@/src/hooks/useColorScheme";

@@ -75,6 +75,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           photosPermission: `Allow ${APP_NAME} to access your photos to update profile picture.`,
         },
       ],
+      [
+        "expo-audio",
+        {
+          microphonePermission: `Allow ${APP_NAME} to access your microphone.`,
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
