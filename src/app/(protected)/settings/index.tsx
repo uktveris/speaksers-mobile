@@ -1,7 +1,6 @@
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { Colors } from "@/src/constants/Colors";
 import { settingsRoutes } from "@/src/constants/settingsRoutes";
-import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { routerPush } from "@/src/utils/navigation";
 import { RelativePathString } from "expo-router";
 import { Appearance } from "react-native";
@@ -27,7 +26,7 @@ function SettingsItem({
 
   return (
     <Pressable onPress={() => routerPush(route)} style={styles.itemContainer}>
-      <Text style={GlobalStyles.smallTextBold}>{title}</Text>
+      <Text>{title}</Text>
       <IconSymbol size={18} name={icon} color={color} />
     </Pressable>
   );
@@ -35,9 +34,8 @@ function SettingsItem({
 
 function Settings() {
   return (
-    <SafeAreaView style={GlobalStyles.container}>
+    <SafeAreaView>
       <FlatList
-        style={styles.flatList}
         data={settingsRoutes}
         renderItem={({ item }) => (
           <SettingsItem
@@ -50,25 +48,5 @@ function Settings() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  flatList: {
-    paddingHorizontal: 10,
-  },
-  itemContainer: {
-    backgroundColor: Colors.base.darkTint,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    marginBottom: 10,
-    borderRadius: 20,
-  },
-  itemBottomBorder: {
-    borderBottomWidth: 2,
-    borderBottomColor:
-      colorscheme === "light" ? Colors.light.text : Colors.dark.text,
-  },
-});
 
 export default Settings;

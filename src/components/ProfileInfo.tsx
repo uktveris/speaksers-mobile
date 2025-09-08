@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { Image } from "react-native";
 import { StyleSheet } from "react-native";
 import { Text } from "react-native";
-import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { Colors } from "@/src/constants/Colors";
 import { useUser } from "../hooks/useUser";
 
@@ -32,8 +31,8 @@ function ProfileInfo() {
           <Image source={{ uri: avatarUrl }} style={styles.image} />
         </View>
         <View style={styles.userInfo}>
-          <Text style={GlobalStyles.smallTextBold}>{username}</Text>
-          <Text style={GlobalStyles.smallTextBold}>{name}</Text>
+          <Text>{username}</Text>
+          <Text>{name}</Text>
         </View>
       </View>
     </View>
@@ -57,7 +56,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
-    backgroundColor: Colors.base.darkTint,
     paddingVertical: 10,
     borderRadius: 10,
   },

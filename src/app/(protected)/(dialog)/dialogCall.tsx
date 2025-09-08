@@ -8,7 +8,6 @@ import { useLocalSearchParams } from "expo-router";
 import { usePeerConn } from "@/src/hooks/usePeerConn";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { Appearance } from "react-native";
-import { GlobalStyles } from "@/src/constants/StyleConstants";
 
 const colorscheme = Appearance.getColorScheme();
 
@@ -44,18 +43,16 @@ function DialogCall() {
           style={{ width: 0, height: 0 }}
         />
       )}
-      <Text style={GlobalStyles.mediumBoldText}>
-        this is dialog call screen
-      </Text>
+      <Text>this is dialog call screen</Text>
       <Pressable onPress={() => endCall()}>
-        <Text style={GlobalStyles.smallTextBold}>end call</Text>
+        <Text>end call</Text>
       </Pressable>
     </View>
   ) : (
     <View>
-      <Text style={GlobalStyles.smallTextBold}>this is dialog call screen</Text>
+      <Text>this is dialog call screen</Text>
       <Pressable onPress={handleGoBack}>
-        <Text style={GlobalStyles.smallTextBold}>call ended, go back</Text>
+        <Text>call ended, go back</Text>
       </Pressable>
     </View>
   );

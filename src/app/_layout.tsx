@@ -1,9 +1,5 @@
 import "react-native-reanimated";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import "@/global.css";
 import { useFonts } from "expo-font";
 import { Slot, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -51,12 +47,8 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <KeyboardProvider>
           <LocaleProvider>
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
-              {loaded ? <Slot /> : null}
-              <StatusBar style="auto" />
-            </ThemeProvider>
+            {loaded ? <Slot /> : null}
+            <StatusBar style="auto" />
           </LocaleProvider>
         </KeyboardProvider>
       </SafeAreaProvider>

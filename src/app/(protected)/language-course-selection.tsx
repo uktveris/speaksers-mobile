@@ -1,6 +1,5 @@
 import { Colors } from "@/src/constants/Colors";
 import { levels } from "@/src/constants/languageLevels";
-import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { useUserCourses } from "@/src/hooks/useUserCourses";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
@@ -17,7 +16,6 @@ function LanguageCourseSelection() {
   const { addUserCourse } = useUserCourses();
   const [courses, setCourses] = useState<{ name: string; id: string }[]>([]);
   const theme = Appearance.getColorScheme();
-  const styles = setStyles(theme);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState(levels[0]);
 
@@ -49,15 +47,12 @@ function LanguageCourseSelection() {
   };
 
   return (
-    <SafeAreaView style={GlobalStyles.container}>
-      <View style={styles.container}>
-        <View style={GlobalStyles.verticalSpacerMedium}></View>
-        <Text style={GlobalStyles.titleText}>Add language CEFR level</Text>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
+    <SafeAreaView>
+      <View>
+        <Text>Add language CEFR level</Text>
         <Picker
           selectedValue={selectedCourse}
           onValueChange={(itemValue, itemIndex) => setSelectedCourse(itemValue)}
-          style={styles.picker}
         >
           {courses.map((course) => (
             <Picker.Item
@@ -67,50 +62,20 @@ function LanguageCourseSelection() {
             />
           ))}
         </Picker>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
         <Picker
           selectedValue={selectedLevel}
           onValueChange={(itemValue, itemIndex) => setSelectedLevel(itemValue)}
-          style={styles.picker}
         >
           {levels.map((level, index) => (
             <Picker.Item key={index} label={level} value={level} />
           ))}
         </Picker>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
-        <Pressable
-          onPress={addCourse}
-          style={[GlobalStyles.primaryButton, styles.button]}
-        >
-          <Text style={GlobalStyles.mediumBoldText}>Continue</Text>
+        <Pressable onPress={addCourse}>
+          <Text>Continue</Text>
         </Pressable>
       </View>
     </SafeAreaView>
   );
 }
-
-const setStyles = (theme: ColorSchemeName) => {
-  return StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: 10,
-    },
-    button: {
-      width: "40%",
-    },
-    picker: {
-      width: "60%",
-      height: 50,
-      marginVertical: 20,
-      backgroundColor: Colors.light.textField,
-      color: theme === "light" ? Colors.light.text : Colors.dark.text,
-      borderRadius: 10,
-      borderWidth: 0,
-      paddingHorizontal: 10,
-    },
-  });
-};
 
 export default LanguageCourseSelection;

@@ -1,6 +1,5 @@
 import GoogleAuthButton from "@/src/components/oauth/GoogleAuthButton";
 import { Colors } from "@/src/constants/Colors";
-import { FontSizes, GlobalStyles } from "@/src/constants/StyleConstants";
 import { useSession } from "@/src/context/AuthContext";
 import { useState } from "react";
 import { Appearance } from "react-native";
@@ -43,17 +42,20 @@ export default function Login() {
     }
   };
 
+  // TODO: style textinput text color with theme provider from nativewind
   return (
-    <SafeAreaView style={[GlobalStyles.container, styles.outerContainer]}>
-      <View style={styles.container}>
-        <Text style={GlobalStyles.titleText}>Log in</Text>
-        <View style={GlobalStyles.verticalSpacerLarge}></View>
-        <View>
-          <Text style={GlobalStyles.smallText}>Email</Text>
-          <View style={GlobalStyles.verticalSpacerSmall}></View>
+    <SafeAreaView className="h-full w-full bg-background-light dark:bg-background-dark">
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">
+          Log in
+        </Text>
+        <View className="h-min m-5 mb-0 px-10 w-full">
+          <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
+            Email
+          </Text>
           <TextInput
-            style={styles.inputBox}
-            theme={{ roundness: 10 }}
+            className="rounded-3xl bg-black/25 my-1"
+            style={{ backgroundColor: "transparent" }}
             mode="flat"
             underlineColor="transparent"
             activeUnderlineColor="transparent"
@@ -64,19 +66,16 @@ export default function Login() {
             returnKeyType="done"
             onSubmitEditing={Keyboard.dismiss}
             importantForAccessibility="yes"
-            textColor={
-              colorScheme === "light" ? Colors.light.text : Colors.dark.text
-            }
             placeholderTextColor="grey"
           />
         </View>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
-        <View>
-          <Text style={GlobalStyles.smallText}>Password</Text>
-          <View style={GlobalStyles.verticalSpacerSmall}></View>
+        <View className="h-min m-5 px-10 w-full">
+          <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
+            Password
+          </Text>
           <TextInput
-            style={styles.inputBox}
-            theme={{ roundness: 10 }}
+            className="rounded-3xl bg-black/25 w-full my-1"
+            style={{ backgroundColor: "transparent" }}
             mode="flat"
             underlineColor="transparent"
             activeUnderlineColor="transparent"
@@ -87,9 +86,6 @@ export default function Login() {
             returnKeyType="done"
             onSubmitEditing={Keyboard.dismiss}
             importantForAccessibility="yes"
-            textColor={
-              colorScheme === "light" ? Colors.light.text : Colors.dark.text
-            }
             placeholderTextColor="grey"
             right={
               <TextInput.Icon
@@ -100,53 +96,24 @@ export default function Login() {
           />
         </View>
         {errorsExist && <SignUpErrorMessage message={errorMsg} />}
-        <View style={GlobalStyles.verticalSpacerLarge}></View>
         <Pressable
-          style={[
-            GlobalStyles.primaryButton,
-            loading && GlobalStyles.disabledButton,
-          ]}
+          className="bg-primary w-3/4  p-3 flex items-center rounded-3xl"
           disabled={loading}
           onPress={() => signInWithEmail()}
         >
-          <Text style={GlobalStyles.mediumBoldText}>Sign in</Text>
+          <Text className="text-text-dark font-bold text-2xl">Sign in</Text>
         </Pressable>
-        <View style={GlobalStyles.verticalSpacerMedium}></View>
         {/* <GoogleAuthButton /> */}
         <Pressable
-          style={[
-            GlobalStyles.secondaryButton,
-            loading && GlobalStyles.disabledButton,
-          ]}
+          className="p-4 pt-8"
           disabled={loading}
-          // onPress={() => router.replace("/register")}
           onPress={() => routerReplace(ROUTES.register)}
         >
-          <Text style={GlobalStyles.mediumBoldText}>No Account? Sign up</Text>
+          <Text className="text-text-light dark:text-text-dark font-bold underline">
+            No Account? Sign up
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  outerContainer: {
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-    paddingVertical: 20,
-  },
-  container: {
-    flex: 0.5,
-    justifyContent: "center",
-    marginHorizontal: 40,
-  },
-  inputBox: {
-    fontSize: FontSizes.small,
-    backgroundColor: Colors.base.inputFieldBack,
-    borderRadius: 10,
-    color: colorScheme === "light" ? Colors.light.text : Colors.dark.text,
-  },
-});

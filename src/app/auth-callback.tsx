@@ -1,4 +1,3 @@
-import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { useEffect } from "react";
 import { Text } from "react-native";
@@ -59,5 +58,5 @@ export default function AuthCallback() {
     };
   }, []);
 
-  return <View style={GlobalStyles.container}></View>;
+  return <View></View>;
 }

@@ -4,12 +4,9 @@ import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as Linking from "expo-linking";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import GameBox from "@/src/components/GameBox";
-import { GlobalStyles } from "@/src/constants/StyleConstants";
-import { Text } from "react-native";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
 const colorScheme = Appearance.getColorScheme();
-const styles = setStyles(colorScheme);
 export default function App() {
   const supabase = getSupabaseClient();
 
@@ -40,8 +37,8 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={GlobalStyles.container}>
-      <View style={styles.container}>
+    <SafeAreaView>
+      <View>
         <Row>
           <Col>
             <GameBox
@@ -60,37 +57,9 @@ export default function App() {
 }
 
 function Row({ children }: { children: any }) {
-  return <View style={styles.row}>{children}</View>;
+  return <View>{children}</View>;
 }
 
 function Col({ children }: { children: any }) {
-  return <View style={styles.column}>{children}</View>;
-}
-
-function setStyles(theme: ColorSchemeName) {
-  return StyleSheet.create({
-    container: {
-      flex: 2,
-      width: "100%",
-      color: "red",
-    },
-    text: {
-      color: "red",
-      fontSize: 30,
-      textAlign: "center",
-      backgroundColor: "white",
-      padding: 20,
-      margin: 10,
-    },
-    row: {
-      flexDirection: "row",
-    },
-    column: {
-      margin: 10,
-      flex: 2,
-      borderColor: "white",
-      borderRadius: 20,
-      overflow: "hidden",
-    },
-  });
+  return <View>{children}</View>;
 }

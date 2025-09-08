@@ -4,7 +4,6 @@ import { Appearance } from "react-native";
 import { ColorSchemeName } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native";
-import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { SafeAreaView } from "react-native";
 import ProfileInfo from "@/src/components/ProfileInfo";
 import { useUserCourses } from "@/src/hooks/useUserCourses";
@@ -35,28 +34,18 @@ function Account() {
   };
 
   return (
-    <SafeAreaView style={[GlobalStyles.container, { paddingTop: 30 }]}>
+    <SafeAreaView>
       <View style={styles.container}>
         <View style={styles.topBar}>
-          <Pressable
-            onPress={handleEditProfile}
-            style={GlobalStyles.secondaryButtonSmall}
-          >
-            <Text style={GlobalStyles.smallTextBold}>Edit</Text>
+          <Pressable onPress={handleEditProfile}>
+            <Text>Edit</Text>
           </Pressable>
-          <Pressable
-            onPress={handleGoToSettings}
-            style={GlobalStyles.primaryButtonSmall}
-          >
-            <Text style={GlobalStyles.smallTextBold}>Settings</Text>
+          <Pressable onPress={handleGoToSettings}>
+            <Text>Settings</Text>
           </Pressable>
         </View>
         <ProfileInfo />
-        <View style={GlobalStyles.verticalSpacerSmall} />
-        <Text style={[GlobalStyles.mediumBoldText, styles.languagesText]}>
-          Languages
-        </Text>
-        <View style={GlobalStyles.verticalSpacerSmall} />
+        <Text>Languages</Text>
         <View style={styles.courseContainer}>
           {userCourses.map((course, key) => (
             <ProfileCourseInfo
@@ -82,14 +71,10 @@ function setStyles(theme: ColorSchemeName) {
       flex: 1,
       justifyContent: "flex-start",
       alignItems: "center",
-      // paddingVertical: 20,
     },
     languagesText: {
       alignSelf: "flex-start",
       paddingHorizontal: 10,
-    },
-    text: {
-      color: theme === "light" ? Colors.light.text : Colors.dark.text,
     },
     image: {
       width: 100,

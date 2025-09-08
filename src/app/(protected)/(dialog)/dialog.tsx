@@ -11,7 +11,6 @@ import { Dimensions } from "react-native";
 import { Animated } from "react-native";
 import { Easing } from "react-native";
 import { SafeAreaView } from "react-native";
-import { GlobalStyles } from "@/src/constants/StyleConstants";
 import { BackHandler } from "react-native";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 
@@ -134,10 +133,7 @@ function Dialog() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={[GlobalStyles.titleText]}>
-        Searching for a dialogue partner
-      </Text>
-      <View style={GlobalStyles.verticalSpacerLarge}></View>
+      <Text>Searching for a dialogue partner</Text>
       <Animated.View
         style={[
           styles.box,
@@ -146,12 +142,8 @@ function Dialog() {
           },
         ]}
       />
-      <View style={GlobalStyles.verticalSpacerLarge}></View>
-      <Pressable
-        style={GlobalStyles.secondaryButton}
-        onPress={() => socket.emit("cancel_call")}
-      >
-        <Text style={GlobalStyles.mediumBoldText}>Cancel call</Text>
+      <Pressable onPress={() => socket.emit("cancel_call")}>
+        <Text>Cancel call</Text>
       </Pressable>
     </SafeAreaView>
   );
@@ -162,15 +154,12 @@ function setStyles(theme: ColorSchemeName) {
     container: {
       alignItems: "center",
       flex: 1,
-      backgroundColor:
-        theme === "light" ? Colors.light.background : Colors.dark.background,
       justifyContent: "center",
     },
     box: {
       alignSelf: "flex-start",
       width: boxSize,
       height: boxSize,
-      backgroundColor: Colors.light.primary,
       borderRadius: 20,
     },
   });

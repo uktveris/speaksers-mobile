@@ -12,7 +12,6 @@ import { Colors } from "@/src/constants/Colors";
 import { TextInput } from "react-native-paper";
 import { Keyboard } from "react-native";
 import { Text } from "react-native";
-import { FontSizes, GlobalStyles } from "@/src/constants/StyleConstants";
 import SignUpErrorMessage from "@/src/components/SignUpErrorMessage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -84,16 +83,18 @@ export default function Register() {
   };
 
   return (
-    <SafeAreaView style={[GlobalStyles.container, styles.outerContainer]}>
-      <View style={styles.container}>
-        <Text style={GlobalStyles.titleText}>Sign up</Text>
-        <View style={GlobalStyles.verticalSpacerLarge}></View>
-        <View>
-          <Text style={GlobalStyles.smallText}>Email</Text>
-          <View style={GlobalStyles.verticalSpacerSmall}></View>
+    <SafeAreaView className="h-full w-full bg-background-light dark:bg-background-dark">
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">
+          Sign up
+        </Text>
+        <View className="h-min m-5 mb-0 px-10 w-full">
+          <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
+            Email
+          </Text>
           <TextInput
-            style={styles.inputBox}
-            theme={{ roundness: 10 }}
+            className="rounded-3xl bg-black/25 my-1"
+            style={{ backgroundColor: "transparent" }}
             mode="flat"
             underlineColor="transparent"
             activeUnderlineColor="transparent"
@@ -104,16 +105,16 @@ export default function Register() {
             returnKeyType="done"
             onSubmitEditing={Keyboard.dismiss}
             importantForAccessibility="yes"
-            textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
             placeholderTextColor="grey"
           />
         </View>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
-        <View>
-          <Text style={GlobalStyles.smallText}>Password</Text>
-          <View style={GlobalStyles.verticalSpacerSmall}></View>
+        <View className="h-min m-5 px-10 w-full">
+          <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
+            Password
+          </Text>
           <TextInput
-            style={styles.inputBox}
+            className="rounded-3xl bg-black/25 w-full my-1"
+            style={{ backgroundColor: "transparent" }}
             theme={{ roundness: 10 }}
             mode="flat"
             underlineColor="transparent"
@@ -125,7 +126,6 @@ export default function Register() {
             returnKeyType="done"
             onSubmitEditing={Keyboard.dismiss}
             importantForAccessibility="yes"
-            textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
             placeholderTextColor="grey"
             right={
               <TextInput.Icon
@@ -135,13 +135,14 @@ export default function Register() {
             }
           />
         </View>
-        <View style={GlobalStyles.verticalSpacerSmall}></View>
-        <View>
-          <Text style={GlobalStyles.smallText}>Repeat password</Text>
-          <View style={GlobalStyles.verticalSpacerSmall}></View>
+        <View></View>
+        <View className="h-min m-5 px-10 w-full">
+          <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
+            Repeat password
+          </Text>
           <TextInput
-            style={styles.inputBox}
-            theme={{ roundness: 10 }}
+            className="rounded-3xl bg-black/25 w-full my-1"
+            style={{ backgroundColor: "transparent" }}
             mode="flat"
             underlineColor="transparent"
             activeUnderlineColor="transparent"
@@ -152,7 +153,6 @@ export default function Register() {
             returnKeyType="done"
             onSubmitEditing={Keyboard.dismiss}
             importantForAccessibility="yes"
-            textColor={theme === "light" ? Colors.light.text : Colors.dark.text}
             placeholderTextColor="grey"
             right={
               <TextInput.Icon
@@ -165,28 +165,20 @@ export default function Register() {
         {errorsExist && (
           <SignUpErrorMessage message="Passwords do not match!" />
         )}
-        <View style={GlobalStyles.verticalSpacerLarge}></View>
         <Pressable
-          style={[
-            GlobalStyles.primaryButton,
-            loading && GlobalStyles.disabledButton,
-          ]}
+          className="bg-primary w-3/4  p-3 flex items-center rounded-3xl"
           disabled={loading}
           onPress={() => signUpWithEmail()}
         >
-          <Text style={GlobalStyles.mediumBoldText}>Sign up</Text>
+          <Text className="text-text-dark font-bold text-2xl">Sign up</Text>
         </Pressable>
-        <View style={GlobalStyles.verticalSpacerMedium}></View>
         {/* <GoogleAuthButton /> */}
         <Pressable
-          style={[
-            GlobalStyles.secondaryButton,
-            loading && GlobalStyles.disabledButton,
-          ]}
+          className="p-4 pt-8"
           disabled={loading}
           onPress={() => routerReplace(ROUTES.login)}
         >
-          <Text style={[GlobalStyles.mediumBoldText, { textAlign: "center" }]}>
+          <Text className="text-text-light dark:text-text-dark font-bold underline">
             Alredy have an account? Log in!
           </Text>
         </Pressable>
@@ -194,20 +186,3 @@ export default function Register() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  outerContainer: {
-    justifyContent: "center",
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    marginHorizontal: 40,
-  },
-  inputBox: {
-    fontSize: FontSizes.small,
-    backgroundColor: Colors.base.inputFieldBack,
-    borderRadius: 10,
-    color: theme === "light" ? Colors.light.text : Colors.dark.text,
-  },
-});
