@@ -25,6 +25,7 @@ export default function EditAccount() {
   const [originalUsername, setOriginalUsername] = useState("");
   const [loaded, setLoaded] = useState(false);
   const { session } = useSession();
+  const [updateLoading, setUpdateLoading] = useState(false);
   const {
     userData,
     avatarUrl: originalAvatarUrl,
@@ -53,8 +54,10 @@ export default function EditAccount() {
   }, [session?.user, userData, originalAvatarUrl]);
 
   const updateUserAndGoBack = async () => {
+    setUpdateLoading(true);
     const result = await updateUserData(avatarUrl, name);
     await refetch();
+    setUpdateLoading(false);
     if (!result) {
       console.log("something went wrong when updating, returning..");
       return;
@@ -125,7 +128,12 @@ export default function EditAccount() {
             className="bg-primary py-1 px-6 rounded-3xl"
             onPress={() => updateUserAndGoBack()}
           >
-            <Text className="text-button_text font-bold text-xl">Save</Text>
+            {!updateLoading && (
+              <Text className="text-text-dark font-bold text-xl">Save</Text>
+            )}
+            {updateLoading && (
+              <ActivityIndicator color={theme.colors.text.dark} />
+            )}
           </Pressable>
         </View>
         <View className="pt-3">

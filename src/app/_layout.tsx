@@ -13,6 +13,7 @@ import { SessionProvider } from "@/src/context/AuthContext";
 import { deactivateKeepAwake } from "expo-keep-awake";
 import { LocaleProvider } from "@/src/context/LocaleContext";
 import { setRouterInstance } from "../utils/navigation";
+import { ModalProvider } from "../context/ModalContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -46,10 +47,12 @@ export default function RootLayout() {
     <SessionProvider>
       <SafeAreaProvider>
         <KeyboardProvider>
-          <LocaleProvider>
-            {loaded ? <Slot /> : null}
-            <StatusBar style="auto" />
-          </LocaleProvider>
+          <ModalProvider>
+            <LocaleProvider>
+              {loaded ? <Slot /> : null}
+              <StatusBar style="auto" />
+            </LocaleProvider>
+          </ModalProvider>
         </KeyboardProvider>
       </SafeAreaProvider>
     </SessionProvider>

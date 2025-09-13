@@ -53,6 +53,7 @@ function useUser() {
   }, [fetchUserData]);
 
   const updateUserData = async (newAvatarUri: string | null, name: string) => {
+    setLoading(true);
     try {
       let filePath: string;
       if (!newAvatarUri) {
@@ -75,6 +76,7 @@ function useUser() {
 
         if (fileUploadError) {
           console.log("file upload error:", fileUploadError.message);
+          setLoading(false);
           return false;
         }
       }
@@ -87,14 +89,17 @@ function useUser() {
       });
       if (error) {
         console.log("error occurred while updating user:", error.message);
+        setLoading(false);
         return false;
       }
 
       await fetchUserData();
       console.log("success, updated data:", data);
+      setLoading(false);
       return true;
     } catch (err) {
       console.log("error:", (err as Error).message);
+      setLoading(false);
       return false;
     }
   };

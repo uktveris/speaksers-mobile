@@ -4,6 +4,7 @@ import { Redirect, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useUserCourses } from "@/src/hooks/useUserCourses";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
+import { ModalProvider } from "@/src/context/ModalContext";
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();

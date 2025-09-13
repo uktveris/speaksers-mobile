@@ -1,4 +1,10 @@
-import { View, StyleSheet, ColorSchemeName, Appearance } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ColorSchemeName,
+  Appearance,
+  Pressable,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as Linking from "expo-linking";
@@ -8,6 +14,10 @@ import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { useLinkingURL } from "expo-linking";
 import { theme } from "@/theme";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { Text } from "react-native";
+import { useState } from "react";
+import { BottomModal } from "@/src/components/ui/BottomModal";
+import { useGlobalModal } from "@/src/context/ModalContext";
 
 export default function App() {
   const supabase = getSupabaseClient();
@@ -40,6 +50,8 @@ export default function App() {
     createSessionFromUrl(url);
   }
 
+  const { showModal, hideModal } = useGlobalModal();
+
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <View className="flex-1 px-2 pt-4">
@@ -50,6 +62,21 @@ export default function App() {
             name="Dialog"
             link={ROUTES.dialog}
           />
+          <Pressable
+            className="dark:text-text-dark mt-5"
+            onPress={() =>
+              showModal(
+                <>
+                  <Text>Modal</Text>
+                  <Pressable onPress={hideModal}>
+                    <Text>Hide</Text>
+                  </Pressable>
+                </>,
+              )
+            }
+          >
+            <Text>Open Modal</Text>
+          </Pressable>
           {/*<GameBox
             backgroundColor={theme.colors.button_text}
             name="Game"
