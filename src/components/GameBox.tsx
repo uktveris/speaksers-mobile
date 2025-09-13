@@ -3,12 +3,13 @@ import { Appearance } from "react-native";
 import { ColorSchemeName } from "react-native";
 import { StyleSheet } from "react-native";
 import { Text } from "react-native";
-import { Colors } from "@/src/constants/Colors";
 import { Pressable } from "react-native";
 import { manageMicrophonePermissions } from "@/src/config/permissionUtils";
 import { Alert } from "react-native";
 import { Linking } from "react-native";
 import { routerReplace } from "../utils/navigation";
+import { theme } from "@/theme";
+import { useColorScheme } from "nativewind";
 
 interface GameBoxProps {
   name: string;
@@ -17,12 +18,10 @@ interface GameBoxProps {
 }
 
 function GameBox({ name, backgroundColor, link }: GameBoxProps) {
-  const theme = Appearance.getColorScheme();
-  const styles = setStyles(theme, backgroundColor);
+  const colorScheme = useColorScheme();
 
   const handleNavigateWithPermissions = async () => {
     if (await manageMicrophonePermissions()) {
-      // router.navigate(link);
       routerReplace(link);
     } else {
       Alert.alert(
@@ -46,28 +45,26 @@ function GameBox({ name, backgroundColor, link }: GameBoxProps) {
   };
 
   return (
-    <Pressable onPress={handleNavigateWithPermissions}>
-      <View style={styles.container}>
-        <Text style={styles.text}>{name}</Text>
+    <Pressable
+      style={{ backgroundColor }}
+      className="p-6 rounded-2xl"
+      onPress={handleNavigateWithPermissions}
+    >
+      <View>
+        <Text
+          className="font-bold text-xl"
+          style={{
+            color:
+              colorScheme.colorScheme === "light"
+                ? theme.colors.text.light
+                : theme.colors.text.dark,
+          }}
+        >
+          {name}
+        </Text>
       </View>
     </Pressable>
   );
-}
-
-function setStyles(theme: ColorSchemeName, backgroundColor: string) {
-  return StyleSheet.create({
-    container: {
-      justifyContent: "center",
-      alignItems: "center",
-      aspectRatio: 1,
-      backgroundColor: backgroundColor,
-    },
-    text: {
-      color: theme === "light" ? Colors.light.text : Colors.dark.text,
-      fontSize: 40,
-      fontWeight: "bold",
-    },
-  });
 }
 
 export default GameBox;

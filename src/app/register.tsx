@@ -16,8 +16,8 @@ import SignUpErrorMessage from "@/src/components/SignUpErrorMessage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { routerReplace, ROUTES } from "../utils/navigation";
-
-const theme = Appearance.getColorScheme();
+import { useColorScheme } from "nativewind";
+import { theme } from "@/theme";
 
 export default function Register() {
   const supabase = getSupabaseClient();
@@ -28,6 +28,12 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepPassword, setShowRepPassword] = useState(false);
   const [errorsExist, setErrorExist] = useState(false);
+  const colorScheme = useColorScheme();
+
+  const textCol =
+    colorScheme.colorScheme === "light"
+      ? theme.colors.text.light
+      : theme.colors.text.dark;
 
   const signUpWithEmail = async () => {
     if (password !== repPassword) {
@@ -93,6 +99,7 @@ export default function Register() {
             Email
           </Text>
           <TextInput
+            textColor={textCol}
             className="rounded-3xl bg-black/25 my-1"
             style={{ backgroundColor: "transparent" }}
             mode="flat"
@@ -113,6 +120,7 @@ export default function Register() {
             Password
           </Text>
           <TextInput
+            textColor={textCol}
             className="rounded-3xl bg-black/25 w-full my-1"
             style={{ backgroundColor: "transparent" }}
             theme={{ roundness: 10 }}
@@ -141,6 +149,7 @@ export default function Register() {
             Repeat password
           </Text>
           <TextInput
+            textColor={textCol}
             className="rounded-3xl bg-black/25 w-full my-1"
             style={{ backgroundColor: "transparent" }}
             mode="flat"

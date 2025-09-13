@@ -19,9 +19,18 @@ function AccountOption({
   onPress: () => void;
 }) {
   return (
-    <Pressable onPress={onPress} style={styles.itemContainer}>
-      <Text>{title}</Text>
-      <IconSymbol size={18} name={icon} />
+    <Pressable
+      onPress={onPress}
+      className="flex flex-row border border-secondary rounded-xl p-4 mb-2 justify-between"
+    >
+      <Text className="text-contrast-light dark:text-contrast-dark font-bold text-lg">
+        {title}
+      </Text>
+      <IconSymbol
+        size={18}
+        name={icon}
+        className="text-contrast-light dark:text-contrast-dark font-bold"
+      />
     </Pressable>
   );
 }
@@ -79,9 +88,9 @@ function AccountSettings() {
   ];
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <FlatList
-        style={styles.flatList}
+        className="pt-4 p-2"
         data={options}
         renderItem={({ item }) => (
           <AccountOption

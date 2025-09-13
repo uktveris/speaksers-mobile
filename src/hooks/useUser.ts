@@ -17,6 +17,7 @@ function useUser() {
       setLoading(false);
       return;
     }
+    setLoading(true);
     const { data, error } = await supabase
       .from("users")
       .select()
@@ -28,15 +29,22 @@ function useUser() {
       return;
     }
 
-    const { data: avatarData } = supabase.storage
+    const { data: avatarData, error: avatarError } = await supabase.storage
       .from("avatars")
-      .getPublicUrl(
+      .createSignedUrl(
         data.avatar_url +
           "?updated_at=" +
           (data.avatar_updated_at || Date.now()),
+        60,
       );
+
+    if (avatarError || !avatarData) {
+      console.log("error while retrieving avatar: ", data.avatar_url);
+      return;
+    }
+
     setUserData(data);
-    setAvatarUrl(avatarData.publicUrl);
+    setAvatarUrl(avatarData.signedUrl);
     setLoading(false);
   }, [session?.user.id, supabase]);
 

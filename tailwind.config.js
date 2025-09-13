@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import { theme } from "./theme";
 module.exports = {
   content: [
     // "./**/*.{js,jsx,ts,tsx}",
@@ -9,17 +10,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#893a34",
-        secondary: "#d69e49",
-        button_text: "#11150d",
+        primary: theme.colors.primary,
+        secondary: theme.colors.secondary,
+        button_text: theme.colors.button_text,
 
+        contrast: {
+          light: theme.colors.contrast.light,
+          dark: theme.colors.contrast.dark,
+        },
         background: {
-          light: "#eadaa0",
-          dark: "#2c3e50",
+          light: theme.colors.background.light,
+          dark: theme.colors.background.dark,
         },
         text: {
-          light: "#11150d",
-          dark: "#eadaa0",
+          light: theme.colors.text.light,
+          dark: theme.colors.text.dark,
         },
       },
     },

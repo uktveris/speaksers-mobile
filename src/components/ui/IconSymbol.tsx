@@ -34,15 +34,18 @@ export function IconSymbol({
   size = 24,
   color,
   style,
+  className,
 }: {
   name: IconSymbolName;
   size?: number;
   color: string | OpaqueColorValue;
   style?: StyleProp<ViewStyle>;
   weight?: SymbolWeight;
+  className?: string;
 }) {
   return (
     <MaterialIcons
+      className={className ? className : ""}
       color={color}
       size={size}
       name={MAPPING[name]}

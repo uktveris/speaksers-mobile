@@ -1,6 +1,4 @@
-import { Colors } from "@/src/constants/Colors";
 import { getDateWithLocale } from "@/src/utils/dateUtils";
-import { StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { View } from "react-native";
 
@@ -27,36 +25,20 @@ function ProfileCourseInfo({
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.enrollmentInfo}>
-        <Text>{language}</Text>
-        <Text>{level}</Text>
-      </View>
-      <View style={styles.date}>
-        <Text>Started: {formattedDate}</Text>
+    <View className="rounded-xl overflow-hidden mt-2">
+      <View className="flex flex-row">
+        <View className="grow basis-1/4 flex items-center justify-center bg-secondary py-2">
+          <Text className="text-button_text font-bold text-xl">{language}</Text>
+          <Text className="text-button_text">{level}</Text>
+        </View>
+        <View className="grow basis-3/4 flex items-center justify-center bg-contrast-light dark:bg-contrast-dark py-2">
+          <Text className="text-text-dark dark:text-text-light text-sm">
+            Started: {formattedDate}
+          </Text>
+        </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  enrollmentInfo: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 10,
-    justifyContent: "center",
-  },
-  date: {
-    flex: 2,
-    alignItems: "center",
-    paddingVertical: 10,
-    justifyContent: "center",
-  },
-});
 
 export default ProfileCourseInfo;

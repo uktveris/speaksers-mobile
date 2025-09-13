@@ -6,14 +6,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSession } from "@/src/context/AuthContext";
 import { Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { TextInput } from "react-native-paper";
+import { ActivityIndicator, TextInput } from "react-native-paper";
 import { Appearance } from "react-native";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { ImageBackground } from "react-native";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { useUser } from "@/src/hooks/useUser";
-
-const colorScheme = Appearance.getColorScheme();
+import { useColorScheme } from "nativewind";
+import { theme } from "@/theme";
 
 export default function EditAccount() {
   const [changesMade, setChangesMade] = useState(false);
@@ -32,6 +32,11 @@ export default function EditAccount() {
     updateUserData,
     refetch,
   } = useUser();
+  const c = useColorScheme();
+  const textCol =
+    c.colorScheme === "light"
+      ? theme.colors.text.light
+      : theme.colors.text.dark;
 
   useEffect(() => {
     if (!session || !userData) {
@@ -107,47 +112,73 @@ export default function EditAccount() {
   };
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <View style={styles.topBar}>
-          <Pressable onPress={handleCancelGoBack}>
-            <Text>Cancel</Text>
+    <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
+      <View className="flex-1 p-2 pt-4">
+        <View className="flex flex-row justify-between">
+          <Pressable
+            className="bg-secondary py-1 px-6 rounded-3xl"
+            onPress={handleCancelGoBack}
+          >
+            <Text className="text-button_text font-bold text-xl">Cancel</Text>
           </Pressable>
-          <Pressable onPress={() => updateUserAndGoBack()}>
-            <Text>Save</Text>
+          <Pressable
+            className="bg-primary py-1 px-6 rounded-3xl"
+            onPress={() => updateUserAndGoBack()}
+          >
+            <Text className="text-button_text font-bold text-xl">Save</Text>
           </Pressable>
         </View>
-        <View style={styles.outerContainer}>
-          <View style={styles.infoContainer}>
-            <ImageBackground
-              source={{ uri: previewAvatarUrl }}
-              style={styles.image}
-            >
-              <Pressable onPress={pickImage} style={styles.userImage}>
-                <View style={styles.editPictureText}>
-                  <Text>Edit</Text>
-                </View>
-              </Pressable>
-            </ImageBackground>
-            <View style={styles.userInfo}>
-              <Text>{username}</Text>
-              <View />
-              <Text>Edit name:</Text>
-              <View />
-              <TextInput
-                style={styles.inputBox}
-                theme={{ roundness: 10 }}
-                mode="flat"
-                underlineColor="transparent"
-                activeUnderlineColor="transparent"
-                onChangeText={setName}
-                value={name}
-                returnKeyType="done"
-                onSubmitEditing={Keyboard.dismiss}
-                placeholderTextColor="grey"
-                placeholder="Type display name"
-              />
+        <View className="pt-3">
+          <View className=" flex items-center">
+            <View className="rounded-full overflow-hidden">
+              {loading && (
+                <ActivityIndicator
+                  color={
+                    c.colorScheme === "light"
+                      ? theme.colors.text.light
+                      : theme.colors.text.dark
+                  }
+                  size="large"
+                />
+              )}
+              {!loading && (
+                <ImageBackground
+                  source={{ uri: previewAvatarUrl! }}
+                  className="w-32 h-32"
+                >
+                  <Pressable
+                    onPress={pickImage}
+                    className="flex-1 items-center justify-center bg-black/70"
+                  >
+                    <View>
+                      <Text className="text-contrast-dark font-bold">Edit</Text>
+                    </View>
+                  </Pressable>
+                </ImageBackground>
+              )}
             </View>
+          </View>
+          <View className="pt-3">
+            <Text className="text-text-light dark:text-text-dark">
+              {username}
+            </Text>
+            <Text className="text-text-light dark:text-text-dark text-xl font-bold">
+              Edit name:
+            </Text>
+            <TextInput
+              textColor={textCol}
+              className="rounded-3xl bg-black/25 w-full my-1"
+              style={{ backgroundColor: "transparent" }}
+              mode="flat"
+              underlineColor="transparent"
+              activeUnderlineColor="transparent"
+              onChangeText={setName}
+              value={name}
+              returnKeyType="done"
+              onSubmitEditing={Keyboard.dismiss}
+              placeholderTextColor="grey"
+              placeholder="Type display name"
+            />
           </View>
         </View>
       </View>

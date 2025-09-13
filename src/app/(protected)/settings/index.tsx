@@ -1,5 +1,4 @@
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
-import { Colors } from "@/src/constants/Colors";
 import { settingsRoutes } from "@/src/constants/settingsRoutes";
 import { routerPush } from "@/src/utils/navigation";
 import { RelativePathString } from "expo-router";
@@ -8,10 +7,7 @@ import { Pressable } from "react-native";
 import { StyleSheet } from "react-native";
 import { FlatList, useColorScheme } from "react-native";
 import { Text } from "react-native";
-import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const colorscheme = Appearance.getColorScheme();
 
 function SettingsItem({
   title,
@@ -22,20 +18,29 @@ function SettingsItem({
   icon: string;
   route: string;
 }) {
-  const color = colorscheme === "light" ? Colors.light.text : Colors.dark.text;
-
   return (
-    <Pressable onPress={() => routerPush(route)} style={styles.itemContainer}>
-      <Text>{title}</Text>
-      <IconSymbol size={18} name={icon} color={color} />
+    <Pressable
+      onPress={() => routerPush(route)}
+      className="flex flex-row border border-secondary rounded-xl p-4 mb-2 justify-between"
+    >
+      <Text className="text-contrast-light dark:text-contrast-dark font-bold text-lg">
+        {title}
+      </Text>
+      <IconSymbol
+        className="text-contrast-light dark:text-contrast-dark font-bold"
+        size={18}
+        name={icon}
+        color="#000"
+      />
     </Pressable>
   );
 }
 
 function Settings() {
   return (
-    <SafeAreaView>
+    <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <FlatList
+        className="pt-4 p-2"
         data={settingsRoutes}
         renderItem={({ item }) => (
           <SettingsItem

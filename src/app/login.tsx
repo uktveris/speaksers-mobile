@@ -1,7 +1,7 @@
 import GoogleAuthButton from "@/src/components/oauth/GoogleAuthButton";
 import { Colors } from "@/src/constants/Colors";
 import { useSession } from "@/src/context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Appearance } from "react-native";
 import { TextInput } from "react-native-paper";
 import { KeyboardAvoidingView, Text } from "react-native";
@@ -16,8 +16,8 @@ import {
 } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { routerReplace, ROUTES } from "../utils/navigation";
-
-const colorScheme = Appearance.getColorScheme();
+import { useColorScheme } from "nativewind";
+import { theme } from "@/theme";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,6 +27,12 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, isLoading } = useSession();
+  const colorScheme = useColorScheme();
+
+  const textCol =
+    colorScheme.colorScheme === "light"
+      ? theme.colors.text.light
+      : theme.colors.text.dark;
 
   const signInWithEmail = async () => {
     setLoading(true);
@@ -54,6 +60,7 @@ export default function Login() {
             Email
           </Text>
           <TextInput
+            textColor={textCol}
             className="rounded-3xl bg-black/25 my-1"
             style={{ backgroundColor: "transparent" }}
             mode="flat"
@@ -74,6 +81,7 @@ export default function Login() {
             Password
           </Text>
           <TextInput
+            textColor={textCol}
             className="rounded-3xl bg-black/25 w-full my-1"
             style={{ backgroundColor: "transparent" }}
             mode="flat"

@@ -13,18 +13,12 @@ import { Easing } from "react-native";
 import { SafeAreaView } from "react-native";
 import { BackHandler } from "react-native";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
-
-const screenWidth = Dimensions.get("window").width;
-const boxSize = 100;
-const padding = 10;
+import LoadingDots from "@/src/components/ui/LoadingDots";
+import { theme } from "@/theme";
 
 function Dialog() {
   const socket = getSocket();
   if (!socket.connected) socket.connect();
-  const theme = Appearance.getColorScheme();
-  const styles = setStyles(theme);
-  // const [matched, setMatched] = useState(false);
-  const anim = useRef(new Animated.Value(0)).current;
 
   const handleBackAction = () => {
     socket.emit("cancel_call");
@@ -64,7 +58,6 @@ function Dialog() {
       console.log("socket disconnected!");
     };
     const onMatched = (peerId: string) => {
-      // setMatched(true);
       console.log("socket received peer id! - " + peerId);
       const route =
         ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false";
@@ -73,7 +66,6 @@ function Dialog() {
     };
 
     const onInitCall = (peerId: string) => {
-      // setMatched(true);
       console.log("socket received peer id! - " + peerId);
       const route =
         ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true";
@@ -83,7 +75,6 @@ function Dialog() {
 
     const onCallCancelled = () => {
       console.log("exited the call queue");
-      // setMatched(false);
       routerReplace(ROUTES.homeScreen);
     };
 
@@ -102,67 +93,26 @@ function Dialog() {
     };
   }, []);
 
-  useEffect(() => {
-    const maxTranslation = screenWidth - boxSize - padding;
-    const beginAnimation = () => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, {
-            toValue: maxTranslation,
-            duration: 1000,
-            easing: Easing.inOut(Easing.exp),
-            useNativeDriver: true,
-          }),
-          Animated.timing(anim, {
-            toValue: 0,
-            duration: 1000,
-            easing: Easing.inOut(Easing.exp),
-            useNativeDriver: true,
-          }),
-        ]),
-      ).start();
-    };
-
-    beginAnimation();
-  }, [anim]);
-
-  const slide = anim.interpolate({
-    inputRange: [0, screenWidth],
-    outputRange: [padding, screenWidth - padding],
-  });
-
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>Searching for a dialogue partner</Text>
-      <Animated.View
-        style={[
-          styles.box,
-          {
-            transform: [{ translateX: slide }],
-          },
-        ]}
-      />
-      <Pressable onPress={() => socket.emit("cancel_call")}>
-        <Text>Cancel call</Text>
+    <SafeAreaView className="h-full bg-background-light dark:bg-background-dark flex justify-center items-center">
+      <Text className="text-text-light dark:text-text-dark text-2xl font-bold">
+        Searching for a dialogue partner
+      </Text>
+      <View className="py-5 pt-10">
+        <LoadingDots
+          dotColor={theme.colors.secondary}
+          dotSize={20}
+          dotSpacing={12}
+        />
+      </View>
+      <Pressable
+        onPress={() => socket.emit("cancel_call")}
+        className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
+      >
+        <Text className="text-text-dark font-bold text-xl">Cancel search</Text>
       </Pressable>
     </SafeAreaView>
   );
-}
-
-function setStyles(theme: ColorSchemeName) {
-  return StyleSheet.create({
-    container: {
-      alignItems: "center",
-      flex: 1,
-      justifyContent: "center",
-    },
-    box: {
-      alignSelf: "flex-start",
-      width: boxSize,
-      height: boxSize,
-      borderRadius: 20,
-    },
-  });
 }
 
 export default Dialog;

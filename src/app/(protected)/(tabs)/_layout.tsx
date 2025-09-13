@@ -5,32 +5,43 @@ import { Appearance, Platform } from "react-native";
 import { HapticTab } from "@/src/components/HapticTab";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import TabBarBackground from "@/src/components/ui/TabBarBackground";
-import { Colors } from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
-import Login from "../../login";
-import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { theme } from "@/theme";
+import { StyleSheet, useColorScheme } from "nativewind";
+import { BlurView } from "expo-blur";
 
 export default function TabLayout() {
-  // const colorScheme = useColorScheme();
-  const colorScheme = Appearance.getColorScheme();
-  const supabase = getSupabaseClient();
+  const colorScheme = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        tabBarInactiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.secondary,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
+        tabBarStyle: {
+          position: "absolute",
+          backgroundColor: "transparent",
+          overflow: "hidden",
+          elevation: 0,
+          borderTopWidth: 0,
+        },
+        tabBarBackground: () => {
+          return (
+            <BlurView
+              tint={colorScheme.colorScheme === "light" ? "light" : "dark"}
+              intensity={90}
+              style={{
+                flex: 1,
+                borderTopLeftRadius: 15,
+                borderTopRightRadius: 15,
+                overflow: "hidden",
+                backgroundColor: "transparent",
+              }}
+            />
+          );
+        },
       }}
     >
       <Tabs.Screen
@@ -42,15 +53,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name="globalChat"
         options={{
@@ -65,7 +67,6 @@ export default function TabLayout() {
         options={{
           title: "Account",
           tabBarIcon: ({ color }) => (
-            // <IconSymbol size={28} name="info.circle" color={color} />
             <MaterialCommunityIcons name="account" size={28} color={color} />
           ),
         }}

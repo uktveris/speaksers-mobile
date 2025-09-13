@@ -5,10 +5,13 @@ import * as Linking from "expo-linking";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import GameBox from "@/src/components/GameBox";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
+import { useLinkingURL } from "expo-linking";
+import { theme } from "@/theme";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-const colorScheme = Appearance.getColorScheme();
 export default function App() {
   const supabase = getSupabaseClient();
+  const barHeight = useBottomTabBarHeight();
 
   const createSessionFromUrl = async (url: string) => {
     const { params, errorCode } = QueryParams.getQueryParams(url);
@@ -31,35 +34,33 @@ export default function App() {
     return data.session;
   };
 
-  const url = Linking.useURL();
+  // const url = Linking.useURL();
+  const url = useLinkingURL();
   if (url) {
     createSessionFromUrl(url);
   }
 
   return (
-    <SafeAreaView>
-      <View>
-        <Row>
-          <Col>
-            <GameBox
-              backgroundColor="#ff9933"
-              name="Dialog"
-              link={ROUTES.dialog}
-            />
-          </Col>
-          <Col>
-            <GameBox backgroundColor="#C70039" name="Game" link="" />
-          </Col>
-        </Row>
+    <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
+      <View className="flex-1 px-2 pt-4">
+        <Grid>
+          <GameBox
+            // backgroundColor="#ff9933"
+            backgroundColor={theme.colors.primary}
+            name="Dialog"
+            link={ROUTES.dialog}
+          />
+          {/*<GameBox
+            backgroundColor={theme.colors.button_text}
+            name="Game"
+            link=""
+          />*/}
+        </Grid>
       </View>
     </SafeAreaView>
   );
 }
 
-function Row({ children }: { children: any }) {
-  return <View>{children}</View>;
-}
-
-function Col({ children }: { children: any }) {
-  return <View>{children}</View>;
+function Grid({ children }: { children: React.ReactNode }) {
+  return <View className="flex-1">{children}</View>;
 }
