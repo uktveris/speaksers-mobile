@@ -86,15 +86,16 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
 
     const beginCall = async () => {
       InCallManager.start({ media: "audio" });
-      InCallManager.setForceSpeakerphoneOn(true);
+      setTimeout(() => {
+        InCallManager.setForceSpeakerphoneOn(true);
+        InCallManager.setSpeakerphoneOn(true);
+      }, 500);
 
       const conn = createPeerConn();
-      // TODO: change to use phone media devices (microphone)
       const localStream = await mediaDevices.getUserMedia({
         audio: true,
         video: false,
       });
-      // TODO: on production change to mobile speakers
       localStream.getTracks().forEach((track) => {
         conn.addTrack(track, localStream);
       });
@@ -114,12 +115,10 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       const conn = createPeerConn();
       await conn.setRemoteDescription(new RTCSessionDescription(offer));
       console.log("remote desc (offer) set");
-      // TODO: change to use phone media devices (microphone)
       const localStream = await mediaDevices.getUserMedia({
         audio: true,
         video: false,
       });
-      // TODO: on production change to mobile speakers
       localStream.getTracks().forEach((track) => {
         conn.addTrack(track, localStream);
       });
@@ -130,7 +129,10 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       setActiveCall(true);
 
       InCallManager.start({ media: "audio" });
-      InCallManager.setForceSpeakerphoneOn(true);
+      setTimeout(() => {
+        InCallManager.setForceSpeakerphoneOn(true);
+        InCallManager.setSpeakerphoneOn(true);
+      }, 500);
     };
 
     const onAnswer = async (answer: RTCSessionDescription) => {
