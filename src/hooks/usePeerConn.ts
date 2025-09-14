@@ -32,23 +32,18 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
   const answerHandled = useRef(false);
 
   const resetCallState = () => {
-    console.log("Resetting call state completely");
     offerHandled.current = false;
     answerHandled.current = false;
     if (peerConnRef.current) {
-      console.log("Closing existing peer connection");
       peerConnRef.current.close();
       peerConnRef.current = null;
     }
     remoteStream?.getTracks().forEach((t) => t.stop());
     setRemoteStream(null);
     setActiveCall(false);
-    // TODO: generate uuid for each call??
-    // callIdRef.current = uuidv4();
   };
 
   useEffect(() => {
-    console.log("usePeerConn MOUNTED");
     if (!remoteSocketId) return;
 
     resetCallState();
@@ -108,13 +103,11 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
 
     const onOffer = async (offer: RTCSessionDescription) => {
       if (offerHandled.current) {
-        console.log("OFFER ALREADY HANDLED, RETURNING");
         return;
       }
       offerHandled.current = true;
       const conn = createPeerConn();
       await conn.setRemoteDescription(new RTCSessionDescription(offer));
-      console.log("remote desc (offer) set");
       const localStream = await mediaDevices.getUserMedia({
         audio: true,
         video: false,
@@ -124,7 +117,6 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       });
       const answer = await conn.createAnswer();
       await conn.setLocalDescription(answer);
-      console.log("local desc (answer) set");
       socket.emit("answer", { recipient: remoteSocketId, answer: answer });
       setActiveCall(true);
 
@@ -137,34 +129,25 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
 
     const onAnswer = async (answer: RTCSessionDescription) => {
       if (answerHandled.current) {
-        console.log("ANSWER ALREADY HANDLED, RETURNING");
         return;
       }
       answerHandled.current = true;
       const conn = peerConnRef.current;
       if (!conn || conn.signalingState === "closed") {
-        console.log("ON ANSWER: connection is closed, returning...");
         return;
       }
       await conn.setRemoteDescription(new RTCSessionDescription(answer));
-      console.log("remote desc (answer) set");
     };
 
     const onIceCandidate = async (candidate: RTCIceCandidate) => {
       const conn = peerConnRef.current;
       if (!conn || conn.signalingState === "closed") {
-        console.log("ON ICE-CANDIDATE: connection is closed, returning...");
         return;
       }
       if (candidate) {
         try {
-          console.log("incoming new ice candidate");
           await conn.addIceCandidate(new RTCIceCandidate(candidate));
-        } catch (error) {
-          console.log(
-            "error while adding ice candidate: " + (error as Error).message,
-          );
-        }
+        } catch (error) {}
       }
     };
 
@@ -189,7 +172,6 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
     }
 
     return () => {
-      console.log("usePeerConn UNMOUNTED");
       socket.off("offer");
       socket.off("answer");
       socket.off("ice-candidate");

@@ -7,9 +7,13 @@ import { getSocket } from "@/src/server/socket";
 import { useLocalSearchParams } from "expo-router";
 import { usePeerConn } from "@/src/hooks/usePeerConn";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
-import { Appearance } from "react-native";
 
-const colorscheme = Appearance.getColorScheme();
+export interface TopicTask {
+  id: number;
+  topic: string;
+  type: string;
+  question: string;
+}
 
 function DialogCall() {
   const socket = getSocket();
@@ -26,8 +30,21 @@ function DialogCall() {
 
   useEffect(() => {
     console.log("MOUNTED: DIALOGCALL");
+
+    const onCallStarted = (data: {
+      callId: string;
+      role: string[];
+      topic: TopicTask;
+    }) => {
+      console.log("received callId: ", data.callId);
+      console.log("received roles: ", data.role);
+      console.log("received topic: ", data.topic.type);
+    };
+
+    socket.on("topic_sent", (data) => onCallStarted(data));
     return () => {
-      console.log("UNMOUNTED: DIALOGCALL");
+      socket.off("call_started");
+      socket.off("topic_sent");
     };
   }, []);
 
