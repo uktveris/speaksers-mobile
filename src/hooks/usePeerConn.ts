@@ -30,6 +30,7 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
   const peerConnRef = useRef<RTCPeerConnection | null>(null);
   const offerHandled = useRef(false);
   const answerHandled = useRef(false);
+  const [callId, setCallId] = useState<string | null>(null);
 
   const resetCallState = () => {
     offerHandled.current = false;
@@ -181,13 +182,13 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
   }, [remoteSocketId, initCall]);
 
   const endCall = () => {
-    socket.emit("end-call", { recipient: remoteSocketId });
+    socket.emit("end-call", { recipient: remoteSocketId, callId: callId });
     resetCallState();
     setActiveCall(false);
     InCallManager.stop();
   };
 
-  return { remoteStream, activeCall, endCall };
+  return { remoteStream, activeCall, endCall, setCallId };
 }
 
 export { usePeerConn };

@@ -23,7 +23,7 @@ function DialogCall() {
     console.log("remote socketId from params: " + remoteSocketId);
     console.log("initcall from params: " + initCall);
   }, []);
-  const { remoteStream, activeCall, endCall } = usePeerConn(
+  const { remoteStream, activeCall, endCall, setCallId } = usePeerConn(
     remoteSocketId as string,
     initCall === "true",
   );
@@ -39,6 +39,7 @@ function DialogCall() {
       console.log("received callId: ", data.callId);
       console.log("received roles: ", data.role);
       console.log("received topic: ", data.topic.type);
+      setCallId(data.callId);
     };
 
     socket.on("topic_sent", (data) => onCallStarted(data));
