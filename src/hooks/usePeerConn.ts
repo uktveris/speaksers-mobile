@@ -64,17 +64,6 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       conn.addEventListener("track", (event) => {
         const stream = event.streams[0] as unknown as MediaStream;
         setRemoteStream(stream);
-        console.log("set remote stream: " + event.streams[0]);
-      });
-
-      conn.addEventListener("signalingstatechange", () => {
-        console.log("signalign state change, current: " + conn.signalingState);
-      });
-
-      conn.addEventListener("connectionstatechange", (event) => {
-        if (conn.connectionState === "connected") {
-          console.log("connected successfully!");
-        }
       });
       peerConnRef.current = conn;
       return conn;
@@ -97,7 +86,6 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       });
       const offer = await conn.createOffer(sessionConstraints);
       await conn.setLocalDescription(new RTCSessionDescription(offer));
-      console.log("local description (offer) set: " + offer);
       socket.emit("offer", { recipient: remoteSocketId, offer: offer });
       setActiveCall(true);
     };
@@ -188,7 +176,7 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
     InCallManager.stop();
   };
 
-  return { remoteStream, activeCall, endCall, setCallId };
+  return { remoteStream, activeCall, endCall, setCallId, callId };
 }
 
 export { usePeerConn };

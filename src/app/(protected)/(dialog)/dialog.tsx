@@ -58,7 +58,6 @@ function Dialog() {
       console.log("socket disconnected!");
     };
     const onMatched = (peerId: string) => {
-      console.log("socket received peer id! - " + peerId);
       const route =
         ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false";
       console.log("second peer: trying to navigate to route:", route);
@@ -66,7 +65,6 @@ function Dialog() {
     };
 
     const onInitCall = (peerId: string) => {
-      console.log("socket received peer id! - " + peerId);
       const route =
         ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true";
       console.log("first peer: trying to navigate to route:", route);
