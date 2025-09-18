@@ -27,10 +27,15 @@ function DialogCall() {
   const [peerReady, setPeerReady] = useState(false);
   const [ready, setReady] = useState(false);
   if (!socket.connected) socket.connect();
-  const { remoteStream, activeCall, endCall, setCallId, callId } = usePeerConn(
-    remoteSocketId as string,
-    initCall === "true",
-  );
+  const {
+    remoteStream,
+    activeCall,
+    endCall,
+    setCallId,
+    callId,
+    toggleMute,
+    isMuted,
+  } = usePeerConn(remoteSocketId as string, initCall === "true");
 
   useEffect(() => {
     console.log("MOUNTED: DIALOGCALL");
@@ -102,6 +107,14 @@ function DialogCall() {
               onStopTimer={stopTimer}
             />
           )}
+          <Pressable
+            className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
+            onPress={() => toggleMute()}
+          >
+            <Text className="text-text-dark font-bold">
+              {isMuted ? "Mute" : "Unmute"}
+            </Text>
+          </Pressable>
           <Pressable
             className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
             onPress={() => endCall()}

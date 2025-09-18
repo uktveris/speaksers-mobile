@@ -25,7 +25,9 @@ const sessionConstraints = {
 function usePeerConn(remoteSocketId: string, initCall: boolean) {
   const socket = getSocket();
   if (!socket.connected) socket.connect();
+  const localStreamRef = useRef<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
   const [activeCall, setActiveCall] = useState(false);
   const peerConnRef = useRef<RTCPeerConnection | null>(null);
   const offerHandled = useRef(false);
@@ -77,12 +79,12 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       }, 500);
 
       const conn = createPeerConn();
-      const localStream = await mediaDevices.getUserMedia({
+      localStreamRef.current = await mediaDevices.getUserMedia({
         audio: true,
         video: false,
       });
-      localStream.getTracks().forEach((track) => {
-        conn.addTrack(track, localStream);
+      localStreamRef.current.getTracks().forEach((track) => {
+        conn.addTrack(track, localStreamRef.current!);
       });
       const offer = await conn.createOffer(sessionConstraints);
       await conn.setLocalDescription(new RTCSessionDescription(offer));
@@ -97,12 +99,12 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       offerHandled.current = true;
       const conn = createPeerConn();
       await conn.setRemoteDescription(new RTCSessionDescription(offer));
-      const localStream = await mediaDevices.getUserMedia({
+      localStreamRef.current = await mediaDevices.getUserMedia({
         audio: true,
         video: false,
       });
-      localStream.getTracks().forEach((track) => {
-        conn.addTrack(track, localStream);
+      localStreamRef.current.getTracks().forEach((track) => {
+        conn.addTrack(track, localStreamRef.current!);
       });
       const answer = await conn.createAnswer();
       await conn.setLocalDescription(answer);
@@ -154,7 +156,7 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
     socket.on("offer", (data) => onOffer(data.offer));
     socket.on("answer", (data) => onAnswer(data.answer));
     socket.on("ice-candidate", (data) => onIceCandidate(data.candidate));
-    socket.on("end-call", () => cleanUp());
+    socket.on("end_call", () => cleanUp());
 
     if (initCall) {
       beginCall();
@@ -164,19 +166,36 @@ function usePeerConn(remoteSocketId: string, initCall: boolean) {
       socket.off("offer");
       socket.off("answer");
       socket.off("ice-candidate");
-      socket.off("end-call");
+      socket.off("end_call");
       cleanUp();
     };
   }, [remoteSocketId, initCall]);
 
+  const toggleMute = () => {
+    if (!localStreamRef.current) return;
+    const newMuteState = !isMuted;
+    localStreamRef.current.getAudioTracks().forEach((track) => {
+      track.enabled = !newMuteState;
+    });
+    setIsMuted(newMuteState);
+  };
+
   const endCall = () => {
-    socket.emit("end-call", { recipient: remoteSocketId, callId: callId });
+    socket.emit("end_call", { recipient: remoteSocketId, callId: callId });
     resetCallState();
     setActiveCall(false);
     InCallManager.stop();
   };
 
-  return { remoteStream, activeCall, endCall, setCallId, callId };
+  return {
+    remoteStream,
+    activeCall,
+    endCall,
+    setCallId,
+    callId,
+    toggleMute,
+    isMuted,
+  };
 }
 
 export { usePeerConn };
