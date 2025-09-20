@@ -48,7 +48,6 @@ export default function Login() {
     }
   };
 
-  // TODO: style textinput text color with theme provider from nativewind
   return (
     <SafeAreaView className="h-full w-full bg-background-light dark:bg-background-dark">
       <KeyboardAwareScrollView

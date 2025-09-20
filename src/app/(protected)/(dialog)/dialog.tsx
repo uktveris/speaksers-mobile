@@ -17,7 +17,7 @@ import LoadingDots from "@/src/components/ui/LoadingDots";
 import { theme } from "@/theme";
 
 function Dialog() {
-  const socket = getSocket();
+  const socket = getSocket("/calls");
   if (!socket.connected) socket.connect();
 
   const handleBackAction = () => {

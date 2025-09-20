@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getSocket } from "../server/socket";
 import { Pressable, Text, View } from "react-native";
 
 export default function Timer({

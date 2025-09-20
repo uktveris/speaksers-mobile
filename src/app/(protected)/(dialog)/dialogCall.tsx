@@ -19,7 +19,7 @@ export interface TopicTask {
 
 function DialogCall() {
   const { remoteSocketId, initCall } = useLocalSearchParams();
-  const socket = getSocket();
+  const socket = getSocket("/calls");
   const [timerData, setTimerData] = useState<{
     endTime: number | null;
     counting: boolean;

@@ -1,14 +1,15 @@
 import io from "socket.io-client";
 import { getBackendUrl } from "@/src/config/urlConfig";
 
-let socket: SocketIOClient.Socket | null = null;
+const sockets = new Map<string, SocketIOClient.Socket>();
 
-function getSocket() {
-  if (!socket) {
-    const url = getBackendUrl();
-    socket = io(url, { autoConnect: false });
+function getSocket(nsp: string = "") {
+  if (!sockets.get(nsp)) {
+    const url = nsp ? getBackendUrl() + nsp : getBackendUrl();
+    const socket = io(url, { autoConnect: false });
+    sockets.set(nsp, socket);
   }
-  return socket;
+  return sockets.get(nsp)!;
 }
 
 export { getSocket };

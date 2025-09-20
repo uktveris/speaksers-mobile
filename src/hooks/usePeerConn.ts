@@ -23,7 +23,7 @@ const sessionConstraints = {
 };
 
 function usePeerConn(remoteSocketId: string, initCall: boolean) {
-  const socket = getSocket();
+  const socket = getSocket("/calls");
   if (!socket.connected) socket.connect();
   const localStreamRef = useRef<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);

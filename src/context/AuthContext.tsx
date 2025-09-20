@@ -80,8 +80,12 @@ function SessionProvider({ children }: PropsWithChildren) {
   };
 
   const signOut = async () => {
-    const socket = getSocket();
-    if (socket.connected) socket.disconnect();
+    const main = getSocket();
+    if (main.connected) main.disconnect();
+    const chats = getSocket("/chats");
+    if (chats.connected) chats.disconnect();
+    const calls = getSocket("/calls");
+    if (calls.connected) calls.disconnect();
     await supabase.auth.signOut();
     routerReplace(ROUTES.login);
   };
