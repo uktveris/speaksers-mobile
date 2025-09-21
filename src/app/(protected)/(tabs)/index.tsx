@@ -62,8 +62,7 @@ export default function App() {
             name="Dialog"
             link={ROUTES.dialog}
           />
-          <Pressable
-            className="dark:text-text-dark mt-5"
+          {/*<Pressable
             onPress={() =>
               showModal(
                 <>
@@ -75,13 +74,10 @@ export default function App() {
               )
             }
           >
-            <Text>Open Modal</Text>
-          </Pressable>
-          {/*<GameBox
-            backgroundColor={theme.colors.button_text}
-            name="Game"
-            link=""
-          />*/}
+            <Text className="text-text-light dark:text-text-dark mt-5">
+              Open Modal
+            </Text>
+          </Pressable>*/}
         </Grid>
       </View>
     </SafeAreaView>
