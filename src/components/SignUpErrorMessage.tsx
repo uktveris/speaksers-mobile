@@ -7,11 +7,8 @@ const theme = Appearance.getColorScheme();
 
 export default function SignUpErrorMessage({ message }: { message: string }) {
   return (
-    <View>
-      <View />
-      <View>
-        <Text>{message}</Text>
-      </View>
+    <View className="py-3">
+      <Text className="font-bold text-red-800">{message}</Text>
     </View>
   );
 }

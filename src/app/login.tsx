@@ -1,13 +1,10 @@
 import GoogleAuthButton from "@/src/components/oauth/GoogleAuthButton";
-import { Colors } from "@/src/constants/Colors";
 import { useSession } from "@/src/context/AuthContext";
 import { useEffect, useState } from "react";
-import { Appearance } from "react-native";
 import { ActivityIndicator, TextInput } from "react-native-paper";
 import { KeyboardAvoidingView, Text } from "react-native";
 import { Keyboard } from "react-native";
 import { Pressable } from "react-native";
-import { StyleSheet } from "react-native";
 import { Alert, View } from "react-native";
 import SignUpErrorMessage from "@/src/components/SignUpErrorMessage";
 import {
@@ -49,16 +46,16 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView
-      edges={["top", "left", "right"]}
-      className="h-full w-full bg-background-light dark:bg-background-dark"
-    >
+    <SafeAreaView className="h-full w-full bg-background-light dark:bg-background-dark">
       <KeyboardAwareScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={{
-          flex: 1,
+          flexGrow: 1,
           alignItems: "center",
           justifyContent: "center",
         }}
+        keyboardShouldPersistTaps="handled"
+        extraKeyboardSpace={20}
       >
         <View className="flex-1 w-full items-center justify-center">
           <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">

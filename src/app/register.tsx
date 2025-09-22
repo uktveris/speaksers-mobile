@@ -83,11 +83,14 @@ export default function Register() {
   return (
     <SafeAreaView className="h-full w-full bg-background-light dark:bg-background-dark">
       <KeyboardAwareScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={{
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
         }}
+        keyboardShouldPersistTaps="handled"
+        extraKeyboardSpace={50}
       >
         <View className="flex-1 w-full items-center justify-center">
           <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">
