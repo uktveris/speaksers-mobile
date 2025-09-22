@@ -14,6 +14,7 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN_PREVIEW }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD_PREVIEW}}
       SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID_PREVIEW}}
+      SUPABASE_DB_CONN_STRING: ${{ secrets.SUPABASE_DB_CONN_STRING_PREVIEW }}
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
@@ -23,8 +24,10 @@ jobs:
         with:
           version: latest
 
+      - run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-      - run: supabase db reset --linked
+      - run: psql $SUPABASE_DB_CONN_STRING -f ./supabase/seeds.sql
+        working-directory: ./supabase
 
       - uses: actions/setup-node@v4
         with:

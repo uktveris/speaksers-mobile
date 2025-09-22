@@ -23,8 +23,10 @@ jobs:
         with:
           version: latest
 
+      - run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-      - run: supabase db reset --linked
+      - run: psql $SUPABASE_DB_CONN_STRING -f ./supabase/seeds.sql
+        working-directory: ./supabase
 
       - uses: actions/setup-node@v4
         with:

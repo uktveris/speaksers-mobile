@@ -88,4 +88,4 @@ insert into public.dialogue_topics(title, role1, arg1, tip1, role2, arg2, tip2) 
  'Anti-UBI',
  'Argue it’s too expensive and discourages work.',
  'Suggest other solutions like job programs or targeted aid.'
-);
+) on conflict do nothing;
