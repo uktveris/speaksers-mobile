@@ -112,7 +112,7 @@ function DialogCall() {
             onPress={() => toggleMute()}
           >
             <Text className="text-text-dark font-bold">
-              {isMuted ? "Mute" : "Unmute"}
+              {isMuted ? "Unmute" : "Mute"}
             </Text>
           </Pressable>
           <Pressable

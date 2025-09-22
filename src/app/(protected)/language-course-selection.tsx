@@ -8,6 +8,7 @@ import { Appearance } from "react-native";
 import { Pressable } from "react-native";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { theme as customTheme } from "@/theme";
 
 function LanguageCourseSelection() {
   const { addUserCourse } = useUserCourses();
@@ -18,6 +19,7 @@ function LanguageCourseSelection() {
     id: string;
   } | null>(courses ? courses[0] : null);
   const [selectedLevel, setSelectedLevel] = useState(levels[0]);
+  const primary = customTheme.colors.primary;
 
   useEffect(() => {
     const supabase = getSupabaseClient();
@@ -56,7 +58,7 @@ function LanguageCourseSelection() {
           <Pressable
             onPress={() => setSelectedCourse(course)}
             key={key}
-            className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${course.id === selectedCourse?.id ? "primary" : "secondary"}`}
+            className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${course.id === selectedCourse?.id ? "red-500" : "secondary"}`}
           >
             <Text className="text-text-light dark:text-text-dark font-bold">
               {course.name}
@@ -67,7 +69,7 @@ function LanguageCourseSelection() {
           <Pressable
             onPress={() => setSelectedLevel(level)}
             key={key}
-            className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${level === selectedLevel ? "primary" : "secondary"}`}
+            className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${level === selectedLevel ? "red-500" : "secondary"}`}
           >
             <Text className="text-text-light dark:text-text-dark font-bold">
               {level}

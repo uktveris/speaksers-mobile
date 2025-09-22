@@ -93,7 +93,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         projectId: EAS_PROJECT_ID,
       },
       SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
-      SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+      SUPABASE_PERISHABLE_KEY: process.env.EXPO_PUBLIC_SUPABASE_PERISHABLE_KEY,
       BACKEND_URL: process.env.EXPO_PUBLIC_BACKEND_URL,
       SB_TOKEN_NAME: process.env.EXPO_PUBLIC_SB_TOKEN_NAME,
     },

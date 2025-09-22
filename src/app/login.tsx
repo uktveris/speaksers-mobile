@@ -49,7 +49,10 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView className="h-full w-full bg-background-light dark:bg-background-dark">
+    <SafeAreaView
+      edges={["top", "left", "right"]}
+      className="h-full w-full bg-background-light dark:bg-background-dark"
+    >
       <KeyboardAwareScrollView
         contentContainerStyle={{
           flex: 1,
