@@ -24,7 +24,7 @@ jobs:
         with:
           version: latest
 
-      - run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - run: sudo apt-get update && sudo apt-get install -y postgresql-client-15
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
       - run: psql $SUPABASE_DB_CONN_STRING -f ./supabase/seeds.sql
         working-directory: ./supabase
