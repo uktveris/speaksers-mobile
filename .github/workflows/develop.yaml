@@ -11,10 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN_PREVIEW }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD_PREVIEW}}
-      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID_PREVIEW}}
-      SUPABASE_DB_CONN_STRING: ${{ secrets.SUPABASE_DB_CONN_STRING_PREVIEW }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_ACCESS_TOKEN_PREVIEW }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID_PREVIEW }}
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
@@ -24,10 +22,15 @@ jobs:
         with:
           version: latest
 
-      - run: sudo apt-get update && sudo apt-get install -y postgresql-client-15
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-      - run: psql $SUPABASE_DB_CONN_STRING -f ./supabase/seeds.sql
-        working-directory: ./supabase
+      - run: supabase db push
+      - run: |
+          response=$(curl -sS -X POST "https://$SUPABASE_PROJECT_ID.supabase.co/rest/v1/rpc/seed_executor" \
+          -H "apikey: $SUPABSE_SECRET_KEY" \
+          -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{}' )
+          echo "Seed response: $response"
 
       - uses: actions/setup-node@v4
         with:
