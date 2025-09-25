@@ -4,9 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 
 const url = Constants.expoConfig?.extra?.SUPABASE_URL as string;
-const key = Constants.expoConfig?.extra?.SUPABASE_PERISHABLE_KEY as string;
-
-console.log("received url: ", { url });
+const key = Constants.expoConfig?.extra?.SUPABASE_PUBLISHABLE_KEY as string;
 
 const supabase = createClient(url, key, {
   auth: {
