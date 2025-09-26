@@ -1,12 +1,9 @@
-create schema if not exists admin;
+drop function if exists admin.seed_language_courses();
+drop function if exists admin.seed_dialogue_topics();
+drop function if exists admin.seed_executor();
 
-create table if not exists admin.seed_runs(
-  id uuid not null default gen_random_uuid(),
-  last_run_at timestamp with time zone not null default now(),
-  defailt jsonb
-);
 
-create or replace function admin.seed_language_courses()
+create or replace function public.seed_language_courses()
 returns jsonb
 language plpgsql
 security definer
@@ -19,7 +16,7 @@ begin
 end;
 $$;
 
-create or replace function admin.seed_dialogue_topics()
+create or replace function public.seed_dialogue_topics()
 returns jsonb
 language plpgsql
 security definer
@@ -121,7 +118,7 @@ begin
 end;
 $$;
 
-create or replace function admin.seed_executor()
+create or replace function public.seed_executor()
 returns jsonb
 language plpgsql
 security definer
@@ -143,7 +140,3 @@ begin
   return jsonb_build_object('status', 'ok', 'parts', json_build_array(res_language_courses, res_dialogue_topics));
 end;
 $$;
-
-revoke execute on function admin.seed_language_courses() from public;
-revoke execute on function admin.seed_language_courses() from public;
-revoke execute on function admin.seed_executor() from public;
