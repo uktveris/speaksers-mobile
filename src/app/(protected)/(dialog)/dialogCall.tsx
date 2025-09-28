@@ -9,6 +9,7 @@ import { usePeerConn } from "@/src/hooks/usePeerConn";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Timer from "@/src/components/Timer";
+import { useMediasoup } from "@/src/hooks/useMediasoup";
 
 export interface TopicTask {
   id: number;
@@ -27,15 +28,16 @@ function DialogCall() {
   const [peerReady, setPeerReady] = useState(false);
   const [ready, setReady] = useState(false);
   if (!socket.connected) socket.connect();
-  const {
-    remoteStream,
-    activeCall,
-    endCall,
-    setCallId,
-    callId,
-    toggleMute,
-    isMuted,
-  } = usePeerConn(remoteSocketId as string, initCall === "true");
+  // const {
+  //   remoteStream,
+  //   activeCall,
+  //   endCall,
+  //   setCallId,
+  //   callId,
+  //   toggleMute,
+  //   isMuted,
+  // } = usePeerConn(remoteSocketId as string, initCall === "true");
+  const { remoteStream } = useMediasoup();
 
   useEffect(() => {
     console.log("MOUNTED: DIALOGCALL");
@@ -46,7 +48,7 @@ function DialogCall() {
       topic: TopicTask;
     }) => {
       console.log("received callId: ", data.callId);
-      setCallId(data.callId);
+      // setCallId(data.callId);
     };
 
     const onTimerStarted = (data: { endTime: number }) => {
@@ -76,14 +78,14 @@ function DialogCall() {
     routerReplace(ROUTES.homeScreen);
   };
 
-  const stopTimer = () => {
-    socket.emit("stop_timer", { callId: callId });
-    setReady(true);
-  };
+  // const stopTimer = () => {
+  //   socket.emit("stop_timer", { callId: callId });
+  //   setReady(true);
+  // };
 
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark flex justify-center items-center">
-      {activeCall ? (
+      {remoteStream ? (
         <View className="flex justify-center items-center border border-red-500">
           <View className="flex justify-center items-center">
             <Text className="text-text-light dark:text-text-dark font-bold">
@@ -99,7 +101,7 @@ function DialogCall() {
               style={{ width: 10, height: 10 }}
             />
           )}
-          {callId && timerData && (
+          {/*{callId && timerData && (
             <Timer
               endTime={timerData.endTime}
               counting={timerData.counting}
@@ -120,7 +122,7 @@ function DialogCall() {
             onPress={() => endCall()}
           >
             <Text className="text-text-dark font-bold">end call</Text>
-          </Pressable>
+          </Pressable>*/}
         </View>
       ) : (
         <View className="flex justify-center items-center">
