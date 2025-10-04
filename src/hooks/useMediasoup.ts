@@ -1,52 +1,38 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getSocket } from "../server/socket";
 import { Device } from "mediasoup-client";
-import {
-  AppData,
-  Producer,
-  ProducerOptions,
-  RtpCapabilities,
-  Transport,
-} from "mediasoup-client/types";
-import {
-  mediaDevices,
-  MediaStream,
-  MediaStreamTrack,
-  registerGlobals,
-} from "react-native-webrtc";
+import { AppData, Producer, ProducerOptions, RtpCapabilities, Transport } from "mediasoup-client/types";
+import { mediaDevices, MediaStream, MediaStreamTrack, registerGlobals } from "react-native-webrtc";
 import InCallManager from "react-native-incall-manager";
-import inCallManager from "react-native-incall-manager";
 
-export function useMediasoup() {
+export function useMediasoup(peerId: string) {
   registerGlobals();
   const socket = getSocket("/calls");
   if (!socket.connected) socket.connect();
-  // const remoteAudioRef = useRef<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [producer, setProducer] = useState<Producer<AppData> | undefined>(undefined);
+  const [producerTransport, setProducerTransport] = useState<Transport<AppData> | null>(null);
+  const [consumerTransport, setConsumerTransport] = useState<Transport<AppData> | null>(null);
+  const [callId, setCallId] = useState<string | null>(null);
+  const [device, setDevice] = useState<Device | null>(null);
 
   const initDevice = async (capabilities: RtpCapabilities) => {
-    console.log("initDevice");
-    console.log("received: ", { capabilities });
     const device = new Device();
     await device.load({ routerRtpCapabilities: capabilities });
-    console.log("device loaded with capabilities: ", device.rtpCapabilities);
     console.log("device can produce audio?: ", device.canProduce("audio"));
     return device;
   };
 
   const getCapabilities = async (): Promise<RtpCapabilities> => {
     return new Promise((resolve, reject) => {
-      socket.emit(
-        "get_router_capabilities",
-        (capabilities: RtpCapabilities) => {
-          if (!capabilities) {
-            reject(new Error("No capabilities received"));
-            return;
-          }
-          resolve(capabilities);
-        },
-      );
+      socket.emit("get_router_capabilities", (capabilities: RtpCapabilities) => {
+        if (!capabilities) {
+          reject(new Error("No capabilities received"));
+          return;
+        }
+        resolve(capabilities);
+      });
     });
   };
 
@@ -58,7 +44,7 @@ export function useMediasoup() {
           console.log("no params received: ", response.params.error);
           reject(response.params.error);
         } else {
-          console.log("params: ", { response });
+          console.log("resolving response:", { response });
           resolve(response);
         }
       });
@@ -66,33 +52,28 @@ export function useMediasoup() {
     console.log("received transport params: ", params);
 
     const producerTransport = device.createSendTransport(params);
-    producerTransport.on(
-      "connect",
-      // async ({ dtlsParameters }, callback, errback) => {
-      async ({ dtlsParameters }, callback, errback) => {
-        try {
-          socket.emit("connect_transport", {
-            // TODO: perhaps send transport id for better transport management in the future server side
-            // transportId: producerTransport.id,
-            dtlsParameters: dtlsParameters,
-          });
-          callback();
-        } catch (error) {
-          errback(error);
-        }
-      },
-    );
+    producerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
+      try {
+        socket.emit("connect_transport", {
+          transportId: producerTransport.id,
+          dtlsParameters: dtlsParameters,
+        });
+        console.log("connecting send transport");
+        callback();
+      } catch (error) {
+        errback(error as Error);
+      }
+    });
 
-    producerTransport?.on("produce", async (parameters, callback, errback) => {
+    producerTransport.on("produce", async (parameters, callback, errback) => {
       console.log("produce parameters: ", parameters);
       try {
         socket.emit(
           "transport_produce",
           {
-            // transportId: producerTransport.id,
+            transportId: producerTransport.id,
             kind: parameters.kind,
             rtpParameters: parameters.rtpParameters,
-            appData: parameters.appData,
           },
           ({ id }: { id: any }) => {
             console.log("client: transport_produce ack received, id:", id);
@@ -100,20 +81,16 @@ export function useMediasoup() {
           },
         );
       } catch (error) {
-        errback(error);
+        errback(error as Error);
       }
     });
     return producerTransport;
   };
 
-  const connectSendTransport = async (
-    producerTransport: Transport<AppData>,
-    stream: MediaStream,
-  ) => {
+  const connectSendTransport = async (producerTransport: Transport<AppData>, stream: MediaStream) => {
     const opts: ProducerOptions = {
       codecOptions: { videoGoogleStartBitrate: 1000 },
-      track:
-        stream.getAudioTracks()[0] as unknown as globalThis.MediaStreamTrack,
+      track: stream.getAudioTracks()[0] as unknown as globalThis.MediaStreamTrack,
     };
     console.log("connectSendTransport: options created: ", { opts });
 
@@ -145,37 +122,37 @@ export function useMediasoup() {
 
     const consumerTransport = device.createRecvTransport(params);
 
-    consumerTransport.on(
-      "connect",
-      async ({ dtlsParameters }, callback, errback) => {
-        try {
-          socket.emit("connect_transport_recv", {
-            // transportId: consumerTransport.id,
-            dtlsParameters: dtlsParameters,
-          });
-          callback();
-        } catch (error) {
-          errback(error);
-        }
-      },
-    );
+    consumerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
+      try {
+        socket.emit("connect_transport_recv", {
+          transportId: consumerTransport.id,
+          dtlsParameters: dtlsParameters,
+        });
+        console.log("connecting recv transport");
+        callback();
+      } catch (error) {
+        errback(error as Error);
+      }
+    });
     return consumerTransport;
   };
 
   const connectRecvTransport = async (
     consumerTransport: Transport<AppData>,
     capabilities: RtpCapabilities,
+    // producerId: string,
   ) => {
-    console.log("connecting recv transport");
-    const params = await new Promise<{ params: any }>((resolve, reject) => {
+    const params = await new Promise<any>((resolve, reject) => {
       socket.emit(
         "transport_consume",
         {
+          transportId: consumerTransport.id,
           rtpCapabilities: capabilities,
+          // producerId: producerId,
         },
         (response: any) => {
           if (response.error) {
-            console.log("transport_consume: error", response.params.error);
+            console.log("transport_consume: error", response.error);
             reject(response.error);
           } else {
             console.log("consume params: ", response);
@@ -195,38 +172,142 @@ export function useMediasoup() {
     });
 
     const { track } = consumer;
+    console.log("consumer.track.kind:", track.kind, "readyState:", track.readyState);
     const remote = new MediaStream([track as MediaStreamTrack]);
     setRemoteStream(remote);
-    socket.emit("consume_resume");
-    console.log("remote audio ref set: ", remoteStream);
+    socket.emit("consume_resume", { consumerId: consumer.id });
+    console.log("remote ref set: ", remote);
+  };
+
+  const fetchProducerAndConsume = async () => {
+    try {
+      socket.emit("get_producers", async (producers: any[]) => {
+        if (!producers || producers.length === 0) return;
+        for (let p of producers) {
+          let ct = consumerTransport;
+          if (!ct) {
+            ct = await createRecvTransport(device!);
+            setConsumerTransport(ct);
+          }
+          await consumeProducer(ct, p.producerId, device!.rtpCapabilities);
+        }
+      });
+    } catch (error) {
+      console.log("error while fetching producers:", error);
+    }
+  };
+
+  const consumeProducer = async (consumerTransport: Transport, producerId: string, capabilities: RtpCapabilities) => {
+    const params = await new Promise<any>((resolve, reject) => {
+      socket.emit(
+        "transport_consume",
+        {
+          transportId: consumerTransport.id,
+          producerId: producerId,
+          rtpCapabilities: capabilities,
+        },
+        (response: any) => {
+          if (response.error) {
+            console.log("transport_consume error:", response.error);
+            reject(response.error);
+          } else {
+            resolve(response);
+          }
+        },
+      );
+    });
+
+    console.log("transport_consume: received params:", { params });
+    const consumer = await consumerTransport.consume({
+      id: params.id,
+      producerId: params.producerId,
+      kind: params.kind,
+      rtpParameters: params.rtpParameters,
+    });
+    const { track } = consumer;
+    const remote = new MediaStream([track as MediaStreamTrack]);
+    setRemoteStream(remote);
+
+    setTimeout(() => {
+      setupSpeaker();
+    }, 80);
+
+    socket.emit("consume_resume", { consumerId: consumer.id });
+  };
+
+  const setupSpeaker = (attempts = 5, delay = 200) => {
+    let i = 0;
+    const tick = () => {
+      try {
+        InCallManager.setForceSpeakerphoneOn(true);
+        InCallManager.setSpeakerphoneOn(true);
+      } catch (error) {
+        console.log("setupSpeaker: InCallManager call failed:", error);
+      }
+      i++;
+      if (i < attempts) setTimeout(tick, delay);
+    };
+    tick();
+  };
+
+  const mute = () => {
+    localStream?.getAudioTracks().forEach((t) => (t.enabled = false));
+  };
+
+  const unMute = () => {
+    localStream?.getAudioTracks().forEach((t) => (t.enabled = true));
+  };
+
+  const hangUp = () => {
+    console.log("hanging up...");
+    socket.emit("end_call", { recipient: peerId, callId: callId });
+    cleanUp();
+  };
+
+  const cleanUp = () => {
+    console.log("mediasoup cleanup");
+    InCallManager.stop();
+    remoteStream?.getTracks().forEach((t) => t.stop());
+    localStream?.getTracks().forEach((t) => t.stop());
+    producer?.close();
+    producerTransport?.close();
+    consumerTransport?.close();
+
+    setConsumerTransport(null);
+    setProducerTransport(null);
+    setRemoteStream(null);
+    setLocalStream(null);
+    setProducer(undefined);
+    setDevice(null);
   };
 
   useEffect(() => {
-    let producerTransport: Transport<AppData> | null = null;
-    let consumerTransport: Transport<AppData> | null = null;
-    let producer: Producer<AppData> | undefined = undefined;
-
     const setup = async () => {
       try {
+        InCallManager.start({ media: "audio" });
         console.log("getting user media");
         const stream = await mediaDevices.getUserMedia({
           audio: true,
           video: false,
         });
+        setLocalStream(stream);
         console.log("stream: ", { stream });
-        console.log("getting capabilities:");
         const capabilities = await getCapabilities();
         console.log("capabilities: ", { capabilities });
-        const device = await initDevice(capabilities);
-        console.log("device initialized");
+        const d = await initDevice(capabilities);
+        setDevice(d);
 
-        producerTransport = await createSendTransport(device);
-        console.log("producer transport created: ", producerTransport.id);
-        producer = await connectSendTransport(producerTransport, stream);
+        const pt = await createSendTransport(d);
+        setProducerTransport(pt);
+        console.log("producer transport created: ", pt.id);
+        const producer = await connectSendTransport(pt, stream);
+        setProducer(producer);
 
-        consumerTransport = await createRecvTransport(device);
-        console.log("consumer transport created: ", consumerTransport.id);
-        await connectRecvTransport(consumerTransport, capabilities);
+        const ct = await createRecvTransport(d);
+        setConsumerTransport(ct);
+        console.log("consumer transport created: ", ct.id);
+        // await connectRecvTransport(ct, capabilities, produce);
+        // await connectRecvTransport(ct, capabilities);
       } catch (error) {
         console.log("error occurred: ", (error as Error).message);
       }
@@ -235,31 +316,30 @@ export function useMediasoup() {
     setup();
 
     return () => {
-      console.log("mediasoup cleanup");
-
-      remoteStream?.getTracks().forEach((t) => t.stop());
-      producer?.close();
-      producerTransport?.close();
-      consumerTransport?.close();
-
-      if (socket.connected) {
-        socket.disconnect();
-      }
+      console.log("setup useeffect cleaning");
+      cleanUp();
     };
   }, []);
 
   useEffect(() => {
-    InCallManager.start({ media: "audio" });
-    InCallManager.start({ media: "audio" });
-    setTimeout(() => {
-      InCallManager.setForceSpeakerphoneOn(true);
-      InCallManager.setSpeakerphoneOn(true);
-    }, 500);
+    fetchProducerAndConsume();
+
+    socket.on("end_call", () => cleanUp());
+    socket.on("new_producer", async ({ producerId, peerProducerId, kind }) => {
+      console.log("new_producer: event received, producer id:", producerId);
+      let ct = consumerTransport;
+      if (!ct) {
+        ct = await createRecvTransport(device!);
+        setConsumerTransport(ct);
+      }
+      await consumeProducer(ct, producerId, device!.rtpCapabilities);
+    });
 
     return () => {
-      InCallManager.stop();
+      socket.off("end_call");
+      socket.off("new_producer");
     };
-  }, []);
+  }, [device, consumerTransport]);
 
-  return { remoteStream };
+  return { remoteStream, localStream, mute, unMute, hangUp, callId, setCallId };
 }

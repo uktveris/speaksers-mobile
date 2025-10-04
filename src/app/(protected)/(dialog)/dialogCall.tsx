@@ -27,6 +27,7 @@ function DialogCall() {
   } | null>(null);
   const [peerReady, setPeerReady] = useState(false);
   const [ready, setReady] = useState(false);
+  const [muted, setMuted] = useState(false);
   if (!socket.connected) socket.connect();
   // const {
   //   remoteStream,
@@ -37,7 +38,8 @@ function DialogCall() {
   //   toggleMute,
   //   isMuted,
   // } = usePeerConn(remoteSocketId as string, initCall === "true");
-  const { remoteStream } = useMediasoup();
+  const { remoteStream, localStream, mute, unMute, hangUp, callId, setCallId } =
+    useMediasoup(remoteSocketId as string);
 
   useEffect(() => {
     console.log("MOUNTED: DIALOGCALL");
@@ -48,7 +50,7 @@ function DialogCall() {
       topic: TopicTask;
     }) => {
       console.log("received callId: ", data.callId);
-      // setCallId(data.callId);
+      setCallId(data.callId);
     };
 
     const onTimerStarted = (data: { endTime: number }) => {
@@ -78,10 +80,19 @@ function DialogCall() {
     routerReplace(ROUTES.homeScreen);
   };
 
-  // const stopTimer = () => {
-  //   socket.emit("stop_timer", { callId: callId });
-  //   setReady(true);
-  // };
+  const toggleMute = () => {
+    if (muted) {
+      unMute();
+    } else {
+      mute();
+    }
+    setMuted((prev) => !prev);
+  };
+
+  const stopTimer = () => {
+    socket.emit("stop_timer", { callId: callId });
+    setReady(true);
+  };
 
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark flex justify-center items-center">
@@ -101,7 +112,7 @@ function DialogCall() {
               style={{ width: 10, height: 10 }}
             />
           )}
-          {/*{callId && timerData && (
+          {callId && timerData && (
             <Timer
               endTime={timerData.endTime}
               counting={timerData.counting}
@@ -114,15 +125,15 @@ function DialogCall() {
             onPress={() => toggleMute()}
           >
             <Text className="text-text-dark font-bold">
-              {isMuted ? "Unmute" : "Mute"}
+              {muted ? "Unmute" : "Mute"}
             </Text>
           </Pressable>
           <Pressable
             className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
-            onPress={() => endCall()}
+            onPress={() => hangUp()}
           >
             <Text className="text-text-dark font-bold">end call</Text>
-          </Pressable>*/}
+          </Pressable>
         </View>
       ) : (
         <View className="flex justify-center items-center">
