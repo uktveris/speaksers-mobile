@@ -306,6 +306,7 @@ export function useMediasoup(peerId: string) {
         const ct = await createRecvTransport(d);
         setConsumerTransport(ct);
         console.log("consumer transport created: ", ct.id);
+        // TODO: remove later
         // await connectRecvTransport(ct, capabilities, produce);
         // await connectRecvTransport(ct, capabilities);
       } catch (error) {
