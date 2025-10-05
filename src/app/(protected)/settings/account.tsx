@@ -1,36 +1,18 @@
-import { Colors } from "@/src/constants/Colors";
 import { Alert, Appearance } from "react-native";
 import { Text, Pressable, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
-import { StyleSheet } from "react-native";
 import { useSession } from "@/src/context/AuthContext";
 import { routerReplace } from "@/src/utils/navigation";
 
-const colorscheme = Appearance.getColorScheme();
-
-function AccountOption({
-  title,
-  icon,
-  onPress,
-}: {
-  title: string;
-  icon: string;
-  onPress: () => void;
-}) {
+function AccountOption({ title, icon, onPress }: { title: string; icon: string; onPress: () => void }) {
   return (
     <Pressable
       onPress={onPress}
-      className="flex flex-row border border-secondary rounded-xl p-4 mb-2 justify-between"
+      className="flex flex-row border border-contrast-light dark:border-contrast-dark rounded-xl p-4 mb-2 justify-between"
     >
-      <Text className="text-contrast-light dark:text-contrast-dark font-bold text-lg">
-        {title}
-      </Text>
-      <IconSymbol
-        size={18}
-        name={icon}
-        className="text-contrast-light dark:text-contrast-dark font-bold"
-      />
+      <Text className="text-contrast-light dark:text-contrast-dark font-bold text-lg">{title}</Text>
+      <IconSymbol size={18} name={icon} className="text-contrast-light dark:text-contrast-dark font-bold" />
     </Pressable>
   );
 }
@@ -90,15 +72,9 @@ function AccountSettings() {
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <FlatList
-        className="pt-4 p-2"
+        className="px-2"
         data={options}
-        renderItem={({ item }) => (
-          <AccountOption
-            title={item.title}
-            icon={item.icon}
-            onPress={item.onPress}
-          />
-        )}
+        renderItem={({ item }) => <AccountOption title={item.title} icon={item.icon} onPress={item.onPress} />}
       />
     </SafeAreaView>
   );

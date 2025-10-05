@@ -1,15 +1,12 @@
-import { View } from "react-native";
-import { Appearance } from "react-native";
-import { ColorSchemeName } from "react-native";
-import { StyleSheet } from "react-native";
+import { DeviceEventEmitter, View } from "react-native";
 import { Text } from "react-native";
 import { Pressable } from "react-native";
 import { manageMicrophonePermissions } from "@/src/config/permissionUtils";
 import { Alert } from "react-native";
 import { Linking } from "react-native";
 import { routerReplace } from "../utils/navigation";
-import { theme } from "@/theme";
-import { useColorScheme } from "nativewind";
+import { useEffect, useState } from "react";
+import InCallManager from "react-native-incall-manager";
 
 interface GameBoxProps {
   name: string;
@@ -18,15 +15,34 @@ interface GameBoxProps {
 }
 
 function GameBox({ name, backgroundColor, link }: GameBoxProps) {
-  const colorScheme = useColorScheme();
+  const [canStartCall, setCanStartCall] = useState(true);
+  useEffect(() => {
+    DeviceEventEmitter.addListener("onAudioFocusChange", (event) => {
+      if (event === "AUDIOFOCUS_LOSS" || event === "AUDIOFOCUS_LOSS_TRANSIENT") {
+        console.log("lost audio focus - other app possibly started an audio call");
+        setCanStartCall(false);
+      } else if (event === "AUDIOFOCUS_GAIN") {
+        console.log("audio focus regained");
+        setCanStartCall(true);
+      }
+    });
+  });
 
   const handleNavigateWithPermissions = async () => {
     if (await manageMicrophonePermissions()) {
+      if (!canStartCall) {
+        Alert.alert("Ongoing call", "Cannot start dialog call while on another call.", [
+          {
+            text: "Dismiss",
+            style: "default",
+          },
+        ]);
+      }
       routerReplace(link);
     } else {
       Alert.alert(
         "Microphone access",
-        "microphone permissios were not granted. You can open settings to grant them manually.",
+        "microphone permissios were not granted. You can open settings to grant them later.",
         [
           {
             text: "Cancel",
@@ -45,23 +61,9 @@ function GameBox({ name, backgroundColor, link }: GameBoxProps) {
   };
 
   return (
-    <Pressable
-      style={{ backgroundColor }}
-      className="p-6 rounded-2xl"
-      onPress={handleNavigateWithPermissions}
-    >
-      <View>
-        <Text
-          className="font-bold text-xl"
-          style={{
-            color:
-              colorScheme.colorScheme === "light"
-                ? theme.colors.text.light
-                : theme.colors.text.dark,
-          }}
-        >
-          {name}
-        </Text>
+    <Pressable style={{ backgroundColor }} className="p-6 py-10 rounded-2xl" onPress={handleNavigateWithPermissions}>
+      <View className="flex justify-center items-center">
+        <Text className="font-bold text-text-dark text-xl">{name}</Text>
       </View>
     </Pressable>
   );

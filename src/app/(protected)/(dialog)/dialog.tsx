@@ -2,23 +2,18 @@ import { Alert, View } from "react-native";
 import { getSocket } from "@/src/server/socket";
 import { useEffect, useRef } from "react";
 import { Text } from "react-native";
-import { Appearance } from "react-native";
-import { ColorSchemeName } from "react-native";
-import { StyleSheet } from "react-native";
-import { Colors } from "@/src/constants/Colors";
 import { Pressable } from "react-native";
-import { Dimensions } from "react-native";
-import { Animated } from "react-native";
-import { Easing } from "react-native";
 import { SafeAreaView } from "react-native";
 import { BackHandler } from "react-native";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import LoadingDots from "@/src/components/ui/LoadingDots";
 import { theme } from "@/theme";
+import { useColorScheme } from "nativewind";
 
 function Dialog() {
   const socket = getSocket("/calls");
   if (!socket.connected) socket.connect();
+  const { colorScheme, setColorScheme } = useColorScheme();
 
   const handleBackAction = () => {
     socket.emit("cancel_call");
@@ -41,10 +36,7 @@ function Dialog() {
       return true;
     };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction,
-    );
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
     return () => {
       backHandler.remove();
     };
@@ -58,15 +50,13 @@ function Dialog() {
       console.log("socket disconnected!");
     };
     const onMatched = (peerId: string) => {
-      const route =
-        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false";
+      const route = ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false";
       console.log("second peer: trying to navigate to route:", route);
       routerReplace(route);
     };
 
     const onInitCall = (peerId: string) => {
-      const route =
-        ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true";
+      const route = ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true";
       console.log("first peer: trying to navigate to route:", route);
       routerReplace(route);
     };
@@ -93,12 +83,10 @@ function Dialog() {
 
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark flex justify-center items-center">
-      <Text className="text-text-light dark:text-text-dark text-2xl font-bold">
-        Searching for a dialogue partner
-      </Text>
+      <Text className="text-text-light dark:text-text-dark text-2xl font-bold">Searching for a dialog partner</Text>
       <View className="py-5 pt-10">
         <LoadingDots
-          dotColor={theme.colors.secondary}
+          dotColor={colorScheme === "light" ? theme.colors.contrast.light : theme.colors.contrast.dark}
           dotSize={20}
           dotSpacing={12}
         />

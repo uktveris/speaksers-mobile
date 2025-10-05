@@ -10,31 +10,19 @@ interface ProfileCourseInfoProps {
   timeZone: string;
 }
 
-function ProfileCourseInfo({
-  language,
-  level,
-  startedLearning,
-  localeLangTag,
-  timeZone,
-}: ProfileCourseInfoProps) {
+function ProfileCourseInfo({ language, level, startedLearning, localeLangTag, timeZone }: ProfileCourseInfoProps) {
   const enrolledAtDate = new Date(startedLearning);
-  const formattedDate = getDateWithLocale(
-    enrolledAtDate,
-    localeLangTag,
-    timeZone,
-  );
+  const formattedDate = getDateWithLocale(enrolledAtDate, localeLangTag, timeZone);
 
   return (
     <View className="rounded-xl overflow-hidden mt-2">
       <View className="flex flex-row">
-        <View className="grow basis-1/4 flex items-center justify-center bg-secondary py-2">
-          <Text className="text-button_text font-bold text-xl">{language}</Text>
-          <Text className="text-button_text">{level}</Text>
+        <View className="grow basis-1/4 flex items-center justify-center bg-primary py-2">
+          <Text className="text-text-dark font-bold text-xl">{language}</Text>
+          <Text className="text-text-dark">{level}</Text>
         </View>
         <View className="grow basis-3/4 flex items-center justify-center bg-contrast-light dark:bg-contrast-dark py-2">
-          <Text className="text-text-dark dark:text-text-light text-sm">
-            Started: {formattedDate}
-          </Text>
+          <Text className="text-text-dark dark:text-text-light text-sm">Started: {formattedDate}</Text>
         </View>
       </View>
     </View>

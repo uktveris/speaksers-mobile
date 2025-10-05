@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { View, Text, Image, Keyboard, Alert } from "react-native";
-import { StyleSheet } from "react-native";
-import { Colors } from "@/src/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSession } from "@/src/context/AuthContext";
 import { Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { ActivityIndicator, TextInput } from "react-native-paper";
-import { Appearance } from "react-native";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { ImageBackground } from "react-native";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
@@ -26,18 +23,9 @@ export default function EditAccount() {
   const [loaded, setLoaded] = useState(false);
   const { session } = useSession();
   const [updateLoading, setUpdateLoading] = useState(false);
-  const {
-    userData,
-    avatarUrl: originalAvatarUrl,
-    loading,
-    updateUserData,
-    refetch,
-  } = useUser();
+  const { userData, avatarUrl: originalAvatarUrl, loading, updateUserData, refetch } = useUser();
   const c = useColorScheme();
-  const textCol =
-    c.colorScheme === "light"
-      ? theme.colors.text.light
-      : theme.colors.text.dark;
+  const textCol = c.colorScheme === "light" ? theme.colors.text.light : theme.colors.text.dark;
 
   useEffect(() => {
     if (!session || !userData) {
@@ -69,17 +57,9 @@ export default function EditAccount() {
     if (!loaded || !userData || loading) {
       return;
     }
-    const changed =
-      name !== originalName || previewAvatarUrl !== originalAvatarUrl;
+    const changed = name !== originalName || previewAvatarUrl !== originalAvatarUrl;
     setChangesMade(changed);
-  }, [
-    loaded,
-    loading,
-    name,
-    previewAvatarUrl,
-    originalName,
-    originalAvatarUrl,
-  ]);
+  }, [loaded, loading, name, previewAvatarUrl, originalName, originalAvatarUrl]);
 
   const handleCancelGoBack = () => {
     if (!changesMade) {
@@ -116,24 +96,17 @@ export default function EditAccount() {
 
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
-      <View className="flex-1 p-2 pt-4">
+      <View className="flex-1 px-2">
         <View className="flex flex-row justify-between">
           <Pressable
-            className="bg-secondary py-1 px-6 rounded-3xl"
+            className="bg-contrast-light dark:bg-contrast-dark py-1 px-6 rounded-3xl"
             onPress={handleCancelGoBack}
           >
-            <Text className="text-button_text font-bold text-xl">Cancel</Text>
+            <Text className="text-text-dark dark:text-text-light font-bold text-xl">Cancel</Text>
           </Pressable>
-          <Pressable
-            className="bg-primary py-1 px-6 rounded-3xl"
-            onPress={() => updateUserAndGoBack()}
-          >
-            {!updateLoading && (
-              <Text className="text-text-dark font-bold text-xl">Save</Text>
-            )}
-            {updateLoading && (
-              <ActivityIndicator color={theme.colors.text.dark} />
-            )}
+          <Pressable className="bg-primary py-1 px-6 rounded-3xl" onPress={() => updateUserAndGoBack()}>
+            {!updateLoading && <Text className="text-text-dark font-bold text-xl">Save</Text>}
+            {updateLoading && <ActivityIndicator color={theme.colors.text.dark} />}
           </Pressable>
         </View>
         <View className="pt-3">
@@ -141,23 +114,13 @@ export default function EditAccount() {
             <View className="rounded-full overflow-hidden">
               {loading && (
                 <ActivityIndicator
-                  color={
-                    c.colorScheme === "light"
-                      ? theme.colors.text.light
-                      : theme.colors.text.dark
-                  }
+                  color={c.colorScheme === "light" ? theme.colors.text.light : theme.colors.text.dark}
                   size="large"
                 />
               )}
               {!loading && (
-                <ImageBackground
-                  source={{ uri: previewAvatarUrl! }}
-                  className="w-32 h-32"
-                >
-                  <Pressable
-                    onPress={pickImage}
-                    className="flex-1 items-center justify-center bg-black/70"
-                  >
+                <ImageBackground source={{ uri: previewAvatarUrl! }} className="w-32 h-32">
+                  <Pressable onPress={pickImage} className="flex-1 items-center justify-center bg-black/70">
                     <View>
                       <Text className="text-contrast-dark font-bold">Edit</Text>
                     </View>
@@ -167,12 +130,8 @@ export default function EditAccount() {
             </View>
           </View>
           <View className="pt-3">
-            <Text className="text-text-light dark:text-text-dark">
-              {username}
-            </Text>
-            <Text className="text-text-light dark:text-text-dark text-xl font-bold">
-              Edit name:
-            </Text>
+            <Text className="text-text-light dark:text-text-dark self-center">{username}</Text>
+            <Text className="text-text-light dark:text-text-dark text-xl font-bold">Edit name:</Text>
             <TextInput
               textColor={textCol}
               className="rounded-3xl bg-black/25 w-full my-1"
@@ -190,7 +149,6 @@ export default function EditAccount() {
           </View>
         </View>
       </View>
-      <KeyboardToolbar />
     </SafeAreaView>
   );
 }

@@ -15,11 +15,9 @@ const SCHEME = "speaksers";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   console.log("BUILDING APP FOR ENVIRONMENT:", process.env.APP_ENV);
-  const { name, bundleIdentifier, packageName, icon, scheme } =
-    getDynamicAppConfig(
-      (process.env.APP_ENV as "development" | "preview" | "production") ||
-        "development",
-    );
+  const { name, bundleIdentifier, packageName, icon, scheme } = getDynamicAppConfig(
+    (process.env.APP_ENV as "development" | "preview" | "production") || "development",
+  );
   return {
     ...config,
     name: name,
@@ -41,8 +39,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       bundleIdentifier: bundleIdentifier,
       infoPlist: {
         UIBackgroundModes: ["audio"],
-        NSMicrophoneUsageDescription:
-          "This app uses microphone for audio calls.",
+        NSMicrophoneUsageDescription: "This app uses microphone for audio calls.",
+        ITSAppUsesNonExemptEncryption: false,
       },
     },
     android: {
@@ -51,10 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         foregroundImage: "./assets/images/icon.png",
         backgroundColor: "#ffffff",
       },
-      permissions: [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.INTERNET",
-      ],
+      permissions: ["android.permission.RECORD_AUDIO", "android.permission.INTERNET"],
     },
     plugins: [
       "expo-router",
@@ -93,8 +88,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         projectId: EAS_PROJECT_ID,
       },
       SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY:
-        process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+      SUPABASE_PUBLISHABLE_KEY: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
       BACKEND_URL: process.env.EXPO_PUBLIC_BACKEND_URL,
       SB_TOKEN_NAME: process.env.EXPO_PUBLIC_SB_TOKEN_NAME,
     },
@@ -108,9 +102,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   };
 };
 
-export const getDynamicAppConfig = (
-  environment: "development" | "preview" | "production",
-) => {
+export const getDynamicAppConfig = (environment: "development" | "preview" | "production") => {
   if (environment === "production") {
     return {
       name: APP_NAME,
@@ -124,8 +116,8 @@ export const getDynamicAppConfig = (
       name: `${APP_NAME} Preview`,
       bundleIdentifier: `${BUNDLE_IDENTIFIER}.preview`,
       packageName: `${PACKAGE_NAME}.preview`,
-      icon: "./assets/images/icons/iOS-Prev.png",
-      adaptiveIcon: "./assets/images/icons/Android-Prev.png",
+      icon: "./assets/images/iOS-Prev.png",
+      adaptiveIcon: "./assets/images/Android-Prev.png",
       scheme: `${SCHEME}-prev`,
     };
   }
@@ -133,8 +125,8 @@ export const getDynamicAppConfig = (
     name: `${APP_NAME} Development`,
     bundleIdentifier: `${BUNDLE_IDENTIFIER}.dev`,
     packageName: `${PACKAGE_NAME}.dev`,
-    icon: "./assets/images/icons/iOS-Dev.png",
-    adaptiveIcon: "./assets/images/icons/Android-Dev.png",
+    icon: "./assets/images/iOS-Dev.png",
+    adaptiveIcon: "./assets/images/Android-Dev.png",
     scheme: `${SCHEME}-dev`,
   };
 };

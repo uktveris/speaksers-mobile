@@ -11,13 +11,13 @@ import { StyleSheet, useColorScheme } from "nativewind";
 import { BlurView } from "expo-blur";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.secondary,
+        tabBarInactiveTintColor: colorScheme === "light" ? theme.colors.contrast.light : theme.colors.contrast.dark,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
@@ -30,7 +30,7 @@ export default function TabLayout() {
         tabBarBackground: () => {
           return (
             <BlurView
-              tint={colorScheme.colorScheme === "light" ? "light" : "dark"}
+              tint={colorScheme === "light" ? "light" : "dark"}
               intensity={90}
               style={{
                 flex: 1,
@@ -48,18 +48,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Learn",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
           title: "Account",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" size={28} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account" size={28} color={color} />,
         }}
       />
     </Tabs>

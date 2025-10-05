@@ -6,15 +6,15 @@ export const theme = {
 
     contrast: {
       light: "#0e0f0f",
-      dark: "#dbdbdb",
+      dark: "#b7b7b7",
     },
     background: {
-      light: "#eadaa0",
-      dark: "#0c1110",
+      light: "#f2f2f2",
+      dark: "#0a0a0a",
     },
     text: {
       light: "#11150d",
-      dark: "#eadaa0",
+      dark: "#d3d3d3",
     },
   },
 };

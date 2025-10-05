@@ -9,6 +9,7 @@ import { Pressable } from "react-native";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme as customTheme } from "@/theme";
+import { useColorScheme } from "nativewind";
 
 function LanguageCourseSelection() {
   const { addUserCourse } = useUserCourses();
@@ -20,13 +21,12 @@ function LanguageCourseSelection() {
   } | null>(courses ? courses[0] : null);
   const [selectedLevel, setSelectedLevel] = useState(levels[0]);
   const primary = customTheme.colors.primary;
+  const { colorScheme } = useColorScheme();
 
   useEffect(() => {
     const supabase = getSupabaseClient();
     const fetchCourses = async () => {
-      const { data, error } = await supabase
-        .from("language_courses")
-        .select("*");
+      const { data, error } = await supabase.from("language_courses").select("*");
       if (error) {
         console.log("error retrieving language course list: " + error.message);
         return;
@@ -52,35 +52,26 @@ function LanguageCourseSelection() {
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <ScrollView>
         <View className="flex flex-1 justify-center items-center py-3">
-          <Text className="text-text-light dark:text-text-dark font-bold text-xl m-4">
-            Add language CEFR level
-          </Text>
+          <Text className="text-text-light dark:text-text-dark font-bold text-xl m-4">Add language CEFR level</Text>
           {courses.map((course, key) => (
             <Pressable
               onPress={() => setSelectedCourse(course)}
               key={key}
-              className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${course.id === selectedCourse?.id ? "red-500" : "secondary"}`}
+              className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${course.id === selectedCourse?.id ? "red-500" : colorScheme === "light" ? "contrast-light" : "contrast-dark"}`}
             >
-              <Text className="text-text-light dark:text-text-dark font-bold">
-                {course.name}
-              </Text>
+              <Text className="text-text-light dark:text-text-dark font-bold">{course.name}</Text>
             </Pressable>
           ))}
           {levels.map((level, key) => (
             <Pressable
               onPress={() => setSelectedLevel(level)}
               key={key}
-              className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${level === selectedLevel ? "red-500" : "secondary"}`}
+              className={`flex w-3/4 justify-center items-center rounded-xl p-4 mb-4 border border-${level === selectedLevel ? "red-500" : colorScheme === "light" ? "contrast-light" : "contrast-dark"}`}
             >
-              <Text className="text-text-light dark:text-text-dark font-bold">
-                {level}
-              </Text>
+              <Text className="text-text-light dark:text-text-dark font-bold">{level}</Text>
             </Pressable>
           ))}
-          <Pressable
-            className="bg-primary w-3/4  p-3 flex items-center rounded-3xl"
-            onPress={addCourse}
-          >
+          <Pressable className="bg-primary w-3/4  p-3 flex items-center rounded-3xl" onPress={addCourse}>
             <Text className="text-text-dark font-bold">Continue</Text>
           </Pressable>
         </View>
