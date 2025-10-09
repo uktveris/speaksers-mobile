@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react";
 import { getSocket } from "../server/socket";
 import { Device } from "mediasoup-client";
-import { AppData, Producer, ProducerOptions, RtpCapabilities, Transport } from "mediasoup-client/types";
+import {
+  AppData,
+  Producer,
+  ProducerOptions,
+  RtpCapabilities,
+  Transport,
+  TransportOptions,
+} from "mediasoup-client/types";
 import { mediaDevices, MediaStream, MediaStreamTrack, registerGlobals } from "react-native-webrtc";
 import InCallManager from "react-native-incall-manager";
+import axiosConfig from "../config/axiosConfig";
+import { getBackendUrl } from "../config/urlConfig";
+import { useSession } from "../context/AuthContext";
+
+const iceServers = [{ urls: "stun:stun.l.google.com:19302" }, { urls: "STUN:freestun.net:3478" }];
 
 export function useMediasoup(peerId: string) {
   registerGlobals();
+  const { session } = useSession();
   const socket = getSocket("/calls");
   if (!socket.connected) socket.connect();
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -23,6 +36,21 @@ export function useMediasoup(peerId: string) {
       kind: string;
     }>
   >([]);
+
+  const getIceServers = async () => {
+    const url = getBackendUrl();
+    try {
+      const response = await axiosConfig.get(url + "/api/turn-servers/get-turn-server", {
+        data: { userId: session?.user.id },
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("turn servers response:", response.data);
+      return response.data.servers;
+    } catch (error) {
+      console.log("error while getting turn server:", error);
+      return;
+    }
+  };
 
   const initDevice = async (capabilities: RtpCapabilities) => {
     const device = new Device();
@@ -57,8 +85,8 @@ export function useMediasoup(peerId: string) {
       });
     });
     console.log("received transport params: ", params);
-
-    const producerTransport = device.createSendTransport(params);
+    const transportOptions: TransportOptions = { ...params, iceServers };
+    const producerTransport = device.createSendTransport(transportOptions);
     producerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
       try {
         socket.emit("connect_transport", {
@@ -127,7 +155,10 @@ export function useMediasoup(peerId: string) {
       });
     });
 
-    const consumerTransport = device.createRecvTransport(params);
+    const iceServers = await getIceServers();
+
+    const transportOptions: TransportOptions = { ...params, iceServers };
+    const consumerTransport = device.createRecvTransport(transportOptions);
 
     consumerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
       try {
@@ -289,6 +320,7 @@ export function useMediasoup(peerId: string) {
 
     return () => {
       console.log("setup useeffect cleaning");
+      socket.disconnect();
       cleanUp();
     };
   }, []);
