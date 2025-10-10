@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { useSession } from "@/src/context/AuthContext";
 import { routerReplace } from "@/src/utils/navigation";
+import { View } from "react-native";
 
 function AccountOption({ title, icon, onPress }: { title: string; icon: string; onPress: () => void }) {
   return (
@@ -71,11 +72,14 @@ function AccountSettings() {
 
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
-      <FlatList
-        className="px-2"
-        data={options}
-        renderItem={({ item }) => <AccountOption title={item.title} icon={item.icon} onPress={item.onPress} />}
-      />
+      <View className="px-2">
+        <Text className="text-text-light dark:text-text-dark text-3xl font-bold pb-2">Account</Text>
+        <FlatList
+          // className="px-2"
+          data={options}
+          renderItem={({ item }) => <AccountOption title={item.title} icon={item.icon} onPress={item.onPress} />}
+        />
+      </View>
     </SafeAreaView>
   );
 }

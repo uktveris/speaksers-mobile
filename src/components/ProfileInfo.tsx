@@ -35,7 +35,7 @@ function ProfileInfo() {
         {!loading && <Image className="w-32 h-32" source={{ uri: originalAvatarUrl || "" }} />}
       </View>
       <View>
-        <Text className="text-text-light dark:text-text-dark text-sm">{username}</Text>
+        <Text className="text-text-light_dimmed dark:text-text-dark_dimmed text-sm">{username}</Text>
         <Text className="text-text-light dark:text-text-dark text-2xl font-bold">{name}</Text>
       </View>
       <View className="ml-auto">

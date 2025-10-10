@@ -2,7 +2,7 @@ import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { settingsRoutes } from "@/src/constants/settingsRoutes";
 import { routerPush } from "@/src/utils/navigation";
 import { RelativePathString } from "expo-router";
-import { Appearance } from "react-native";
+import { Appearance, View } from "react-native";
 import { Pressable } from "react-native";
 import { StyleSheet } from "react-native";
 import { FlatList, useColorScheme } from "react-native";
@@ -29,11 +29,13 @@ function SettingsItem({ title, icon, route }: { title: string; icon: string; rou
 function Settings() {
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
-      <FlatList
-        className="px-2"
-        data={settingsRoutes}
-        renderItem={({ item }) => <SettingsItem title={item.title} icon={item.icon} route={item.route} />}
-      />
+      <View className="px-2">
+        <Text className="text-text-light dark:text-text-dark text-3xl font-bold pb-2">Settings</Text>
+        <FlatList
+          data={settingsRoutes}
+          renderItem={({ item }) => <SettingsItem title={item.title} icon={item.icon} route={item.route} />}
+        />
+      </View>
     </SafeAreaView>
   );
 }

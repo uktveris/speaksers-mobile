@@ -44,7 +44,6 @@ export function useMediasoup(peerId: string) {
         data: { userId: session?.user.id },
         headers: { "Content-Type": "application/json" },
       });
-      console.log("turn servers response:", response.data);
       return response.data.servers;
     } catch (error) {
       console.log("error while getting turn server:", error);
@@ -85,6 +84,8 @@ export function useMediasoup(peerId: string) {
       });
     });
     console.log("received transport params: ", params);
+    // const iceServers = await getIceServers();
+    // console.log("params:", JSON.stringify(params, null, 2));
     const transportOptions: TransportOptions = { ...params, iceServers };
     const producerTransport = device.createSendTransport(transportOptions);
     producerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
@@ -155,9 +156,10 @@ export function useMediasoup(peerId: string) {
       });
     });
 
-    const iceServers = await getIceServers();
+    // const iceServers = await getIceServers();
 
     const transportOptions: TransportOptions = { ...params, iceServers };
+    console.log("full params before loading");
     const consumerTransport = device.createRecvTransport(transportOptions);
 
     consumerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
@@ -218,6 +220,10 @@ export function useMediasoup(peerId: string) {
     setTimeout(() => {
       setupSpeaker();
     }, 80);
+    // track.onunmute = () => {
+    //   console.log("remote audio track unmuted - activating speaker");
+    //   setupSpeaker();
+    // };
     socket.emit("consume_resume", { consumerId: consumer.id });
     console.log("remote ref set: ", remote);
   };
@@ -254,6 +260,7 @@ export function useMediasoup(peerId: string) {
   const cleanUp = () => {
     console.log("mediasoup cleanup");
     InCallManager.stop();
+    InCallManager.setKeepScreenOn(false);
     remoteStream?.getTracks().forEach((t) => t.stop());
     localStream?.getTracks().forEach((t) => t.stop());
     producer?.close();
@@ -290,6 +297,7 @@ export function useMediasoup(peerId: string) {
     const setup = async () => {
       try {
         InCallManager.start({ media: "audio" });
+        InCallManager.setKeepScreenOn(true);
         console.log("getting user media");
         const stream = await mediaDevices.getUserMedia({
           audio: true,

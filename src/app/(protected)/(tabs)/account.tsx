@@ -35,17 +35,10 @@ function Account() {
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <View className="flex-1 px-2">
         <View className="flex flex-row justify-between">
-          {/*<Pressable
-            className="bg-contrast-light dark:bg-contrast-dark py-1 px-6 rounded-3xl"
-            onPress={handleEditProfile}
-          >
-            <Text className="text-text-dark dark:text-text-light font-bold text-xl">Edit</Text>
-          </Pressable>*/}
           <Pressable
             className="bg-contrast-light dark:bg-contrast-dark py-1 px-6 rounded-3xl flex items-center justify-center"
             onPress={handleGoToSettings}
           >
-            {/*<Text className="text-text-dark dark:text-text-light font-bold text-xl">Settings</Text>*/}
             <Feather
               name="settings"
               size={24}

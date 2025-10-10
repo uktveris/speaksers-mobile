@@ -15,6 +15,8 @@ export const theme = {
     text: {
       light: "#11150d",
       dark: "#d3d3d3",
+      light_dimmed: "#353535",
+      dark_dimmed: "#848484",
     },
   },
 };
