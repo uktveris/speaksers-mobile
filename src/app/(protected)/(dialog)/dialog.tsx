@@ -50,13 +50,13 @@ function Dialog() {
       console.log("socket disconnected!");
     };
     const onMatched = (peerId: string) => {
-      const route = ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=false";
+      const route = ROUTES.dialogPrep + "?remoteSocketId=" + peerId + "&initCall=false";
       console.log("second peer: trying to navigate to route:", route);
       routerReplace(route);
     };
 
     const onInitCall = (peerId: string) => {
-      const route = ROUTES.dialogCall + "?remoteSocketId=" + peerId + "&initCall=true";
+      const route = ROUTES.dialogPrep + "?remoteSocketId=" + peerId + "&initCall=true";
       console.log("first peer: trying to navigate to route:", route);
       routerReplace(route);
     };

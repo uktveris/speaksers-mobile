@@ -7,7 +7,6 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SessionProvider } from "@/src/context/AuthContext";
 import { deactivateKeepAwake } from "expo-keep-awake";
@@ -16,6 +15,8 @@ import { setRouterInstance } from "../utils/navigation";
 import { ModalProvider } from "../context/ModalContext";
 import { NetworkProvider } from "../context/NetworkContext";
 import OfflineBanner from "../components/ui/OfflineBanner";
+import { useColorScheme } from "nativewind";
+import { getItem } from "../utils/storage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -25,11 +26,24 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { setColorScheme } = useColorScheme();
   const router = useRouter();
   const [loaded] = useFonts({
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  useEffect(() => {
+    const loadTheme = async () => {
+      const theme = await getItem("theme");
+      if (!theme) {
+        console.log("no theme item found, setting system theme");
+        setColorScheme("system");
+        return;
+      }
+      setColorScheme(theme as "light" | "dark");
+    };
+    loadTheme();
+  }, []);
 
   useEffect(() => {
     deactivateKeepAwake();

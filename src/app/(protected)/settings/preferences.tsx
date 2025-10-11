@@ -1,3 +1,4 @@
+import { setItem } from "@/src/utils/storage";
 import { useColorScheme } from "nativewind";
 import { useState } from "react";
 import { Switch, Text, View } from "react-native";
@@ -6,9 +7,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 function Preferences() {
   const { colorScheme, setColorScheme } = useColorScheme();
   const [isEnabled, setIsEnabled] = useState(colorScheme === "light" ? false : true);
-  const toggleColorScheme = () => {
+  const toggleColorScheme = async () => {
     setIsEnabled((prev) => !prev);
-    setColorScheme(colorScheme === "light" ? "dark" : "light");
+    const curr = colorScheme === "light" ? "dark" : "light";
+    setColorScheme(curr);
+    await setItem("theme", curr);
   };
 
   return (

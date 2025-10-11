@@ -15,9 +15,9 @@ import axiosConfig from "../config/axiosConfig";
 import { getBackendUrl } from "../config/urlConfig";
 import { useSession } from "../context/AuthContext";
 
-const iceServers = [{ urls: "stun:stun.l.google.com:19302" }, { urls: "STUN:freestun.net:3478" }];
+// const iceServers = [{ urls: "stun:stun.l.google.com:19302" }, { urls: "STUN:freestun.net:3478" }];
 
-export function useMediasoup(peerId: string) {
+export function useMediasoup(peerId: string, callId: string) {
   registerGlobals();
   const { session } = useSession();
   const socket = getSocket("/calls");
@@ -27,7 +27,7 @@ export function useMediasoup(peerId: string) {
   const [producer, setProducer] = useState<Producer<AppData> | undefined>(undefined);
   const [producerTransport, setProducerTransport] = useState<Transport<AppData> | null>(null);
   const [consumerTransport, setConsumerTransport] = useState<Transport<AppData> | null>(null);
-  const [callId, setCallId] = useState<string | null>(null);
+  // const [callId, setCallId] = useState<string | null>(null);
   const [device, setDevice] = useState<Device | null>(null);
   const [pendingProducers, setPendingProducers] = useState<
     Array<{
@@ -36,6 +36,7 @@ export function useMediasoup(peerId: string) {
       kind: string;
     }>
   >([]);
+  const [loading, setLoading] = useState(true);
 
   const getIceServers = async () => {
     const url = getBackendUrl();
@@ -84,8 +85,7 @@ export function useMediasoup(peerId: string) {
       });
     });
     console.log("received transport params: ", params);
-    // const iceServers = await getIceServers();
-    // console.log("params:", JSON.stringify(params, null, 2));
+    const iceServers = await getIceServers();
     const transportOptions: TransportOptions = { ...params, iceServers };
     const producerTransport = device.createSendTransport(transportOptions);
     producerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
@@ -156,9 +156,10 @@ export function useMediasoup(peerId: string) {
       });
     });
 
-    // const iceServers = await getIceServers();
+    const iceServers = await getIceServers();
 
     const transportOptions: TransportOptions = { ...params, iceServers };
+    // const transportOptions = params;
     console.log("full params before loading");
     const consumerTransport = device.createRecvTransport(transportOptions);
 
@@ -224,6 +225,7 @@ export function useMediasoup(peerId: string) {
     //   console.log("remote audio track unmuted - activating speaker");
     //   setupSpeaker();
     // };
+    setLoading(false);
     socket.emit("consume_resume", { consumerId: consumer.id });
     console.log("remote ref set: ", remote);
   };
@@ -260,7 +262,6 @@ export function useMediasoup(peerId: string) {
   const cleanUp = () => {
     console.log("mediasoup cleanup");
     InCallManager.stop();
-    InCallManager.setKeepScreenOn(false);
     remoteStream?.getTracks().forEach((t) => t.stop());
     localStream?.getTracks().forEach((t) => t.stop());
     producer?.close();
@@ -296,15 +297,14 @@ export function useMediasoup(peerId: string) {
   useEffect(() => {
     const setup = async () => {
       try {
-        InCallManager.start({ media: "audio" });
-        InCallManager.setKeepScreenOn(true);
+        setLoading(true);
         console.log("getting user media");
         const stream = await mediaDevices.getUserMedia({
           audio: true,
           video: false,
         });
         setLocalStream(stream);
-        console.log("stream: ", { stream });
+        console.log("stream:", { stream });
         const capabilities = await getCapabilities();
         console.log("capabilities: ", { capabilities });
         const d = await initDevice(capabilities);
@@ -315,11 +315,13 @@ export function useMediasoup(peerId: string) {
         console.log("producer transport created: ", pt.id);
         const producer = await connectSendTransport(pt, stream);
         setProducer(producer);
+        InCallManager.start({ media: "audio" });
 
         const ct = await createRecvTransport(d);
         setConsumerTransport(ct);
         console.log("consumer transport created: ", ct.id);
       } catch (error) {
+        setLoading(false);
         console.log("error occurred: ", (error as Error).message);
       }
     };
@@ -346,6 +348,7 @@ export function useMediasoup(peerId: string) {
       try {
         await connectRecvTransport(consumerTransport, device.rtpCapabilities, producerId);
       } catch (error) {
+        setLoading(false);
         console.log("new_producer: error while consuming producer", producerId, ":", error);
       }
     };
@@ -357,5 +360,5 @@ export function useMediasoup(peerId: string) {
     };
   }, [device, consumerTransport]);
 
-  return { remoteStream, localStream, mute, unMute, hangUp, callId, setCallId };
+  return { remoteStream, localStream, mute, unMute, hangUp, loading };
 }

@@ -6,11 +6,13 @@ export default function Timer({
   endTime,
   counting,
   onStopTimer,
+  onTimerEnded,
 }: {
   callId: string;
   endTime: number | null;
   counting: boolean;
   onStopTimer: () => void;
+  onTimerEnded?: () => void;
 }) {
   const [remaining, setRemaining] = useState(0);
 
@@ -20,6 +22,7 @@ export default function Timer({
       const diff = endTime - Date.now();
       if (diff <= 0) {
         setRemaining(0);
+        if (onTimerEnded) onTimerEnded();
       } else {
         setRemaining(diff);
       }
@@ -31,16 +34,11 @@ export default function Timer({
 
   return (
     <View className="flex justify-center items-center">
-      <Text className="text-text-light dark:text-text-dark">
-        {counting ? "counting" : "timer stopped!"}
-      </Text>
+      <Text className="text-text-light dark:text-text-dark">{counting ? "counting" : "timer stopped!"}</Text>
       <Text className="text-text-light dark:text-text-dark">
         {endTime ? `${Math.floor(remaining / 1000)}s left` : "timer ended"}
       </Text>
-      <Pressable
-        onPress={() => onStopTimer()}
-        className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
-      >
+      <Pressable onPress={() => onStopTimer()} className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl">
         <Text className="text-text-light dark:text-text-dark">Stop timer</Text>
       </Pressable>
     </View>
