@@ -11,6 +11,7 @@ export const theme = {
     background: {
       light: "#f2f2f2",
       dark: "#0a0a0a",
+      dimmed: "rgba(130, 130, 130, 0.1)",
     },
     text: {
       light: "#11150d",

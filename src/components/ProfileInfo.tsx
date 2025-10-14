@@ -4,7 +4,7 @@ import { Pressable, View } from "react-native";
 import { Image } from "react-native";
 import { Text } from "react-native";
 import { useUser } from "../hooks/useUser";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator } from "react-native";
 import { theme } from "@/theme";
 import { useColorScheme } from "nativewind";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";

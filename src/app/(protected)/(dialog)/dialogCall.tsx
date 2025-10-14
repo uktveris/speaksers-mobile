@@ -39,8 +39,8 @@ export default function DialogCall() {
   // };
 
   return (
-    <SafeAreaView>
-      <View>
+    <SafeAreaView className="h-full bg-background-light dark:bg-background-dark flex justify-center items-center">
+      <View className="px-2 justify-center items-center">
         {loading && (
           <ActivityIndicator
             color={colorScheme === "light" ? theme.colors.text.light : theme.colors.text.dark}
@@ -48,7 +48,7 @@ export default function DialogCall() {
           />
         )}
         {remoteStream && !loading && (
-          <View className="flex justify-center items-center border border-red-500">
+          <View className="flex justify-center items-center rounded-3xl bg-background-dimmed">
             {remoteStream && <RTCView streamURL={remoteStream.toURL()} style={{ width: 10, height: 10 }} />}
             {/*{callId && timerData && (
               <Timer
@@ -69,9 +69,17 @@ export default function DialogCall() {
               className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
               onPress={() => handleGoBack()}
             >
-              <Text className="text-text-dark font-bold">end call</Text>
+              <Text className="text-text-dark font-bold">End dialog</Text>
             </Pressable>
           </View>
+        )}
+        {!loading && !remoteStream && (
+          <Pressable
+            className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
+            onPress={() => handleGoBack()}
+          >
+            <Text className="text-text-dark font-bold">Go to menu</Text>
+          </Pressable>
         )}
       </View>
     </SafeAreaView>

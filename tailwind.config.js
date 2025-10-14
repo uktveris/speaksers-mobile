@@ -17,6 +17,7 @@ module.exports = {
         background: {
           light: theme.colors.background.light,
           dark: theme.colors.background.dark,
+          dimmed: theme.colors.background.dimmed,
         },
         text: {
           light: theme.colors.text.light,

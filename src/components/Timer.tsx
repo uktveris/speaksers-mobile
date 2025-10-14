@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Timer({
   callId,
@@ -33,14 +33,11 @@ export default function Timer({
   }, [endTime]);
 
   return (
-    <View className="flex justify-center items-center">
-      <Text className="text-text-light dark:text-text-dark">{counting ? "counting" : "timer stopped!"}</Text>
-      <Text className="text-text-light dark:text-text-dark">
+    <View className="flex justify-center items-center bg-background-dimmed rounded-3xl">
+      {/*<Text className="text-text-light dark:text-text-dark">{counting ? "counting" : "timer stopped!"}</Text>*/}
+      <Text className="text-text-light dark:text-text-dark text-xl font-bold">
         {endTime ? `${Math.floor(remaining / 1000)}s left` : "timer ended"}
       </Text>
-      <Pressable onPress={() => onStopTimer()} className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl">
-        <Text className="text-text-light dark:text-text-dark">Stop timer</Text>
-      </Pressable>
     </View>
   );
 }

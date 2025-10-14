@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { RTCView } from "react-native-webrtc";
 import { Pressable } from "react-native";
 import { Text } from "react-native";
 import { getSocket } from "@/src/server/socket";
@@ -8,13 +7,15 @@ import { useLocalSearchParams } from "expo-router";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Timer from "@/src/components/Timer";
-import { useMediasoup } from "@/src/hooks/useMediasoup";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-export interface TopicTask {
-  id: number;
-  topic: string;
-  type: string;
-  question: string;
+export interface StudentTopic {
+  id: string;
+  title: string;
+  role: string;
+  arg: string;
+  tip: string;
 }
 
 export default function DialogPrep() {
@@ -28,15 +29,14 @@ export default function DialogPrep() {
   const [peerReady, setPeerReady] = useState(false);
   const [ready, setReady] = useState(false);
   const [muted, setMuted] = useState(false);
-  // const { remoteStream, mute, unMute, hangUp, callId, setCallId } = useMediasoup(remoteSocketId as string, callId);
-  const [topic, setTopic] = useState<TopicTask | null>(null);
+  const [topic, setTopic] = useState<StudentTopic | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [callId, setCallId] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("MOUNTED: dialogPrep");
 
-    const onCallStarted = (data: { callId: string; role: string; topic: TopicTask }) => {
+    const onCallStarted = (data: { callId: string; role: string; topic: StudentTopic }) => {
       console.log("data:", { data });
       setCallId(data.callId);
       setTopic(data.topic);
@@ -49,9 +49,8 @@ export default function DialogPrep() {
 
     socket.on("timer_started", (data: { endTime: number }) => onTimerStarted(data));
     socket.on("timer_stopped", () => onTimerStopped());
-    socket.on("topic_sent", (data: { callId: string; role: string; topic: TopicTask }) => onCallStarted(data));
+    socket.on("topic_sent", (data: { callId: string; role: string; topic: StudentTopic }) => onCallStarted(data));
     socket.on("peer_ready", () => setPeerReady(true));
-    // socket.on("start_call", () => startCall());
     return () => {
       socket.off("topic_sent");
       socket.off("timer_started");
@@ -99,8 +98,8 @@ export default function DialogPrep() {
 
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark flex justify-center items-center">
-      <View className="flex px-2 justify-center items-center">
-        <Text className="text-text-light dark:text-text-dark text-3xl font-bold">Preparation</Text>
+      <View className="flex h-full px-2 items-center">
+        <Text className=" text-text-light dark:text-text-dark text-3xl font-bold">Preparation</Text>
         <Text className="text-text-light dark:text-text-dark font-bold">Time to prepare:</Text>
         {timerData && (
           <Timer
@@ -111,39 +110,41 @@ export default function DialogPrep() {
             onTimerEnded={onTimerStopped}
           />
         )}
-        <Text className="text-text-light dark:text-text-dark">Peer {peerReady ? "Ready" : "Not ready"}</Text>)
-      </View>
-      {/*{remoteStream ? (
-        <View className="flex justify-center items-center border border-red-500">
-          <View className="flex justify-center items-center">
-            <Text className="text-text-light dark:text-text-dark font-bold">
-              peer ready: {peerReady ? "READY" : "NOT READY"}
-            </Text>
-            <Text className="text-text-light dark:text-text-dark font-bold">
-              you ready: {ready ? "READY" : "NOT READY"}
-            </Text>
-          </View>
-          {remoteStream && <RTCView streamURL={remoteStream.toURL()} style={{ width: 10, height: 10 }} />}
-          {callId && timerData && (
-            <Timer endTime={timerData.endTime} counting={timerData.counting} callId={callId} onStopTimer={stopTimer} />
+        <View className="flex flex-1 gap-4 justify-center">
+          {topic && role && (
+            <View className="flex bg-background-dimmed rounded-3xl p-5">
+              <Text className="text-text-light dark:text-text-dark text-2xl font-bold text-center mb-2">
+                {topic.title}
+              </Text>
+              <Text className="text-text-light dark:text-text-dark font-bold mb-2">Role: {topic.role}</Text>
+              <Text className="text-text-light dark:text-text-dark mb-2">{topic.arg}</Text>
+              <Text className="text-text-light dark:text-text-dark">Tip: {topic.tip}</Text>
+            </View>
           )}
-          <Pressable
-            className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
-            onPress={() => toggleMute()}
-          >
-            <Text className="text-text-dark font-bold">{muted ? "Unmute" : "Mute"}</Text>
-          </Pressable>
-          <Pressable className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl" onPress={() => hangUp()}>
-            <Text className="text-text-dark font-bold">end call</Text>
-          </Pressable>
+          <View className="flex flex-row gap-4 justify-center items-center">
+            <Pressable
+              disabled={ready}
+              onPress={() => stopTimer()}
+              className={`bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl ${ready ? "bg-background-dimmed" : ""}`}
+            >
+              <Text className="text-text-light dark:text-text-dark font-bold">
+                {peerReady ? "Start practice" : "Ready"}
+              </Text>
+            </Pressable>
+            {peerReady ? (
+              <View className="bg-background-dimmed flex flex-row p-3 rounded-3xl justify-center">
+                <Ionicons name="checkmark-circle" size={22} color="green" />
+                <Text className="text-text-light dark:text-text-dark self-center">Partner ready</Text>
+              </View>
+            ) : (
+              <View className="bg-background-dimmed flex flex-row p-3 rounded-3xl justify-center">
+                <FontAwesome6 name="circle-xmark" size={22} color="red" />
+                <Text className="text-text-light dark:text-text-dark self-center">Partner not ready</Text>
+              </View>
+            )}
+          </View>
         </View>
-      ) : (
-        <View className="flex justify-center items-center">
-          <Pressable className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl" onPress={handleGoBack}>
-            <Text className="text-text-dark font-bold">call ended, go back</Text>
-          </Pressable>
-        </View>
-      )}*/}
+      </View>
     </SafeAreaView>
   );
 }
