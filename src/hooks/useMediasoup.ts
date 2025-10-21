@@ -15,8 +15,6 @@ import axiosConfig from "../config/axiosConfig";
 import { getBackendUrl } from "../config/urlConfig";
 import { useSession } from "../context/AuthContext";
 
-// const iceServers = [{ urls: "stun:stun.l.google.com:19302" }, { urls: "STUN:freestun.net:3478" }];
-
 export function useMediasoup(peerId: string, callId: string) {
   registerGlobals();
   const { session } = useSession();
@@ -79,7 +77,7 @@ export function useMediasoup(peerId: string, callId: string) {
           console.log("no params received: ", response.params.error);
           reject(response.params.error);
         } else {
-          console.log("resolving response:", { response });
+          console.log("resolving response:", JSON.stringify(response, null, 2));
           resolve(response);
         }
       });
@@ -150,7 +148,7 @@ export function useMediasoup(peerId: string, callId: string) {
           console.log("no params received: ", response.params.error);
           reject(response.params.error);
         } else {
-          console.log("params from recv transport: ", { response });
+          console.log("params from recv transport: ", JSON.stringify(response, null, 2));
           resolve(response);
         }
       });
