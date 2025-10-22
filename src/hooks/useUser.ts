@@ -18,11 +18,7 @@ function useUser() {
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase
-      .from("users")
-      .select()
-      .eq("id", session.user.id)
-      .single();
+    const { data, error } = await supabase.from("users").select().eq("id", session.user.id).single();
 
     if (error) {
       console.log("error retrieving user:", error.message);
@@ -31,12 +27,7 @@ function useUser() {
 
     const { data: avatarData, error: avatarError } = await supabase.storage
       .from("avatars")
-      .createSignedUrl(
-        data.avatar_url +
-          "?updated_at=" +
-          (data.avatar_updated_at || Date.now()),
-        60,
-      );
+      .createSignedUrl(data.avatar_url + "?updated_at=" + (data.avatar_updated_at || Date.now()), 60);
 
     if (avatarError || !avatarData) {
       console.log("error while retrieving avatar: ", data.avatar_url);
@@ -67,21 +58,19 @@ function useUser() {
         const arrayBuffer = decode(base64Data);
         filePath = "avatars/" + session?.user.id + "/avatar." + extension;
 
-        const { error: fileUploadError } = await supabase.storage
-          .from("avatars")
-          .upload(filePath, arrayBuffer, {
-            upsert: true,
-            contentType: mimeType,
-          });
+        const { error: fileUploadError } = await supabase.storage.from("avatars").upload(filePath, arrayBuffer, {
+          upsert: true,
+          contentType: mimeType,
+        });
 
         if (fileUploadError) {
           console.log("file upload error:", fileUploadError.message);
           setLoading(false);
-          return false;
+          return fileUploadError.message;
         }
       }
 
-      const { data, error } = await supabase.from("users").upsert({
+      const { error } = await supabase.from("users").upsert({
         id: session?.user.id,
         name: name,
         avatar_url: filePath,
@@ -90,17 +79,16 @@ function useUser() {
       if (error) {
         console.log("error occurred while updating user:", error.message);
         setLoading(false);
-        return false;
+        return error.message;
       }
 
       await fetchUserData();
-      console.log("success, updated data:", data);
       setLoading(false);
-      return true;
-    } catch (err) {
-      console.log("error:", (err as Error).message);
+      return null;
+    } catch (error) {
+      console.log("error:", (error as Error).message);
       setLoading(false);
-      return false;
+      return (error as Error).message;
     }
   };
 

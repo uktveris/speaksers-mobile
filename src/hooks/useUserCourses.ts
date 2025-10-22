@@ -10,12 +10,9 @@ function useUserCourses() {
 
   const fetchUserCourses = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("user_enrollments")
-      .select("*")
-      .eq("user_id", session?.user.id);
+    const { data, error } = await supabase.from("user_enrollments").select("*").eq("user_id", session?.user.id);
     if (error) {
-      console.log("erorr while fetching user courses: " + error.message);
+      console.log("error while fetching user courses: " + error.message);
       return;
     }
     setCourses(data);

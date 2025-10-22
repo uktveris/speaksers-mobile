@@ -44,10 +44,13 @@ export default function EditAccount() {
 
   const updateUserAndGoBack = async () => {
     setUpdateLoading(true);
-    const result = await updateUserData(avatarUrl, name);
+    const error = await updateUserData(avatarUrl, name);
     await refetch();
     setUpdateLoading(false);
-    if (!result) {
+    if (error) {
+      Alert.alert("Error", "Error while updating picture: " + error, [
+        { text: "Cancel", onPress: () => console.log("closed updateUserData error") },
+      ]);
       console.log("something went wrong when updating, returning..");
       return;
     }

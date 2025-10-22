@@ -7,10 +7,7 @@ import { Keyboard } from "react-native";
 import { Pressable } from "react-native";
 import { Alert, View } from "react-native";
 import SignUpErrorMessage from "@/src/components/SignUpErrorMessage";
-import {
-  KeyboardAwareScrollView,
-  KeyboardToolbar,
-} from "react-native-keyboard-controller";
+import { KeyboardAwareScrollView, KeyboardToolbar } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { routerReplace, ROUTES } from "../utils/navigation";
 import { useColorScheme } from "nativewind";
@@ -26,23 +23,23 @@ export default function Login() {
   const { signIn, isLoading } = useSession();
   const colorScheme = useColorScheme();
 
-  const textCol =
-    colorScheme.colorScheme === "light"
-      ? theme.colors.text.light
-      : theme.colors.text.dark;
+  const textCol = colorScheme.colorScheme === "light" ? theme.colors.text.light : theme.colors.text.dark;
 
   const signInWithEmail = async () => {
     setLoading(true);
-    try {
-      await signIn(email, password);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log("login failed: " + (error as Error).message);
+    const error = await signIn(email, password);
+    if (error) {
+      console.log("login failed: " + error.message);
       setErrorExist(true);
-      setErrorMsg((error as Error).message);
+      setErrorMsg(error.message);
+      setLoading(false);
+      Alert.alert("Error signing in", "Error: " + error.message, [
+        { text: "Cancel", onPress: () => console.log("cancelled error alert") },
+      ]);
       return;
     }
+    setLoading(false);
+    routerReplace(ROUTES.homeScreen);
   };
 
   return (
@@ -58,14 +55,12 @@ export default function Login() {
         extraKeyboardSpace={20}
       >
         <View className="flex-1 w-full items-center justify-center">
-          <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">
-            Log in
-          </Text>
+          <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">Log in</Text>
           <View className="h-min m-5 mb-0 px-10 w-full">
-            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
-              Email
-            </Text>
+            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">Email</Text>
             <TextInput
+              selectionColor={textCol}
+              cursorColor={textCol}
               textColor={textCol}
               className="rounded-3xl bg-black/25 my-1"
               style={{ backgroundColor: "transparent" }}
@@ -83,10 +78,10 @@ export default function Login() {
             />
           </View>
           <View className="h-min m-5 px-10 w-full">
-            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
-              Password
-            </Text>
+            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">Password</Text>
             <TextInput
+              selectionColor={textCol}
+              cursorColor={textCol}
               textColor={textCol}
               className="rounded-3xl bg-black/25 w-full my-1"
               style={{ backgroundColor: "transparent" }}
@@ -103,7 +98,7 @@ export default function Login() {
               placeholderTextColor="grey"
               right={
                 <TextInput.Icon
-                  icon={showPassword ? "eye-off" : "eye"}
+                  icon={showPassword ? "eye" : "eye-off"}
                   onPress={() => setShowPassword((prev) => !prev)}
                 />
               }
@@ -116,19 +111,11 @@ export default function Login() {
             onPress={() => signInWithEmail()}
           >
             {loading && <ActivityIndicator color={theme.colors.text.dark} />}
-            {!loading && (
-              <Text className="text-text-dark font-bold text-2xl">Sign in</Text>
-            )}
+            {!loading && <Text className="text-text-dark font-bold text-2xl">Sign in</Text>}
           </Pressable>
           {/* <GoogleAuthButton /> */}
-          <Pressable
-            className="p-4 pt-8"
-            disabled={loading}
-            onPress={() => routerReplace(ROUTES.register)}
-          >
-            <Text className="text-text-light dark:text-text-dark font-bold underline">
-              No Account? Sign up
-            </Text>
+          <Pressable className="p-4 pt-8" disabled={loading} onPress={() => routerReplace(ROUTES.register)}>
+            <Text className="text-text-light dark:text-text-dark font-bold underline">No Account? Sign up</Text>
           </Pressable>
         </View>
       </KeyboardAwareScrollView>

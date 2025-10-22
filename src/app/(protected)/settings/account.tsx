@@ -1,9 +1,9 @@
-import { Alert, Appearance } from "react-native";
+import { Alert } from "react-native";
 import { Text, Pressable, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { useSession } from "@/src/context/AuthContext";
-import { routerReplace } from "@/src/utils/navigation";
+import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { View } from "react-native";
 
 function AccountOption({ title, icon, onPress }: { title: string; icon: string; onPress: () => void }) {
@@ -19,7 +19,7 @@ function AccountOption({ title, icon, onPress }: { title: string; icon: string; 
 }
 
 function AccountSettings() {
-  const { signOut, session, deleteAcount } = useSession();
+  const { signOut, deleteAccount } = useSession();
 
   const handleSignOut = async () => {
     Alert.alert("Log out", "Are you sure you want to log out?", [
@@ -30,7 +30,16 @@ function AccountSettings() {
       },
       {
         text: "Log out",
-        onPress: () => signOut(),
+        onPress: async () => {
+          const error = await signOut();
+          if (error) {
+            Alert.alert("Error while signing out", "Error" + error, [
+              { text: "Cancel", onPress: () => console.log("cancelled error message") },
+            ]);
+            return;
+          }
+          routerReplace(ROUTES.login);
+        },
         style: "default",
       },
     ]);
@@ -48,7 +57,16 @@ function AccountSettings() {
         },
         {
           text: "Delete",
-          onPress: () => deleteAcount(),
+          onPress: async () => {
+            const error = await deleteAccount();
+            if (error) {
+              Alert.alert("Error", "Error occurred while deleting: " + error, [
+                { text: "Cancel", onPress: () => console.log("cancelled error message") },
+              ]);
+              return;
+            }
+            routerReplace(ROUTES.login);
+          },
           style: "destructive",
         },
       ],

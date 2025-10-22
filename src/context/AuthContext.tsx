@@ -1,15 +1,7 @@
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { getSocket } from "@/src/server/socket";
-import type { Session } from "@supabase/supabase-js";
-import Constants from "expo-constants";
-import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { routerReplace, ROUTES } from "../utils/navigation";
+import type { AuthError, Session } from "@supabase/supabase-js";
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { getBackendUrl } from "../config/urlConfig";
 import axiosConfig from "../config/axiosConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,19 +9,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
-  signIn: (email: string, password: string) => void;
-  signOut: () => void;
-  userData: {};
-  getAvatar: () => string;
-  deleteAcount: () => void;
+  signIn: (email: string, password: string) => Promise<AuthError | null>;
+  signOut: () => Promise<AuthError | null>;
+  // userData: {};
+  // getAvatar: () => string;
+  deleteAccount: () => Promise<String | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 function useSession() {
   const context = useContext(AuthContext);
-  if (!context)
-    throw new Error("useSession must be used within a SessionProvider");
+  if (!context) throw new Error("useSession must be used within a SessionProvider");
   return context;
 }
 
@@ -39,10 +30,10 @@ async function deleteUserAvatar(path: string) {
   const { error } = await supabase.storage.from("avatars").remove([path]);
   if (error) {
     console.log("error deleting user avatar:", error.message);
-    return false;
+    return error;
   }
   console.log("successfully deleted user avatar");
-  return true;
+  return null;
 }
 
 function SessionProvider({ children }: PropsWithChildren) {
@@ -59,11 +50,9 @@ function SessionProvider({ children }: PropsWithChildren) {
 
     fetchSession();
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession ?? null);
-      },
-    );
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession ?? null);
+    });
 
     return () => {
       listener.subscription.unsubscribe();
@@ -75,8 +64,10 @@ function SessionProvider({ children }: PropsWithChildren) {
       email: email,
       password: password,
     });
-    if (error) throw error;
-    routerReplace(ROUTES.homeScreen);
+    if (error) {
+      return error;
+    }
+    return null;
   };
 
   const signOut = async () => {
@@ -86,49 +77,57 @@ function SessionProvider({ children }: PropsWithChildren) {
     if (chats.connected) chats.disconnect();
     const calls = getSocket("/calls");
     if (calls.connected) calls.disconnect();
-    await supabase.auth.signOut();
-    routerReplace(ROUTES.login);
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      return error;
+    }
+    return null;
   };
 
-  const deleteAcount = async () => {
+  const deleteAccount = async () => {
     const url = getBackendUrl();
     const userId = session?.user.id;
     if (!userId) {
       console.log("no user id found, returning..");
-      return;
+      return "No user ID found";
     }
     try {
-      const { data, error } = await supabase
+      const { data, error: userFetchError } = await supabase
         .from("users")
         .select("avatar_url")
         .eq("id", userId)
         .single();
-      if (error) {
-        console.log("erorr retrieving avatar url:", error.message);
-        return;
+      if (userFetchError) {
+        console.log("erorr retrieving avatar url:", userFetchError.message);
+        return userFetchError.message;
       }
-      const success = await deleteUserAvatar(data.avatar_url);
-      if (!success) {
-        return;
+
+      const storageError = await deleteUserAvatar(data.avatar_url);
+      if (storageError) {
+        return storageError.message;
       }
+
       const response = await axiosConfig.delete(url + "/api/users/delete", {
         data: { userId: userId },
         headers: { "Content-Type": "application/json" },
       });
       console.log("deleting user:", response.data);
       await AsyncStorage.clear();
-      signOut();
+      const authError = await signOut();
+      if (authError) {
+        return authError.message;
+      }
+      return null;
     } catch (err) {
       console.log("error while deleting user:", (err as Error).message);
+      return (err as Error).message;
     }
   };
 
   // TODO: must change and edit to NOT use session; just return user.
 
   return (
-    <AuthContext.Provider
-      value={{ session, isLoading, signIn, signOut, deleteAcount }}
-    >
+    <AuthContext.Provider value={{ session, isLoading, signIn, signOut, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

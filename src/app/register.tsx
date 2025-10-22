@@ -30,10 +30,7 @@ export default function Register() {
   const [errorsExist, setErrorExist] = useState(false);
   const colorScheme = useColorScheme();
 
-  const textCol =
-    colorScheme.colorScheme === "light"
-      ? theme.colors.text.light
-      : theme.colors.text.dark;
+  const textCol = colorScheme.colorScheme === "light" ? theme.colors.text.light : theme.colors.text.dark;
 
   const signUpWithEmail = async () => {
     if (password !== repPassword) {
@@ -44,10 +41,7 @@ export default function Register() {
     }
     setLoading(true);
 
-    const redirectUrl =
-      Platform.OS === "web"
-        ? "http://localhost:8081/auth-callback"
-        : "speaksers://auth-calback";
+    const redirectUrl = Platform.OS === "web" ? "http://localhost:8081/auth-callback" : "speaksers://auth-calback";
 
     try {
       const {
@@ -93,14 +87,12 @@ export default function Register() {
         extraKeyboardSpace={50}
       >
         <View className="flex-1 w-full items-center justify-center">
-          <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">
-            Sign up
-          </Text>
+          <Text className="text-text-light dark:text-text-dark text-7xl font-bold p-5">Sign up</Text>
           <View className="h-min m-5 mb-0 px-10 w-full">
-            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
-              Email
-            </Text>
+            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">Email</Text>
             <TextInput
+              selectionColor={textCol}
+              cursorColor={textCol}
               textColor={textCol}
               className="rounded-3xl bg-black/25 my-1"
               style={{ backgroundColor: "transparent" }}
@@ -118,10 +110,10 @@ export default function Register() {
             />
           </View>
           <View className="h-min m-5 px-10 w-full">
-            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
-              Password
-            </Text>
+            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">Password</Text>
             <TextInput
+              selectionColor={textCol}
+              cursorColor={textCol}
               textColor={textCol}
               className="rounded-3xl bg-black/25 w-full my-1"
               style={{ backgroundColor: "transparent" }}
@@ -138,17 +130,17 @@ export default function Register() {
               placeholderTextColor="grey"
               right={
                 <TextInput.Icon
-                  icon={showPassword ? "eye-off" : "eye"}
+                  icon={showPassword ? "eye" : "eye-off"}
                   onPress={() => setShowPassword((prev) => !prev)}
                 />
               }
             />
           </View>
           <View className="h-min m-5 px-10 w-full mt-1">
-            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">
-              Repeat password
-            </Text>
+            <Text className="ml-4 mb-3 text-text-light dark:text-text-dark">Repeat password</Text>
             <TextInput
+              selectionColor={textCol}
+              cursorColor={textCol}
               textColor={textCol}
               className="rounded-3xl bg-black/25 w-full my-1"
               style={{ backgroundColor: "transparent" }}
@@ -165,31 +157,23 @@ export default function Register() {
               placeholderTextColor="grey"
               right={
                 <TextInput.Icon
-                  icon={showRepPassword ? "eye-off" : "eye"}
+                  icon={showRepPassword ? "eye" : "eye-off"}
                   onPress={() => setShowRepPassword((prev) => !prev)}
                 />
               }
             />
           </View>
-          {errorsExist && (
-            <SignUpErrorMessage message="Passwords do not match!" />
-          )}
+          {errorsExist && <SignUpErrorMessage message="Passwords do not match!" />}
           <Pressable
             className="bg-primary w-3/4  p-3 flex items-center rounded-3xl"
             disabled={loading}
             onPress={() => signUpWithEmail()}
           >
             {loading && <ActivityIndicator color={theme.colors.text.dark} />}
-            {!loading && (
-              <Text className="text-text-dark font-bold text-2xl">Sign up</Text>
-            )}
+            {!loading && <Text className="text-text-dark font-bold text-2xl">Sign up</Text>}
           </Pressable>
           {/* <GoogleAuthButton /> */}
-          <Pressable
-            className="p-4 pt-8"
-            disabled={loading}
-            onPress={() => routerReplace(ROUTES.login)}
-          >
+          <Pressable className="p-4 pt-8" disabled={loading} onPress={() => routerReplace(ROUTES.login)}>
             <Text className="text-text-light dark:text-text-dark font-bold underline">
               Alredy have an account? Log in!
             </Text>
