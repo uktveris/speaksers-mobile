@@ -6,7 +6,7 @@ const sockets = new Map<string, SocketIOClient.Socket>();
 function getSocket(nsp: string = "") {
   if (!sockets.get(nsp)) {
     const url = nsp ? getBackendUrl() + nsp : getBackendUrl();
-    const socket = io(url, { autoConnect: false });
+    const socket = io(url, { autoConnect: false, path: "/socket.io/" });
     sockets.set(nsp, socket);
   }
   return sockets.get(nsp)!;

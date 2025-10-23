@@ -25,7 +25,6 @@ export function useMediasoup(peerId: string, callId: string) {
   const [producer, setProducer] = useState<Producer<AppData> | undefined>(undefined);
   const [producerTransport, setProducerTransport] = useState<Transport<AppData> | null>(null);
   const [consumerTransport, setConsumerTransport] = useState<Transport<AppData> | null>(null);
-  // const [callId, setCallId] = useState<string | null>(null);
   const [device, setDevice] = useState<Device | null>(null);
   const [pendingProducers, setPendingProducers] = useState<
     Array<{

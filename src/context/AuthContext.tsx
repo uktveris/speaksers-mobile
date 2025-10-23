@@ -11,8 +11,6 @@ interface AuthContextType {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<AuthError | null>;
   signOut: () => Promise<AuthError | null>;
-  // userData: {};
-  // getAvatar: () => string;
   deleteAccount: () => Promise<String | null>;
 }
 
