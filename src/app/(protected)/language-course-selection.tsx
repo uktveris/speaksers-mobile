@@ -4,11 +4,9 @@ import { useUserCourses } from "@/src/hooks/useUserCourses";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
-import { Appearance } from "react-native";
 import { Pressable } from "react-native";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { theme } from "@/theme";
 import { useColorScheme } from "nativewind";
 
 function LanguageCourseSelection() {
@@ -60,9 +58,7 @@ function LanguageCourseSelection() {
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <ScrollView>
         <View className="flex flex-1 justify-center items-center py-3">
-          <Text className="text-text-light dark:text-text-dark font-bold text-xl m-4">
-            Add language and your CEFR level
-          </Text>
+          <Text className="text-text-light dark:text-text-dark font-bold text-xl m-4">Add language</Text>
           {courses.map((course, key) => (
             <Pressable
               onPress={() => setSelectedCourse(course)}
@@ -72,6 +68,7 @@ function LanguageCourseSelection() {
               <Text className="text-text-light dark:text-text-dark font-bold">{course.name}</Text>
             </Pressable>
           ))}
+          <Text className="text-text-light dark:text-text-dark font-bold text-xl m-4">Add your CEFR level</Text>
           {levels.map((level, key) => (
             <Pressable
               onPress={() => setSelectedLevel(level)}
