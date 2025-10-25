@@ -1,14 +1,9 @@
 import GoogleAuthButton from "@/src/components/oauth/GoogleAuthButton";
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
 import { useState } from "react";
-import { Appearance } from "react-native";
 import { Pressable } from "react-native";
-import { KeyboardAvoidingView } from "react-native";
-import { Platform } from "react-native";
-import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import { Alert } from "react-native";
-import { Colors } from "@/src/constants/Colors";
 import { ActivityIndicator, TextInput } from "react-native-paper";
 import { Keyboard } from "react-native";
 import { Text } from "react-native";
@@ -18,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { routerReplace, ROUTES } from "../utils/navigation";
 import { useColorScheme } from "nativewind";
 import { theme } from "@/theme";
+import Constants from "expo-constants";
 
 export default function Register() {
   const supabase = getSupabaseClient();
@@ -41,7 +37,9 @@ export default function Register() {
     }
     setLoading(true);
 
-    const redirectUrl = Platform.OS === "web" ? "http://localhost:8081/auth-callback" : "speaksers://auth-calback";
+    const redirectUrl = Constants.expoConfig!.extra!.SUPABASE_REDIRECT_URL as string;
+    // TODO: remove this log
+    console.log("received supabase redirect url:", redirectUrl);
 
     try {
       const {

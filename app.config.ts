@@ -15,7 +15,7 @@ const SCHEME = "speaksers";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   console.log("BUILDING APP FOR ENVIRONMENT:", process.env.APP_ENV);
-  const { name, bundleIdentifier, packageName, icon, scheme } = getDynamicAppConfig(
+  const { name, bundleIdentifier, packageName, /*icon */ scheme } = getDynamicAppConfig(
     (process.env.APP_ENV as "development" | "preview" | "production") || "development",
   );
   return {
@@ -24,12 +24,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: EAS_PROJECT_SLUG,
     version: version,
     orientation: "portrait",
-    icon: icon,
+    // icon: icon,
     scheme: scheme,
     newArchEnabled: true,
     userInterfaceStyle: "automatic",
     splash: {
-      image: icon,
+      // image: icon,
       imageWidth: 300,
       resizeMode: "cover",
       backgroundColor: "#FF0000",
@@ -42,11 +42,18 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         NSMicrophoneUsageDescription: "This app uses microphone for audio calls.",
         ITSAppUsesNonExemptEncryption: false,
       },
+      icon: {
+        dark: "./assets/images/ios-dark.png",
+        light: "./assets/images/ios-light.png",
+        tinted: "./assets/images/ios-tinted.png",
+      },
     },
     android: {
       package: packageName,
       adaptiveIcon: {
-        foregroundImage: "./assets/images/icon.png",
+        foregroundImage: "./assets/images/adaptive-icon.png",
+        monochromeImage: "./assets/images/adaptive-icon.png",
+        backgroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
       permissions: ["android.permission.RECORD_AUDIO", "android.permission.INTERNET"],
@@ -56,10 +63,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/icon.png",
+          image: "./assets/images/splash-icon-dark.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: "#ffffff",
+          dark: {
+            image: "./assets/images/splash-icon-light.png",
+            backgroundColor: "0a0a0a",
+          },
         },
       ],
       "expo-localization",
@@ -91,6 +102,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       SUPABASE_PUBLISHABLE_KEY: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
       BACKEND_URL: process.env.EXPO_PUBLIC_BACKEND_URL,
       SB_TOKEN_NAME: process.env.EXPO_PUBLIC_SB_TOKEN_NAME,
+      SUPABASE_REDIRECT_URL: process.env.EXPO_PUBLIC_SUPABASE_REDIRECT_URL,
     },
     updates: {
       url: "https://u.expo.dev/2b1aea07-cf67-4902-8f35-ac16d83e6099",
@@ -108,7 +120,7 @@ export const getDynamicAppConfig = (environment: "development" | "preview" | "pr
       name: APP_NAME,
       bundleIdentifier: BUNDLE_IDENTIFIER,
       packageName: PACKAGE_NAME,
-      icon: ICON,
+      // icon: ICON,
       scheme: SCHEME,
     };
   } else if (environment === "preview") {
@@ -116,7 +128,7 @@ export const getDynamicAppConfig = (environment: "development" | "preview" | "pr
       name: `${APP_NAME} Preview`,
       bundleIdentifier: `${BUNDLE_IDENTIFIER}.preview`,
       packageName: `${PACKAGE_NAME}.preview`,
-      icon: "./assets/images/iOS-Prev.png",
+      // icon: "./assets/images/iOS-Prev.png",
       adaptiveIcon: "./assets/images/Android-Prev.png",
       scheme: `${SCHEME}-prev`,
     };
@@ -125,7 +137,7 @@ export const getDynamicAppConfig = (environment: "development" | "preview" | "pr
     name: `${APP_NAME} Development`,
     bundleIdentifier: `${BUNDLE_IDENTIFIER}.dev`,
     packageName: `${PACKAGE_NAME}.dev`,
-    icon: "./assets/images/iOS-Dev.png",
+    // icon: "./assets/images/iOS-Dev.png",
     adaptiveIcon: "./assets/images/Android-Dev.png",
     scheme: `${SCHEME}-dev`,
   };
