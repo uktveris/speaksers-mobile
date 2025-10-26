@@ -17,6 +17,7 @@ export default function AuthCallback() {
     const handleUrl = async (url: string | null) => {
       if (processed) return;
       setProcessed(true);
+      setLoading(true);
 
       if (!url) {
         Alert.alert("Error", "URL error, try to log in manually");
