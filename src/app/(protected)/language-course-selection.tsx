@@ -36,9 +36,7 @@ function LanguageCourseSelection() {
 
   const addCourse = async () => {
     if (!selectedCourse || !selectedLevel) {
-      Alert.alert("Select language", "Select language and CEFR level to add", [
-        { text: "Cancel", onPress: () => console.log("warning closed") },
-      ]);
+      Alert.alert("Select language", "Select language and CEFR level to add", [{ text: "Cancel" }]);
       return;
     }
     const { result } = await addUserCourse(selectedCourse.id, selectedLevel);

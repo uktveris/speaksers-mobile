@@ -21,6 +21,11 @@ import { getItem } from "../utils/storage";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+SplashScreen.setOptions({
+  duration: 400,
+  fade: true,
+});
+
 export const unstable_settings = {
   initialRouteName: "(app)/(tabs)/index",
 };

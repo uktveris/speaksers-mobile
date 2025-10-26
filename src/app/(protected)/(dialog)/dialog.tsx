@@ -24,7 +24,6 @@ function Dialog() {
       Alert.alert("Going back", "Going back will cancel the search", [
         {
           text: "Keep searching",
-          onPress: () => null,
           style: "cancel",
         },
         {

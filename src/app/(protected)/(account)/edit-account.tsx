@@ -48,9 +48,7 @@ export default function EditAccount() {
     await refetch();
     setUpdateLoading(false);
     if (error) {
-      Alert.alert("Error", "Error while updating picture: " + error, [
-        { text: "Cancel", onPress: () => console.log("closed updateUserData error") },
-      ]);
+      Alert.alert("Error", "Error while updating picture: " + error, [{ text: "Cancel" }]);
       console.log("something went wrong when updating, returning..");
       return;
     }

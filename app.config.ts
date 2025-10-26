@@ -11,11 +11,12 @@ const APP_NAME = "Speaksers";
 const BUNDLE_IDENTIFIER = "com.speaksersedu.speaksers";
 const PACKAGE_NAME = "com.speaksersedu.speaksers";
 const ICON = "./assets/images/icon.png";
+const DOMAIN = "speaksers.com";
 const SCHEME = "speaksers";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   console.log("BUILDING APP FOR ENVIRONMENT:", process.env.APP_ENV);
-  const { name, bundleIdentifier, packageName, /*icon */ scheme } = getDynamicAppConfig(
+  const { name, bundleIdentifier, packageName, associatedDomain, /*icon */ scheme } = getDynamicAppConfig(
     (process.env.APP_ENV as "development" | "preview" | "production") || "development",
   );
   return {
@@ -24,12 +25,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: EAS_PROJECT_SLUG,
     version: version,
     orientation: "portrait",
-    // icon: icon,
     scheme: scheme,
     newArchEnabled: true,
     userInterfaceStyle: "automatic",
     splash: {
-      // image: icon,
       imageWidth: 300,
       resizeMode: "cover",
       backgroundColor: "#FF0000",
@@ -47,16 +46,30 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         light: "./assets/images/ios-light.png",
         tinted: "./assets/images/ios-tinted.png",
       },
+      associatedDomains: [`applinks:${associatedDomain}`],
     },
     android: {
       package: packageName,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         monochromeImage: "./assets/images/adaptive-icon.png",
-        backgroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
       permissions: ["android.permission.RECORD_AUDIO", "android.permission.INTERNET"],
+      intentFilters: [
+        {
+          action: "VIEW",
+          autoVerify: true,
+          data: [
+            {
+              scheme: "https",
+              host: associatedDomain,
+              pathPrefix: "/",
+            },
+          ],
+          category: ["BROWSABLE", "DEFAULT"],
+        },
+      ],
     },
     plugins: [
       "expo-router",
@@ -69,7 +82,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           backgroundColor: "#ffffff",
           dark: {
             image: "./assets/images/splash-icon-light.png",
-            backgroundColor: "0a0a0a",
+            backgroundColor: "#0a0a0a",
           },
         },
       ],
@@ -120,7 +133,7 @@ export const getDynamicAppConfig = (environment: "development" | "preview" | "pr
       name: APP_NAME,
       bundleIdentifier: BUNDLE_IDENTIFIER,
       packageName: PACKAGE_NAME,
-      // icon: ICON,
+      associatedDomain: DOMAIN,
       scheme: SCHEME,
     };
   } else if (environment === "preview") {
@@ -128,8 +141,7 @@ export const getDynamicAppConfig = (environment: "development" | "preview" | "pr
       name: `${APP_NAME} Preview`,
       bundleIdentifier: `${BUNDLE_IDENTIFIER}.preview`,
       packageName: `${PACKAGE_NAME}.preview`,
-      // icon: "./assets/images/iOS-Prev.png",
-      adaptiveIcon: "./assets/images/Android-Prev.png",
+      associatedDomain: `preview.${DOMAIN}`,
       scheme: `${SCHEME}-prev`,
     };
   }
@@ -137,8 +149,7 @@ export const getDynamicAppConfig = (environment: "development" | "preview" | "pr
     name: `${APP_NAME} Development`,
     bundleIdentifier: `${BUNDLE_IDENTIFIER}.dev`,
     packageName: `${PACKAGE_NAME}.dev`,
-    // icon: "./assets/images/iOS-Dev.png",
-    adaptiveIcon: "./assets/images/Android-Dev.png",
+    associatedDomain: `dev.${DOMAIN}`,
     scheme: `${SCHEME}-dev`,
   };
 };

@@ -33,9 +33,7 @@ export default function Login() {
       setErrorExist(true);
       setErrorMsg(error.message);
       setLoading(false);
-      Alert.alert("Error signing in", "Error: " + error.message, [
-        { text: "Cancel", onPress: () => console.log("cancelled error alert") },
-      ]);
+      Alert.alert("Error signing in", "Error: " + error.message, [{ text: "Cancel" }]);
       return;
     }
     setLoading(false);

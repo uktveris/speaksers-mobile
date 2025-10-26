@@ -3,7 +3,7 @@ import { Router } from "expo-router";
 const ROUTES = {
   login: "/login" as const,
   register: "/register" as const,
-  authCallback: "/auth-callback" as const,
+  authCallback: "/auth/callback" as const,
   languageCourseSelection: "/(protected)/language-course-selection" as const,
   editAccount: "/(protected)/(account)/edit-account" as const,
   dialog: "/(protected)/(dialog)/dialog" as const,

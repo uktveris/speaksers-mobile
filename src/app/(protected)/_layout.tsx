@@ -35,9 +35,7 @@ export default function AppLayout() {
         const response = await axiosConfig.get(url + "/api/health");
         console.log("success, backend health check response:", response.data);
       } catch (error) {
-        Alert.alert("Service error", "Backend service error: " + (error as Error).message, [
-          { text: "Cancel", onPress: () => console.log("cancelled backend error message") },
-        ]);
+        Alert.alert("Service error", "Backend service error: " + (error as Error).message, [{ text: "Cancel" }]);
       }
     };
     checkBackendHealth();
