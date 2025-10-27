@@ -173,7 +173,7 @@ export default function Register() {
           {/* <GoogleAuthButton /> */}
           <Pressable className="p-4 pt-8" disabled={loading} onPress={() => routerReplace(ROUTES.login)}>
             <Text className="text-text-light dark:text-text-dark font-bold underline">
-              Alredy have an account? Log in!
+              Already have an account? Log in!
             </Text>
           </Pressable>
         </View>

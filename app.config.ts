@@ -64,7 +64,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             {
               scheme: "https",
               host: associatedDomain,
-              pathPrefix: "/auth",
+              pathPrefix: "/auth/callback",
             },
           ],
           category: ["BROWSABLE", "DEFAULT"],

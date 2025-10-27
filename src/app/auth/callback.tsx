@@ -5,11 +5,14 @@ import * as Linking from "expo-linking";
 import { routerReplace, ROUTES } from "../../utils/navigation";
 import { useColorScheme } from "nativewind";
 import { theme } from "@/theme";
+import { useLocalSearchParams } from "expo-router";
 
 export default function AuthCallback() {
+  console.log("REACHED AUTH CALLBACK");
   const [loading, setLoading] = useState(false);
   const [processed, setProcessed] = useState(false);
   const { colorScheme: c } = useColorScheme();
+  const params = useLocalSearchParams();
 
   useEffect(() => {
     const supabase = getSupabaseClient();
@@ -26,17 +29,17 @@ export default function AuthCallback() {
       }
 
       try {
-        const parsed = Linking.parse(url);
-        const params = parsed.queryParams;
-
-        const fragment = url.split("#")[1];
-        if (!fragment) {
-          throw new Error("No authentication data found");
+        if (!params) {
+          throw new Error("No parameters found in url");
         }
 
-        const fragmentParams = new URLSearchParams(fragment);
-        const accessToken = fragmentParams.get("access_token");
-        const refreshToken = fragmentParams.get("refresh_token");
+        if (params.error) {
+          const errDesc = params.error;
+          throw new Error(errDesc as string);
+        }
+
+        const accessToken = Array.isArray(params.access_token) ? params.access_token[0] : params.access_token;
+        const refreshToken = Array.isArray(params.refresh_token) ? params.refresh_token[0] : params.refresh_token;
 
         if (!accessToken || !refreshToken) {
           throw new Error("Missing authentication tokens");
@@ -52,6 +55,7 @@ export default function AuthCallback() {
         Alert.alert("Authentication Error", error instanceof Error ? error.message : "Failed to sign in", [
           { text: "OK" },
         ]);
+        routerReplace(ROUTES.login);
       } finally {
         setLoading(false);
       }
