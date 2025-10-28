@@ -7,7 +7,8 @@ import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { ModalProvider } from "@/src/context/ModalContext";
 import axiosConfig from "@/src/config/axiosConfig";
 import { getBackendUrl } from "@/src/config/urlConfig";
-import { Alert } from "react-native";
+import { ActivityIndicator, Alert } from "react-native";
+import { theme } from "@/theme";
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
@@ -49,6 +50,10 @@ export default function AppLayout() {
 
   if (isLoading) {
     return null;
+  }
+
+  if (loading) {
+    return <ActivityIndicator color={theme.colors.text.dark} />;
   }
 
   if (!session) {

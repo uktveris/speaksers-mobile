@@ -1,25 +1,56 @@
 import { getSupabaseClient } from "@/src/hooks/supabaseClient";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, View } from "react-native";
 import * as Linking from "expo-linking";
 import { routerReplace, ROUTES } from "../../utils/navigation";
 import { useColorScheme } from "nativewind";
 import { theme } from "@/theme";
-import { useLocalSearchParams } from "expo-router";
 
 export default function AuthCallback() {
   console.log("REACHED AUTH CALLBACK");
   const [loading, setLoading] = useState(false);
-  const [processed, setProcessed] = useState(false);
+  const processedRef = useRef(false);
   const { colorScheme: c } = useColorScheme();
-  const params = useLocalSearchParams();
 
   useEffect(() => {
     const supabase = getSupabaseClient();
 
+    const extractParams = (url: string) => {
+      try {
+        const parsed = Linking.parse(url);
+        const params = parsed.queryParams;
+
+        if (!params) {
+          throw new Error("No parameters found");
+        }
+        const accessToken = params.access_token;
+        const refreshToken = params.refresh_token;
+
+        if (!accessToken || !refreshToken) {
+          throw new Error("Missing access or refresh token");
+        }
+
+        return {
+          accessToken: Array.isArray(accessToken) ? accessToken[0] : accessToken,
+          refreshToken: Array.isArray(refreshToken) ? refreshToken[0] : refreshToken,
+          error: null,
+        };
+      } catch (error) {
+        console.log("encountered error while parsing params:", error);
+        return {
+          accessToken: null,
+          refreshToken: null,
+          error: error as Error,
+        };
+      }
+    };
+
     const handleUrl = async (url: string | null) => {
-      if (processed) return;
-      setProcessed(true);
+      if (processedRef.current) {
+        console.log("already processed auth callback; ignoring");
+        return;
+      }
+      processedRef.current = true;
       setLoading(true);
 
       if (!url) {
@@ -29,24 +60,14 @@ export default function AuthCallback() {
       }
 
       try {
-        if (!params) {
-          throw new Error("No parameters found in url");
+        const e = extractParams(url);
+        if (e.error) {
+          throw e.error;
         }
-
-        if (params.error) {
-          const errDesc = params.error;
-          throw new Error(errDesc as string);
-        }
-
-        const accessToken = Array.isArray(params.access_token) ? params.access_token[0] : params.access_token;
-        const refreshToken = Array.isArray(params.refresh_token) ? params.refresh_token[0] : params.refresh_token;
-
-        if (!accessToken || !refreshToken) {
-          throw new Error("Missing authentication tokens");
-        }
-
-        const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-
+        const { error } = await supabase.auth.setSession({
+          access_token: e.accessToken,
+          refresh_token: e.refreshToken,
+        });
         if (error) throw error;
 
         routerReplace(ROUTES.homeScreen);
@@ -70,7 +91,7 @@ export default function AuthCallback() {
     return () => {
       subscription.remove();
     };
-  }, [processed]);
+  }, []);
 
   if (loading) {
     return (
