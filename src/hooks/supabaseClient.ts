@@ -26,6 +26,8 @@ function initialize() {
     },
   });
 
+  console.log("initialized supabase client");
+
   if (appStateListener) {
     appStateListener.remove();
   }

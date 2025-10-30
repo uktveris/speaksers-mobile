@@ -52,10 +52,6 @@ export default function AppLayout() {
     return null;
   }
 
-  if (loading) {
-    return <ActivityIndicator color={theme.colors.text.dark} />;
-  }
-
   if (!session) {
     return <Redirect href="../login" />;
   }
