@@ -4,10 +4,9 @@ import { Redirect, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useUserCourses } from "@/src/hooks/useUserCourses";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
-import { ModalProvider } from "@/src/context/ModalContext";
 import axiosConfig from "@/src/config/axiosConfig";
 import { getBackendUrl } from "@/src/config/urlConfig";
-import { ActivityIndicator, Alert } from "react-native";
+import { Alert } from "react-native";
 import { theme } from "@/theme";
 
 export default function AppLayout() {
