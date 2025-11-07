@@ -5,7 +5,6 @@ import * as Linking from "expo-linking";
 import { routerReplace, ROUTES } from "../../utils/navigation";
 import { useColorScheme } from "nativewind";
 import { theme } from "@/theme";
-import { sendLog } from "@/src/utils/logger";
 
 export default function AuthCallback() {
   console.log("REACHED AUTH CALLBACK");
@@ -22,7 +21,6 @@ export default function AuthCallback() {
         const params = parsed.queryParams;
 
         console.log("params:", { params });
-        sendLog("callback", "params" + JSON.stringify(params, null, 2));
 
         if (!params) {
           throw new Error("No parameters found");
@@ -52,14 +50,12 @@ export default function AuthCallback() {
     const handleUrl = async (url: string | null) => {
       if (processedRef.current) {
         console.log("already processed auth callback; ignoring");
-        sendLog("callback", "already processed auth callabck; ignoring");
         return;
       }
       processedRef.current = true;
       setLoading(true);
 
       console.log("received url:", url);
-      sendLog("callback", "received url: " + url);
       if (!url) {
         Alert.alert("Error", "URL error, try to log in manually");
         routerReplace(ROUTES.login);
