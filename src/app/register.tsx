@@ -38,8 +38,6 @@ export default function Register() {
     setLoading(true);
 
     const redirectUrl = Constants.expoConfig!.extra!.SUPABASE_REDIRECT_URL as string;
-    // TODO: remove this log
-    console.log("received supabase redirect url:", redirectUrl);
 
     try {
       const {
