@@ -109,6 +109,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           microphonePermission: `Allow ${APP_NAME} to access your microphone.`,
         },
       ],
+      // [
+      //   "expo-build-properties",
+      //   {
+      //     android: {
+      //       minSdkVersion: 24,
+      //       compileSdkVersion: 34,
+      //       targetSdkVersion: 34,
+      //       buildToolsVersion: "34.0.0",
+      //     }
+      //   }
+      // ]
     ],
     experiments: {
       typedRoutes: true,
