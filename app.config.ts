@@ -56,6 +56,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         backgroundColor: "#ffffff",
       },
       permissions: ["android.permission.RECORD_AUDIO", "android.permission.INTERNET"],
+      blockedPermissions: ["android.permission.CAMERA"],
       intentFilters: [
         {
           action: "VIEW",
