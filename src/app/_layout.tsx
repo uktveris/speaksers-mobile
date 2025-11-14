@@ -6,7 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-
+import * as Updates from "expo-updates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SessionProvider } from "@/src/context/AuthContext";
 import { deactivateKeepAwake } from "expo-keep-awake";
@@ -48,6 +48,20 @@ export default function RootLayout() {
       setColorScheme(theme as "light" | "dark");
     };
     loadTheme();
+  }, []);
+
+  useEffect(() => {
+    const checkForUpdates = async () => {
+      try {
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          await Updates.fetchUpdateAsync();
+        }
+      } catch (error) {
+        console.log("update check error:", error);
+      }
+    };
+    checkForUpdates();
   }, []);
 
   useEffect(() => {

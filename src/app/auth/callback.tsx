@@ -52,8 +52,6 @@ export default function AuthCallback() {
         console.log("already processed auth callback; ignoring");
         return;
       }
-      processedRef.current = true;
-      setLoading(true);
 
       console.log("received url:", url);
       if (!url) {
@@ -61,6 +59,8 @@ export default function AuthCallback() {
         routerReplace(ROUTES.login);
         return;
       }
+      processedRef.current = true;
+      setLoading(true);
 
       try {
         const e = extractParams(url);
@@ -85,11 +85,18 @@ export default function AuthCallback() {
       }
     };
 
-    Linking.getInitialURL().then(handleUrl);
-
     const subscription = Linking.addEventListener("url", (event) => {
       handleUrl(event.url);
     });
+
+    const checkInitialUrl = async () => {
+      const url = await Linking.getInitialURL();
+      if (url && !processedRef.current) {
+        handleUrl(url);
+      }
+    };
+
+    checkInitialUrl();
 
     return () => {
       subscription.remove();
