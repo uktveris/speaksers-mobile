@@ -55,7 +55,7 @@ export default function App() {
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark">
       <View className="flex-1 px-2">
         <View className="py-8 px-2">
-          <Text className="text-text-light dark:text-text-dark text-4xl font-bold">Hi, {username}</Text>
+          <Text className="text-text-light dark:text-text-dark text-4xl font-bold">Hi there, {username}</Text>
         </View>
         <Grid>
           <GameBox backgroundColor={theme.colors.primary} name="Start Dialog" link={ROUTES.dialog} />

@@ -56,6 +56,7 @@ export default function RootLayout() {
         const update = await Updates.checkForUpdateAsync();
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
         }
       } catch (error) {
         console.log("update check error:", error);
