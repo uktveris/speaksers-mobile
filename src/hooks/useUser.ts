@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getSupabaseClient } from "./supabaseClient";
 import { useSession } from "../context/AuthContext";
-import * as FileSystem from "expo-file-system";
+import { File } from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 
 function useUser() {
@@ -52,9 +52,11 @@ function useUser() {
       } else {
         const extension = newAvatarUri.split(".").pop()?.toLowerCase() || "jpg";
         const mimeType = "image/" + (extension === "jpg" ? "jpeg" : extension);
-        const base64Data = await FileSystem.readAsStringAsync(newAvatarUri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+        // const base64Data = await FileSystem.readAsStringAsync(newAvatarUri, {
+        //   encoding: FileSystem.EncodingType.Base64,
+        // });
+        const file = new File(newAvatarUri);
+        const base64Data = await file.text();
         const arrayBuffer = decode(base64Data);
         filePath = "avatars/" + session?.user.id + "/avatar." + extension;
 

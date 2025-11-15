@@ -51,21 +51,6 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    const checkForUpdates = async () => {
-      try {
-        const update = await Updates.checkForUpdateAsync();
-        if (update.isAvailable) {
-          await Updates.fetchUpdateAsync();
-          await Updates.reloadAsync();
-        }
-      } catch (error) {
-        console.log("update check error:", error);
-      }
-    };
-    checkForUpdates();
-  }, []);
-
-  useEffect(() => {
     deactivateKeepAwake();
   }, []);
 

@@ -11,7 +11,8 @@ import { routerPush, routerReplace, ROUTES } from "@/src/utils/navigation";
 import Feather from "@expo/vector-icons/Feather";
 import { useColorScheme } from "nativewind";
 import { theme } from "@/theme";
-function Account() {
+
+export default function Account() {
   const [userCourses, setUserCourses] = useState<any[]>([]);
   const { courses, loading } = useUserCourses();
   const { locales, calendars } = useLocale();
@@ -64,5 +65,3 @@ function Account() {
     </SafeAreaView>
   );
 }
-
-export default Account;

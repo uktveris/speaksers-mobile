@@ -3,7 +3,7 @@ import { getSocket } from "@/src/server/socket";
 import { useEffect, useRef } from "react";
 import { Text } from "react-native";
 import { Pressable } from "react-native";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { BackHandler } from "react-native";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import LoadingDots from "@/src/components/ui/LoadingDots";
