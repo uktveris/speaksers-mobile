@@ -52,11 +52,8 @@ function useUser() {
       } else {
         const extension = newAvatarUri.split(".").pop()?.toLowerCase() || "jpg";
         const mimeType = "image/" + (extension === "jpg" ? "jpeg" : extension);
-        // const base64Data = await FileSystem.readAsStringAsync(newAvatarUri, {
-        //   encoding: FileSystem.EncodingType.Base64,
-        // });
         const file = new File(newAvatarUri);
-        const base64Data = await file.text();
+        const base64Data = await file.base64();
         const arrayBuffer = decode(base64Data);
         filePath = "avatars/" + session?.user.id + "/avatar." + extension;
 
