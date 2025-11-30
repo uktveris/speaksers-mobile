@@ -35,12 +35,18 @@ Pulling environmental variables from EAS (environments include: development, pre
   ```bash
   eas env:pull --environment development
   ```
-The ```development``` option here could be exchanged with ```preview``` or ```production``` environments.
+The `development` option here could be exchanged with `preview` or `production` environments.
 
-SUbmitting the build to EAS:
+Submitting the build to EAS:
   ```bash
   eas build --platform android --profile development
   ```
-The ```development``` option here could be exchanged with ```preview``` or ```production``` environments, while platforms available are ```android```, ```ios``` or ```all```.
+The `development` option here could be exchanged with `preview` or `production` environments, while platforms available are `android`, `ios` or `all`.
+
+Publising OTA update (to preview channel):
+  ```bash
+  eas update --channel preview --platform all --environment preview --message "update message"
+  ```
+The `preview` channel option can be substituted with any other update channel. `--environment` flag is important to load env variables stored in EAS during the update process.
 
 > **Note:** in order to get all features (such as call mechanics), the [backend](https://github.com/uktveris/speaksers-backend) should be also installed and run. It provides features such as websocket signalling for webrtc call peer matching.

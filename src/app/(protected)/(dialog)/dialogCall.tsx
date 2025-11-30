@@ -1,4 +1,3 @@
-import Timer from "@/src/components/Timer";
 import { useMediasoup } from "@/src/hooks/useMediasoup";
 import { routerReplace, ROUTES } from "@/src/utils/navigation";
 import { useLocalSearchParams } from "expo-router";
@@ -33,11 +32,6 @@ export default function DialogCall() {
     setMuted((prev) => !prev);
   };
 
-  // const stopTimer = () => {
-  //   socket.emit("stop_timer", { callId: callId });
-  //   setReady(true);
-  // };
-
   return (
     <SafeAreaView className="h-full bg-background-light dark:bg-background-dark flex justify-center items-center">
       <View className="px-2 justify-center items-center">
@@ -50,15 +44,6 @@ export default function DialogCall() {
         {remoteStream && !loading && (
           <View className="flex justify-center items-center rounded-3xl bg-background-dimmed">
             {remoteStream && <RTCView streamURL={remoteStream.toURL()} style={{ width: 10, height: 10 }} />}
-            {/*{callId && timerData && (
-              <Timer
-                endTime={timerData.endTime}
-                counting={timerData.counting}
-                callId={callId as string}
-                // onStopTimer={stopTimer}
-                onStopTimer={() => console.log("timer stopped")}
-              />
-            )}*/}
             <Pressable
               className="mt-5 bg-primary w-2/4 p-3 px-5 flex items-center rounded-3xl"
               onPress={() => toggleMute()}
